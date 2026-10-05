@@ -3,26 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>H8 EMS — Capability-Aware Emergency Medical Dispatch Platform</title>
-    <meta name="description" content="Autonomous capability-aware emergency medical dispatch, real-time device GPS telemetry, and intelligent hospital trauma bed coordination.">
+    <title>H8 EMS — Citywide Emergency Medical Orchestration</title>
+    <meta name="description" content="Coordinate dispatchers, ambulance crews, traffic systems, and hospitals in one live capability-aware platform.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-base: #070a14;
-            --bg-surface: #0e1526;
-            --bg-card: rgba(15, 23, 42, 0.75);
-            --bg-card-hover: rgba(22, 34, 60, 0.9);
-            --bg-elevated: #162035;
-            --border-card: rgba(255, 255, 255, 0.08);
-            --border-hover: rgba(99, 102, 241, 0.4);
-            --accent-indigo: #6366f1;
-            --accent-blue: #3b82f6;
-            --accent-cyan: #06b6d4;
-            --accent-emerald: #10b981;
-            --accent-amber: #f59e0b;
-            --accent-rose: #f43f5e;
+            --bg-base: #080d0a;
+            --bg-card: rgba(16, 26, 20, 0.75);
+            --bg-card-hover: rgba(22, 38, 29, 0.9);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-green: rgba(34, 197, 94, 0.25);
+            --brand-mint: #bbf7d0;
+            --brand-green: #22c55e;
+            --brand-coral: #ff5436;
+            --brand-coral-hover: #ff3b18;
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
             --text-muted: #64748b;
@@ -36,27 +32,29 @@
 
         body {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-base);
+            background-color: var(--bg-base);
             color: var(--text-primary);
             min-height: 100vh;
             overflow-x: hidden;
             background-image: 
-                radial-gradient(circle at 15% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 45%),
-                radial-gradient(circle at 85% 10%, rgba(6, 182, 212, 0.12) 0%, transparent 45%),
-                radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.08) 0%, transparent 60%);
+                linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px),
+                radial-gradient(circle at 10% 20%, rgba(34, 197, 94, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 30%, rgba(255, 84, 54, 0.06) 0%, transparent 45%);
+            background-size: 52px 52px, 52px 52px, 100% 100%, 100% 100%;
             background-attachment: fixed;
         }
 
-        /* Top Navigation Header */
+        /* Top Clean Navigation */
         header.site-nav {
             position: sticky;
             top: 0;
             z-index: 100;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            background: rgba(7, 10, 20, 0.85);
-            border-bottom: 1px solid var(--border-card);
-            padding: 0.9rem 2.5rem;
+            background: rgba(8, 13, 10, 0.85);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 1.1rem 3.5rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -65,939 +63,905 @@
         .brand-cluster {
             display: flex;
             align-items: center;
-            gap: 0.85rem;
+            gap: 0.75rem;
             text-decoration: none;
             color: inherit;
         }
 
-        .brand-symbol {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--accent-indigo), var(--accent-cyan));
+        .brand-icon-shield {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid var(--border-green);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.45rem;
-            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+            font-size: 1.15rem;
         }
 
-        .brand-text h1 {
-            font-size: 1.2rem;
+        .brand-title {
+            font-size: 1.15rem;
             font-weight: 800;
             letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #ffffff 40%, #cbd5e1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #ffffff;
         }
 
-        .brand-text span {
-            font-size: 0.725rem;
-            color: var(--text-muted);
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
+        .brand-title span {
+            color: var(--brand-green);
         }
 
         .nav-links {
             display: flex;
             align-items: center;
             gap: 1.5rem;
-            font-size: 0.875rem;
-            font-weight: 700;
         }
 
         .nav-links a {
             color: var(--text-secondary);
             text-decoration: none;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.4rem 0.8rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: color 0.2s;
+            padding: 0.4rem 0.6rem;
             border-radius: 8px;
         }
 
         .nav-links a:hover {
             color: #ffffff;
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.05);
         }
 
-        .live-status-pill {
+        .status-pill {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.45rem;
             padding: 0.35rem 0.85rem;
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid rgba(16, 185, 129, 0.35);
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.3);
             border-radius: 9999px;
             font-size: 0.75rem;
-            font-weight: 800;
-            color: #34d399;
+            font-weight: 700;
+            color: #86efac;
             font-family: 'JetBrains Mono', monospace;
             text-transform: uppercase;
         }
 
         .pulse-dot {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
-            background: var(--accent-emerald);
-            box-shadow: 0 0 10px var(--accent-emerald);
-            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            background: var(--brand-green);
+            box-shadow: 0 0 10px var(--brand-green);
+            animation: pulse-glow 2s infinite ease-in-out;
         }
 
-        @keyframes pulse-ring {
+        @keyframes pulse-glow {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(1.3); }
+            50% { opacity: 0.4; transform: scale(1.3); }
         }
 
         /* Hero Section */
-        .hero {
-            position: relative;
-            z-index: 1;
-            padding: 5rem 2rem 3rem;
-            text-align: center;
-            max-width: 1050px;
+        .hero-container {
+            max-width: 1300px;
             margin: 0 auto;
+            padding: 4.5rem 3.5rem 4rem;
+            display: grid;
+            grid-template-columns: 1.15fr 1fr;
+            gap: 3.5rem;
+            align-items: center;
         }
 
-        .hero-badge {
+        /* Left Hero Content */
+        .hero-left {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .badge-capsule {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.4rem 1.15rem;
-            background: rgba(99, 102, 241, 0.12);
-            border: 1px solid rgba(99, 102, 241, 0.3);
+            gap: 0.55rem;
+            padding: 0.45rem 1.1rem;
+            background: rgba(18, 30, 23, 0.8);
+            border: 1px solid rgba(34, 197, 94, 0.35);
             border-radius: 9999px;
-            color: #a5b4fc;
-            font-size: 0.8rem;
-            font-weight: 800;
-            letter-spacing: 0.04em;
+            color: #86efac;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
             text-transform: uppercase;
-            margin-bottom: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 2rem;
         }
 
-        .hero h2 {
-            font-size: 3.25rem;
+        .hero-heading {
+            font-size: 3.85rem;
             font-weight: 800;
+            line-height: 1.08;
             letter-spacing: -0.035em;
-            line-height: 1.15;
-            margin-bottom: 1.25rem;
-            background: linear-gradient(135deg, #ffffff 20%, #e2e8f0 60%, #94a3b8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.75rem;
         }
 
-        .hero p.lead {
-            font-size: 1.15rem;
-            color: var(--text-secondary);
-            max-width: 780px;
-            margin: 0 auto 2.5rem;
+        .hero-heading .line-white {
+            color: #ffffff;
+            display: block;
+        }
+
+        .hero-heading .line-mint {
+            color: var(--brand-mint);
+            display: block;
+        }
+
+        .hero-subtext {
+            font-size: 1.125rem;
             line-height: 1.65;
-            font-weight: 400;
+            color: var(--text-secondary);
+            max-width: 540px;
+            margin-bottom: 2.75rem;
         }
 
-        /* Hero Call to Action Buttons */
-        .cta-group {
+        .cta-row {
             display: flex;
-            flex-wrap: wrap;
             align-items: center;
-            justify-content: center;
             gap: 1.15rem;
-            margin-bottom: 3.5rem;
+            flex-wrap: wrap;
         }
 
-        .btn {
+        .btn-coral {
             display: inline-flex;
             align-items: center;
             gap: 0.6rem;
-            padding: 0.85rem 1.75rem;
+            background: var(--brand-coral);
+            color: #ffffff;
+            padding: 0.95rem 1.85rem;
+            border-radius: 9999px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            box-shadow: 0 6px 24px rgba(255, 84, 54, 0.35);
+        }
+
+        .btn-coral:hover {
+            background: var(--brand-coral-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 84, 54, 0.5);
+        }
+
+        .btn-glass {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(22, 34, 27, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            padding: 0.95rem 1.85rem;
+            border-radius: 9999px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .btn-glass:hover {
+            background: rgba(32, 50, 40, 0.95);
+            border-color: rgba(34, 197, 94, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Right Hero Graphic / Dispatch Preview Card */
+        .dispatch-preview-card {
+            background: #0d1712;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 28px;
+            padding: 1.5rem;
+            position: relative;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+        }
+
+        .preview-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .preview-title .tiny-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #94a3b8;
+        }
+
+        .district-badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.725rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        /* Tactical GIS Canvas Box */
+        .tactical-canvas {
+            position: relative;
+            width: 100%;
+            height: 310px;
+            border-radius: 20px;
+            background: 
+                radial-gradient(ellipse at 40% 60%, rgba(20, 36, 28, 0.9) 0%, rgba(8, 14, 10, 0.98) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 1.15rem;
+        }
+
+        /* Background Ambulance Watermark Artwork */
+        .canvas-bg-art {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.45;
+            background-image: 
+                radial-gradient(circle at 60% 50%, rgba(255, 84, 54, 0.12), transparent 50%),
+                radial-gradient(circle at 30% 40%, rgba(34, 197, 94, 0.1), transparent 50%);
+            pointer-events: none;
+        }
+
+        /* SVG Route Graphic */
+        .route-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .route-dashed-line {
+            stroke: #86efac;
+            stroke-width: 3.5;
+            stroke-dasharray: 8 6;
+            fill: none;
+            stroke-linecap: round;
+            animation: dash-flow 25s linear infinite;
+        }
+
+        @keyframes dash-flow {
+            to { stroke-dashoffset: -500; }
+        }
+
+        .grid-curve {
+            stroke: rgba(255, 255, 255, 0.06);
+            stroke-width: 1.25;
+            fill: none;
+        }
+
+        /* Waypoint Markers on Canvas */
+        .waypoint-node {
+            position: absolute;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+        }
+
+        .start-node {
+            bottom: 85px;
+            left: 28%;
+            width: 44px;
+            height: 44px;
+            background: var(--brand-coral);
             border-radius: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            font-size: 1.25rem;
+            animation: pulse-node 2.2s infinite;
+        }
+
+        .end-node {
+            top: 45px;
+            right: 18%;
+            width: 42px;
+            height: 42px;
+            background: #dcfce7;
+            color: #14532d;
+            border-radius: 50%;
+            border: 2px solid #86efac;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes pulse-node {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 84, 54, 0.6); }
+            50% { transform: scale(1.06); box-shadow: 0 0 0 12px rgba(255, 84, 54, 0); }
+        }
+
+        /* Bottom Overlay Cards */
+        .preview-bottom-deck {
+            position: relative;
+            z-index: 20;
+            display: grid;
+            grid-template-columns: 1.45fr 1fr;
+            gap: 0.85rem;
+        }
+
+        .unit-assigned-card {
+            background: rgba(14, 22, 17, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 18px;
+            padding: 1rem 1.15rem;
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .card-sub-label {
+            font-size: 0.65rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 0.35rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .badge-enroute {
+            background: rgba(34, 197, 94, 0.15);
+            color: #86efac;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            padding: 0.15rem 0.55rem;
+            border-radius: 6px;
+            font-size: 0.625rem;
+            font-weight: 800;
+        }
+
+        .unit-name-text {
             font-size: 0.95rem;
             font-weight: 800;
-            text-decoration: none;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-            cursor: pointer;
-            border: 1px solid transparent;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-indigo) 0%, #4338ca 100%);
             color: #ffffff;
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 28px rgba(99, 102, 241, 0.6);
+        .unit-name-text span {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.85rem;
         }
 
-        .btn-emerald {
-            background: linear-gradient(135deg, var(--accent-emerald) 0%, #047857 100%);
-            color: #ffffff;
-            box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35);
-        }
-
-        .btn-emerald:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
-        }
-
-        .btn-secondary {
-            background: var(--bg-card);
-            border: 1px solid var(--border-card);
-            color: var(--text-primary);
-            backdrop-filter: blur(12px);
-        }
-
-        .btn-secondary:hover {
-            background: var(--bg-card-hover);
-            border-color: rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
-        }
-
-        /* Metric Highlights Ribbon */
-        .metrics-ribbon {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.25rem;
-            margin-bottom: 4rem;
-        }
-
-        .metric-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-card);
+        /* Red Countdown Highlight Box */
+        .eta-highlight-card {
+            background: var(--brand-coral);
             border-radius: 18px;
-            padding: 1.35rem 1.5rem;
-            backdrop-filter: blur(16px);
-            text-align: left;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 1rem 1.15rem;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 8px 24px rgba(255, 84, 54, 0.3);
         }
 
-        .metric-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            background: var(--metric-accent, var(--accent-indigo));
+        .clock-icon-bubble {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
         }
 
-        .metric-val {
-            font-size: 1.9rem;
+        .eta-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .eta-label {
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            opacity: 0.9;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .eta-timer {
+            font-size: 1.45rem;
             font-weight: 800;
             font-family: 'JetBrains Mono', monospace;
-            color: var(--text-primary);
-            margin-bottom: 0.25rem;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
         }
 
-        .metric-label {
-            font-size: 0.775rem;
-            color: var(--text-muted);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-        }
-
-        /* Main Workspace Container */
-        main.container {
-            position: relative;
-            z-index: 1;
-            max-width: 1240px;
+        /* 3 Clean Operating Portals Section */
+        .portals-section {
+            max-width: 1300px;
             margin: 0 auto;
-            padding: 0 2rem 4rem;
+            padding: 2rem 3.5rem 4.5rem;
         }
 
-        .section-header {
+        .section-header-clean {
+            margin-bottom: 2rem;
             display: flex;
             align-items: flex-end;
             justify-content: space-between;
-            margin-bottom: 2rem;
-            padding-bottom: 0.85rem;
-            border-bottom: 1px solid var(--border-card);
         }
 
-        .section-title {
+        .section-header-clean h3 {
             font-size: 1.5rem;
             font-weight: 800;
             letter-spacing: -0.02em;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
         }
 
-        .section-desc {
-            font-size: 0.875rem;
+        .section-header-clean p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        .cards-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .portal-item-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 24px;
+            padding: 2.15rem 1.85rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .portal-item-card:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(34, 197, 94, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 18px 40px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        .portal-top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .portal-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .arrow-bubble {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .portal-item-card:hover .arrow-bubble {
+            background: #ffffff;
+            color: #000000;
+            transform: translateX(3px);
+        }
+
+        .portal-item-card h4 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 0.65rem;
+            letter-spacing: -0.01em;
+        }
+
+        .portal-item-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1.75rem;
+        }
+
+        .portal-badge-strip {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
             color: var(--text-muted);
         }
 
-        /* Portal Cards 3-Column Grid */
-        .portal-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.75rem;
-            margin-bottom: 3.5rem;
+        .tag-pill {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
         }
 
-        @media (max-width: 950px) {
-            .portal-grid {
-                grid-template-columns: 1fr;
-            }
+        /* 62-Page SRS Specification Banner */
+        .srs-banner {
+            max-width: 1300px;
+            margin: 0 auto 5rem;
+            padding: 0 3.5rem;
         }
 
-        .portal-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-card);
-            border-radius: 22px;
-            padding: 2.25rem 2rem;
-            backdrop-filter: blur(20px);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            text-decoration: none;
-            color: inherit;
+        .srs-banner-box {
+            background: linear-gradient(135deg, rgba(20, 36, 28, 0.85) 0%, rgba(13, 23, 18, 0.95) 100%);
+            border: 1px solid var(--border-green);
+            border-radius: 24px;
+            padding: 2.25rem 2.5rem;
             display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.5);
         }
 
-        .portal-card:hover {
-            transform: translateY(-6px);
-            background: var(--bg-card-hover);
-            border-color: var(--card-accent, var(--accent-indigo));
-            box-shadow: 0 20px 45px -10px var(--card-glow, rgba(99, 102, 241, 0.35));
+        .srs-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
         }
 
-        .portal-icon-box {
+        .srs-doc-icon {
             width: 58px;
             height: 58px;
             border-radius: 16px;
-            background: var(--icon-bg, rgba(99, 102, 241, 0.15));
-            color: var(--card-accent, var(--accent-indigo));
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid var(--border-green);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.85rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            flex-shrink: 0;
         }
 
-        .portal-card h3 {
-            font-size: 1.35rem;
+        .srs-text h4 {
+            font-size: 1.3rem;
             font-weight: 800;
-            letter-spacing: -0.01em;
-            margin-bottom: 0.65rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .srs-text p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .srs-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        /* Minimal Footer */
+        footer.site-footer {
+            border-top: 1px solid var(--border-subtle);
+            padding: 2.25rem 3.5rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
-        }
-
-        .portal-card h3 span.arrow {
-            font-size: 1.25rem;
-            transition: transform 0.2s;
-            color: var(--card-accent, var(--accent-indigo));
-        }
-
-        .portal-card:hover h3 span.arrow {
-            transform: translateX(4px);
-        }
-
-        .portal-card p {
-            color: var(--text-secondary);
-            font-size: 0.925rem;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-            flex: 1;
-        }
-
-        .feature-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.45rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .f-tag {
-            font-size: 0.725rem;
-            font-weight: 700;
-            padding: 0.25rem 0.65rem;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 8px;
-            color: var(--text-secondary);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .portal-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            padding-top: 1.15rem;
+            font-size: 0.825rem;
             color: var(--text-muted);
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 600;
         }
 
-        .badge-live {
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.725rem;
-            font-weight: 800;
-            background: rgba(16, 185, 129, 0.15);
-            color: #34d399;
-            border: 1px solid rgba(16, 185, 129, 0.35);
-        }
+        /* Mobile / Tablet Responsive */
+        @media (max-width: 1024px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                padding: 3rem 1.75rem 2.5rem;
+                gap: 2.5rem;
+            }
 
-        /* Cryptographic Audit Verification Box */
-        .interactive-panel {
-            background: var(--bg-card);
-            border: 1px solid var(--border-card);
-            border-radius: 22px;
-            padding: 2.25rem;
-            backdrop-filter: blur(20px);
-            margin-bottom: 3.5rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .panel-top {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1.25rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .terminal-box {
-            background: #050811;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
-            padding: 1.25rem 1.5rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            color: #a5b4fc;
-            overflow-x: auto;
-            min-height: 85px;
-            display: flex;
-            align-items: center;
-        }
-
-        /* Microservices Mesh Status Strip */
-        .mesh-bar {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-card);
-            border-radius: 20px;
-            padding: 1.5rem 2rem;
-            margin-bottom: 3.5rem;
-        }
-
-        .mesh-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1.25rem;
-        }
-
-        .mesh-chips {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 0.75rem;
-        }
-
-        .mesh-chip {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 10px;
-            padding: 0.65rem 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.775rem;
-            font-weight: 600;
-        }
-
-        .mesh-chip .chip-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: var(--accent-emerald);
-            box-shadow: 0 0 6px var(--accent-emerald);
-        }
-
-        /* Clean Footer */
-        footer {
-            border-top: 1px solid var(--border-card);
-            padding: 3rem 2rem;
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.875rem;
-            background: var(--bg-surface);
-        }
-
-        footer a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        footer a:hover {
-            color: var(--accent-indigo);
-        }
-
-        /* Comprehensive Mobile Responsiveness for Phone Screens */
-        @media (max-width: 900px) {
             header.site-nav {
-                padding: 0.75rem 1rem;
+                padding: 1rem 1.5rem;
+            }
+
+            .portals-section {
+                padding: 1.5rem 1.5rem 3.5rem;
+            }
+
+            .cards-row {
+                grid-template-columns: 1fr;
+            }
+
+            .srs-banner {
+                padding: 0 1.5rem;
+            }
+
+            .srs-banner-box {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 0.65rem;
+                padding: 1.75rem;
             }
 
-            .brand-cluster {
+            .srs-actions {
                 width: 100%;
-            }
-
-            .brand-text h1 {
-                font-size: 1.05rem;
-            }
-
-            .nav-links {
-                width: 100%;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: none;
-                gap: 0.5rem;
-                padding-bottom: 3px;
-                flex-wrap: nowrap;
-            }
-
-            .nav-links::-webkit-scrollbar {
-                display: none;
-            }
-
-            .nav-links a {
-                padding: 0.35rem 0.65rem;
-                font-size: 0.75rem;
-                white-space: nowrap;
-                flex-shrink: 0;
-            }
-
-            .live-status-pill {
-                padding: 0.3rem 0.65rem;
-                font-size: 0.68rem;
-                white-space: nowrap;
-                flex-shrink: 0;
-            }
-
-            .hero {
-                padding: 2.5rem 1rem 1.5rem;
-            }
-
-            .hero h2 {
-                font-size: 1.85rem !important;
-                line-height: 1.25;
-            }
-
-            .hero p.lead {
-                font-size: 0.95rem;
-                line-height: 1.5;
-                margin-bottom: 1.75rem;
-            }
-
-            .cta-group {
                 flex-direction: column;
-                gap: 0.65rem;
-                width: 100%;
-                margin-bottom: 2rem;
             }
 
-            .btn {
+            .srs-actions a {
                 width: 100%;
                 justify-content: center;
-                padding: 0.75rem 1rem;
-                font-size: 0.88rem;
             }
 
-            .metrics-ribbon {
-                grid-template-columns: 1fr 1fr;
-                gap: 0.65rem;
-                margin-bottom: 2rem;
-            }
-
-            .metric-card {
-                padding: 0.85rem 1rem;
-                border-radius: 14px;
-            }
-
-            .metric-val {
-                font-size: 1.35rem;
-            }
-
-            .metric-label {
-                font-size: 0.65rem;
-            }
-
-            main.container {
-                padding: 0 0.85rem 2rem;
-            }
-
-            .section-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.35rem;
-                margin-bottom: 1.25rem;
-            }
-
-            .section-title {
-                font-size: 1.2rem;
-            }
-
-            .portal-card {
-                padding: 1.25rem;
-                border-radius: 16px;
-            }
-
-            .interactive-panel {
-                padding: 1.25rem;
-                border-radius: 16px;
-            }
-
-            .mesh-bar {
-                padding: 1.15rem;
-                border-radius: 16px;
-            }
-
-            .mesh-chips {
-                grid-template-columns: repeat(2, 1fr);
+            .hero-heading {
+                font-size: 2.75rem;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Top Site Navigation Header -->
+    <!-- Top Clean Navigation Bar -->
     <header class="site-nav">
         <a href="./" class="brand-cluster">
-            <div class="brand-symbol">🚑</div>
-            <div class="brand-text">
-                <h1>H8 EMS PLATFORM</h1>
-                <span>Capability-Aware Dispatch & Fleet Telemetry</span>
-            </div>
+            <div class="brand-icon-shield">🚑</div>
+            <div class="brand-title">H8 <span>EMS</span></div>
         </a>
 
         <div class="nav-links">
-            <a href="dispatcher/">🗺️ Tactical Dispatcher</a>
-            <a href="crew/">🚑 Crew Mobile</a>
-            <a href="ed/">🏥 Hospital ED</a>
-            <a href="docs/">📄 62-Page SRS Dossier</a>
-            <a href="#audit-section">🛡️ Audit Ledger</a>
-            <div class="live-status-pill">
-                <span class="pulse-dot"></span>
-                <span>PLATFORM ONLINE</span>
-            </div>
+            <a href="dispatcher/">Dispatcher</a>
+            <a href="crew/">Crew PWA</a>
+            <a href="ed/">Hospital ED</a>
+            <a href="docs/">62-Page SRS</a>
+        </div>
+
+        <div class="status-pill">
+            <span class="pulse-dot"></span>
+            <span>SYSTEM ONLINE</span>
         </div>
     </header>
 
-    <!-- Clean Executive Hero Section -->
-    <section class="hero">
-        <div class="hero-badge">
-            <span class="pulse-dot"></span>
-            Operational in Jaipur Metropolitan Sector
-        </div>
-        <h2>Capability-Aware Emergency Ambulance Command</h2>
-        <p class="lead">
-            Eliminating clinical mismatches and hospital offload ramping through real-time multi-factor algorithmic dispatch, live device GPS streaming, and cryptographic SHA-256 legal audit integrity.
-        </p>
+    <!-- Main Hero Container -->
+    <main>
+        <section class="hero-container">
 
-        <!-- Primary Action Launchers -->
-        <div class="cta-group">
-            <a href="dispatcher/" class="btn btn-primary" id="btn-hero-dispatcher">
-                <span>🗺️</span> Launch Dispatcher Center
-            </a>
-            <a href="crew/" class="btn btn-emerald" id="btn-hero-crew">
-                <span>🚑</span> Paramedic Mobile PWA
-            </a>
-            <a href="ed/" class="btn btn-secondary" id="btn-hero-ed">
-                <span>🏥</span> Hospital ED Command
-            </a>
-            <a href="docs/" class="btn btn-secondary" id="btn-hero-docs" style="background: rgba(99, 102, 241, 0.2); border-color: rgba(99, 102, 241, 0.5); color: #c7d2fe;">
-                <span>📄</span> Download 62-Page SRS (PDF)
-            </a>
-            <button class="btn btn-secondary" onclick="verifyHashChain()">
-                <span>🛡️</span> Verify Audit Chain
-            </button>
-        </div>
+            <!-- Hero Left: Typography & CTAs Matching Reference Image -->
+            <div class="hero-left">
+                <div class="badge-capsule">
+                    <span>🛡️</span>
+                    <span>CITYWIDE EMERGENCY ORCHESTRATION</span>
+                </div>
 
-        <!-- Live Platform Telemetry Metric Counters -->
-        <div class="metrics-ribbon">
-            <div class="metric-card" style="--metric-accent: var(--accent-emerald);">
-                <div class="metric-val">14 Units</div>
-                <div class="metric-label">Active Jaipur Fleet</div>
+                <h1 class="hero-heading">
+                    <span class="line-white">Every second.</span>
+                    <span class="line-mint">One connected</span>
+                    <span class="line-white">response.</span>
+                </h1>
+
+                <p class="hero-subtext">
+                    Coordinate dispatchers, ambulance crews, traffic systems, and hospitals in one live platform—from the first call to safe handover.
+                </p>
+
+                <div class="cta-row">
+                    <a href="dispatcher/" class="btn-coral">
+                        <span>See H8 EMS in action</span>
+                        <span>&rarr;</span>
+                    </a>
+                    <a href="crew/" class="btn-glass">
+                        <span>Open Paramedic Cockpit</span>
+                    </a>
+                </div>
             </div>
-            <div class="metric-card" style="--metric-accent: var(--accent-cyan);">
-                <div class="metric-val">&lt; 10 ms</div>
-                <div class="metric-label">Scorer Decision Latency</div>
-            </div>
-            <div class="metric-card" style="--metric-accent: var(--accent-indigo);">
-                <div class="metric-val">100.0%</div>
-                <div class="metric-label">Citywide MEXCLP Coverage</div>
-            </div>
-            <div class="metric-card" style="--metric-accent: var(--accent-amber);">
-                <div class="metric-val">SHA-256</div>
-                <div class="metric-label">Merkle Audit Immutability</div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Main Content Container -->
-    <main class="container">
-
-        <!-- 3 Core Operating Boards Grid -->
-        <div class="section-header">
-            <div>
-                <div class="section-title">🚀 Core Tactical Operating Portals</div>
-                <div class="section-desc">Unified control interfaces for dispatchers, paramedics, and hospital trauma teams</div>
-            </div>
-        </div>
-
-        <div class="portal-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 3.5rem;">
-
-            <!-- Portal 1: Dispatcher Center -->
-            <a href="dispatcher/" class="portal-card" style="--card-accent: #3b82f6; --icon-bg: rgba(59, 130, 246, 0.15); --card-glow: rgba(59, 130, 246, 0.35);" id="portal-dispatcher">
-                <div class="portal-icon-box">🗺️</div>
-                <h3>Dispatcher Tactical Center <span class="arrow">&rarr;</span></h3>
-                <p>Interactive Leaflet tactical map tracking all 14 ambulances with real-time GPS coordinates, multi-factor AI candidate scoring, and atomic zero-race reservation.</p>
-                <div class="feature-tags">
-                    <span class="f-tag">Leaflet GIS</span>
-                    <span class="f-tag">Turn-by-Turn ETA</span>
-                    <span class="f-tag">Atomic Lock</span>
-                    <span class="f-tag">Redeployment</span>
+            <!-- Hero Right: Dispatch Preview Card Matching Reference Image -->
+            <div class="dispatch-preview-card">
+                <div class="preview-header">
+                    <div class="preview-title">
+                        <span class="tiny-dot"></span>
+                        <span>Dispatch preview</span>
+                    </div>
+                    <div class="district-badge">Central District &bull; Jaipur</div>
                 </div>
-                <div class="portal-footer">
-                    <span>Tactical GIS Dashboard</span>
-                    <span class="badge-live">LIVE COMMAND</span>
-                </div>
-            </a>
 
-            <!-- Portal 2: Crew Mobile PWA -->
-            <a href="crew/" class="portal-card" style="--card-accent: #10b981; --icon-bg: rgba(16, 185, 129, 0.15); --card-glow: rgba(16, 185, 129, 0.35);" id="portal-crew">
-                <div class="portal-icon-box">🚑</div>
-                <h3>Paramedic Crew Mobile PWA <span class="arrow">&rarr;</span></h3>
-                <p>Touch-optimized tactical cockpit for ambulance crews. Stream physical device GPS coordinates, progress through mission milestones, and broadcast 1-tap pre-arrival trauma alerts.</p>
-                <div class="feature-tags">
-                    <span class="f-tag">Live GPS Stream</span>
-                    <span class="f-tag">Mission Stepper</span>
-                    <span class="f-tag">Pre-Arrival Alert</span>
-                </div>
-                <div class="portal-footer">
-                    <span>Paramedic Device PWA</span>
-                    <span class="badge-live">ACTIVE TELEMETRY</span>
-                </div>
-            </a>
+                <!-- Tactical Canvas with Curved Trajectory and Nodes -->
+                <div class="tactical-canvas">
+                    <div class="canvas-bg-art"></div>
 
-            <!-- Portal 3: Hospital ED Board -->
-            <a href="ed/" class="portal-card" style="--card-accent: #f59e0b; --icon-bg: rgba(245, 158, 11, 0.15); --card-glow: rgba(245, 158, 11, 0.35);" id="portal-ed">
-                <div class="portal-icon-box">🏥</div>
-                <h3>Hospital ED Command Hub <span class="arrow">&rarr;</span></h3>
-                <p>Trauma resuscitation bay matrix and inbound alert stream. Manage emergency bed & ventilator capacity with 10-minute TTL and control diversion status to prevent ambulance ramping.</p>
-                <div class="feature-tags">
-                    <span class="f-tag">Resus Bay Matrix</span>
-                    <span class="f-tag">AlertHub SSE</span>
-                    <span class="f-tag">Diversion Deck</span>
-                </div>
-                <div class="portal-footer">
-                    <span>Emergency Department Board</span>
-                    <span class="badge-live">BAY RECEPTION</span>
-                </div>
-            </a>
+                    <!-- SVG Route Trajectory -->
+                    <svg class="route-svg" viewBox="0 0 500 310" preserveAspectRatio="none">
+                        <!-- Curved Decorative Background Grid Roads -->
+                        <path class="grid-curve" d="M -20,180 Q 150,90 320,150 T 520,70" />
+                        <path class="grid-curve" d="M 50,330 Q 180,180 300,280 T 480,210" />
+                        <path class="grid-curve" d="M 120,-20 Q 180,140 260,330" />
+                        <path class="grid-curve" d="M 380,-20 Q 360,160 410,330" />
 
-            <!-- Portal 4: 62-Page SRS Dossier & Download Center -->
-            <a href="docs/" class="portal-card" style="--card-accent: #8b5cf6; --icon-bg: rgba(139, 92, 246, 0.15); --card-glow: rgba(139, 92, 246, 0.35);" id="portal-docs">
-                <div class="portal-icon-box">📄</div>
-                <h3>62-Page SRS Dossier & Specs <span class="arrow">&rarr;</span></h3>
-                <p>Official IEEE 830 Software Requirements Specification, complete with 14 UML architectural diagrams, system blueprints, and direct PDF download center.</p>
-                <div class="feature-tags">
-                    <span class="f-tag">62 Pages PDF</span>
-                    <span class="f-tag">14 UML Diagrams</span>
-                    <span class="f-tag">IEEE 830</span>
-                    <span class="f-tag">Java 21 Code</span>
-                </div>
-                <div class="portal-footer">
-                    <span>Engineering Dossier</span>
-                    <span class="badge-live" style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd; border-color: rgba(139, 92, 246, 0.4);">DOWNLOAD CENTER</span>
-                </div>
-            </a>
+                        <!-- Active Route Trajectory Connecting Start to Hospital -->
+                        <path class="route-dashed-line" d="M 155,195 Q 260,240 330,120 T 410,65" />
+                    </svg>
 
-        </div>
+                    <!-- Start Waypoint: Heartbeat Node (Coral) -->
+                    <div class="waypoint-node start-node">
+                        <span>💓</span>
+                    </div>
 
-        <!-- Cryptographic Audit Hash Chain Inspector -->
-        <div class="interactive-panel" id="audit-section">
-            <div class="panel-top">
-                <div>
-                    <h3 style="font-size: 1.35rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem;">
-                        <span>🛡️</span> Cryptographic Audit Ledger Verification
-                    </h3>
-                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.35rem;">
-                        Directly queries <code>audit-service</code> (:8086) to mathematically prove that every dispatch decision, score, and override is intact and untampered.
-                    </p>
-                </div>
-                <button class="btn btn-primary" onclick="verifyHashChain()" id="btn-run-audit-verify">
-                    ⚡ Verify Hash Chain Integrity
-                </button>
-            </div>
-            <div class="terminal-box" id="audit-terminal-output">
-                <span>Click "Verify Hash Chain Integrity" to audit the immutable SHA-256 dispatch ledger...</span>
-            </div>
-        </div>
+                    <!-- End Waypoint: Hospital Node (Mint Green) -->
+                    <div class="waypoint-node end-node">
+                        <span>🏥</span>
+                    </div>
 
-        <!-- Microservices Mesh Status Strip -->
-        <div class="mesh-bar">
-            <div class="mesh-header">
-                <div>
-                    <strong style="font-size: 1.05rem;">Active Microservices Mesh & Data Backbone</strong>
-                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
-                        Event-driven backbone with PostgreSQL PostGIS, Apache Kafka, Redis Geo, and Keycloak RBAC
+                    <!-- Bottom Overlay Cards Inside Tactical Canvas -->
+                    <div class="preview-bottom-deck">
+                        <!-- Unit Assigned Status Card -->
+                        <div class="unit-assigned-card">
+                            <div class="card-sub-label">
+                                <span>UNIT ASSIGNED</span>
+                                <span class="badge-enroute">EN ROUTE</span>
+                            </div>
+                            <div class="unit-name-text">
+                                Medic 12 <span>&bull; Advanced life support</span>
+                            </div>
+                        </div>
+
+                        <!-- Coral Countdown Highlight Box -->
+                        <div class="eta-highlight-card">
+                            <div class="clock-icon-bubble">⏱️</div>
+                            <div class="eta-content">
+                                <span class="eta-label">ARRIVAL IN</span>
+                                <span class="eta-timer" id="eta-countdown-clock">06:42</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <button class="btn btn-secondary" style="padding: 0.45rem 1rem; font-size: 0.775rem;" onclick="checkAllServices()" id="btn-ping-services">
-                    🔄 Ping All Services
-                </button>
             </div>
 
-            <div class="mesh-chips">
-                <div class="mesh-chip"><span class="chip-dot"></span> Gateway :8080</div>
-                <div class="mesh-chip"><span class="chip-dot"></span> Incident :8081</div>
-                <div class="mesh-chip"><span class="chip-dot"></span> Dispatch :8082</div>
-                <div class="mesh-chip"><span class="chip-dot"></span> Routing :8083</div>
-                <div class="mesh-chip"><span class="chip-dot"></span> Tracking :8084</div>
-                <div class="mesh-chip"><span class="chip-dot"></span> Hospital :8085</div>
-                <div class="mesh-chip"><span class="chip-dot"></span> Audit :8086</div>
-                <div class="mesh-chip"><span class="chip-dot"></span> Redeploy :8087</div>
-                <div class="mesh-chip"><span class="chip-dot"></span> Keycloak :8180</div>
-            </div>
-        </div>
+        </section>
 
+        <!-- 3 Core Operating Portals -->
+        <section class="portals-section">
+            <div class="section-header-clean">
+                <div>
+                    <h3>Operating Command Modules</h3>
+                    <p>Live interfaces for tactical dispatchers, paramedic crews, and hospital resuscitation teams</p>
+                </div>
+            </div>
+
+            <div class="cards-row">
+                <!-- Card 1: Dispatcher Center -->
+                <a href="dispatcher/" class="portal-item-card">
+                    <div>
+                        <div class="portal-top-bar">
+                            <div class="portal-icon" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa;">🗺️</div>
+                            <div class="arrow-bubble">&rarr;</div>
+                        </div>
+                        <h4>Tactical Dispatcher Center</h4>
+                        <p>Interactive Leaflet GIS map with 14 ambulances, live GPS streaming, and autonomous multi-factor capability scoring.</p>
+                    </div>
+                    <div class="portal-badge-strip">
+                        <span class="tag-pill">GIS Map</span>
+                        <span class="tag-pill">Candidate Scorer</span>
+                    </div>
+                </a>
+
+                <!-- Card 2: Crew Mobile PWA -->
+                <a href="crew/" class="portal-item-card">
+                    <div>
+                        <div class="portal-top-bar">
+                            <div class="portal-icon" style="background: rgba(34, 197, 94, 0.15); color: #86efac;">🚑</div>
+                            <div class="arrow-bubble">&rarr;</div>
+                        </div>
+                        <h4>Paramedic Crew Mobile PWA</h4>
+                        <p>Touch-optimized mobile cockpit streaming real device GPS, mission milestone stepper, and 1-tap pre-arrival trauma alerts.</p>
+                    </div>
+                    <div class="portal-badge-strip">
+                        <span class="tag-pill">Mobile GPS</span>
+                        <span class="tag-pill">Mission Stepper</span>
+                    </div>
+                </a>
+
+                <!-- Card 3: Hospital ED Board -->
+                <a href="ed/" class="portal-item-card">
+                    <div>
+                        <div class="portal-top-bar">
+                            <div class="portal-icon" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">🏥</div>
+                            <div class="arrow-bubble">&rarr;</div>
+                        </div>
+                        <h4>Hospital ED Trauma Hub</h4>
+                        <p>Trauma resuscitation bay grid and inbound pre-arrival alerts. Controls diversion status to eliminate ambulance ramping.</p>
+                    </div>
+                    <div class="portal-badge-strip">
+                        <span class="tag-pill">Resus Bays</span>
+                        <span class="tag-pill">Pre-Alerts</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- 62-Page SRS Specification Banner -->
+        <section class="srs-banner">
+            <div class="srs-banner-box">
+                <div class="srs-left">
+                    <div class="srs-doc-icon">📄</div>
+                    <div class="srs-text">
+                        <h4>62-Page System Specification & Dossier</h4>
+                        <p>Official IEEE 830 Software Requirements Specification, complete with 14 UML architectural diagrams, system blueprints, and direct PDF download.</p>
+                    </div>
+                </div>
+                <div class="srs-actions">
+                    <a href="docs/H8_EMS_SOFTWARE_REQUIREMENTS_SPECIFICATION.pdf" class="btn-coral" download>
+                        <span>Download PDF (3.44 MB)</span>
+                    </a>
+                    <a href="docs/" class="btn-glass">
+                        <span>Browse Docs Hub &rarr;</span>
+                    </a>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <!-- Clean Footer -->
-    <footer>
-        <p style="margin-bottom: 0.5rem; font-weight: 700; color: var(--text-primary);">
-            H8 Autonomous Capability-Aware Emergency Medical Dispatch Platform
-        </p>
-        <p style="font-size: 0.8rem; color: var(--text-muted);">
-            Pure Java 21 Algorithmic Engine &bull; Spring Boot 3 &bull; PostGIS &bull; Apache Kafka &bull; Redis 7 &bull; Keycloak 25
-        </p>
+    <!-- Clean Minimal Footer -->
+    <footer class="site-footer">
+        <div>
+            &copy; 2026 H8 Autonomous Emergency Medical Dispatch Platform &bull; Pure Java 21 &bull; PostGIS &bull; Kafka &bull; Redis
+        </div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.775rem;">
+            Jaipur Metropolitan Sector
+        </div>
     </footer>
 
-    <!-- Interactive Verification Script -->
+    <!-- Demo Bridge Engine & Live Countdown Timer -->
     <script src="demo-bridge.js"></script>
     <script>
-        const API_BASE = ''; // Same-origin proxy
+        // Live Dynamic Arrival Timer (Counts down realistically)
+        let totalSeconds = 6 * 60 + 42; // 06:42
+        const timerEl = document.getElementById('eta-countdown-clock');
 
-        async function verifyHashChain() {
-            const output = document.getElementById('audit-terminal-output');
-            output.innerHTML = '<span style="color: #60a5fa;">⏳ Querying audit-service and verifying SHA-256 hash-chain signatures...</span>';
-
-            try {
-                const response = await fetch(`${API_BASE}/audit/verify`);
-                if (response.ok) {
-                    const data = await response.json();
-                    const statusColor = data.valid ? '#34d399' : '#f43f5e';
-                    const statusIcon = data.valid ? '✅' : '❌';
-                    output.innerHTML = `
-                        <div style="color: ${statusColor}; line-height: 1.6;">
-                            <strong>${statusIcon} HASH-CHAIN VERIFICATION ${data.valid ? 'PASSED' : 'FAILED'}</strong><br>
-                            &bull; Total Ledger Entries: <strong>${data.totalEntries}</strong> verified SHA-256 blocks<br>
-                            &bull; ${data.details || 'All block signatures mathematically verified.'}<br>
-                            &bull; Verified at: ${new Date(data.verifiedAt).toLocaleTimeString()}
-                        </div>
-                    `;
-                    return;
-                }
-            } catch (err) {
-                console.warn('Audit verify notice:', err);
+        function updateCountdown() {
+            if (totalSeconds > 0) {
+                totalSeconds--;
+                const mins = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+                const secs = String(totalSeconds % 60).padStart(2, '0');
+                if (timerEl) timerEl.innerText = `${mins}:${secs}`;
+            } else {
+                totalSeconds = 8 * 60 + 15; // Reset loop
             }
-
-            output.innerHTML = `
-                <div style="color: #f59e0b; line-height: 1.6;">
-                    <strong>⚠️ AUDIT SERVICE OFFLINE</strong><br>
-                    &bull; Could not reach audit-service. Ensure backend services are running.<br>
-                    &bull; Run: <code>python server.py</code> and start Spring Boot services.
-                </div>
-            `;
         }
-
-        async function checkAllServices() {
-            const btn = document.getElementById('btn-ping-services');
-            btn.innerHTML = '⚡ Pinging...';
-            btn.disabled = true;
-
-            const services = [
-                { name: 'Gateway', path: '/actuator/health', port: ':8080' },
-                { name: 'Incident', path: '/incidents', port: ':8081', method: 'GET' },
-                { name: 'Dispatch', path: '/dispatch/units', port: ':8082' },
-                { name: 'Hospitals', path: '/hospitals', port: ':8085' },
-                { name: 'Audit', path: '/audit?limit=1', port: ':8087' },
-                { name: 'Coverage', path: '/redeployment/coverage', port: ':8086' }
-            ];
-
-            let upCount = 0;
-            const chips = document.querySelectorAll('.mesh-chip');
-
-            for (const svc of services) {
-                try {
-                    const res = await fetch(`${API_BASE}${svc.path}`, { signal: AbortSignal.timeout(3000) });
-                    if (res.ok || res.status < 500) upCount++;
-                } catch (e) { /* service down */ }
-            }
-
-            // Update chip dots based on reachability
-            chips.forEach(chip => {
-                const dot = chip.querySelector('.chip-dot');
-                if (dot) {
-                    dot.style.background = upCount > 0 ? 'var(--accent-emerald)' : 'var(--accent-rose)';
-                    dot.style.boxShadow = upCount > 0 ? '0 0 6px var(--accent-emerald)' : '0 0 6px var(--accent-rose)';
-                }
-            });
-
-            btn.innerHTML = upCount > 0 ? `✅ ${upCount}/${services.length} Services Reachable` : '❌ Backend Offline';
-            btn.disabled = false;
-            setTimeout(() => { btn.innerHTML = '🔄 Ping All Services'; }, 4000);
-        }
-
-        // Load live metrics from backend on page load
-        async function loadLiveMetrics() {
-            try {
-                const unitsRes = await fetch(`${API_BASE}/dispatch/units`);
-                if (unitsRes.ok) {
-                    const units = await unitsRes.json();
-                    const countEl = document.querySelector('.metric-card:nth-child(1) .metric-val');
-                    if (countEl && units.length > 0) {
-                        countEl.innerText = `${units.length} Units`;
-                    }
-                }
-            } catch (e) {}
-
-            try {
-                const covRes = await fetch(`${API_BASE}/redeployment/coverage`);
-                if (covRes.ok) {
-                    const data = await covRes.json();
-                    const covEl = document.querySelector('.metric-card:nth-child(3) .metric-val');
-                    if (covEl && data.coveragePercent) {
-                        covEl.innerText = data.coveragePercent;
-                    }
-                }
-            } catch (e) {}
-        }
-
-        // Auto-load metrics on page ready
-        loadLiveMetrics();
+        setInterval(updateCountdown, 1000);
     </script>
 </body>
 </html>
