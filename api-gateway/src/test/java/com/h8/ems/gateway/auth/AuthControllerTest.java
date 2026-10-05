@@ -68,4 +68,52 @@ class AuthControllerTest {
         assertThat(body).isNotNull();
         assertThat(body.get("success")).isEqualTo(true);
     }
+
+    @Test
+    @DisplayName("POST /auth/crew/login returns 200 OK for default registered ambulance AMB-01")
+    void testCrewLoginDefaultUnit() {
+        ResponseEntity<AuthResponse> response = authController.crewLogin(new AuthRequest("AMB-01", "crew123")).block();
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode().value()).isEqualTo(200);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().success()).isTrue();
+        assertThat(response.getBody().token()).isNotBlank();
+        assertThat(response.getBody().username()).isEqualTo("AMB-01");
+    }
+
+    @Test
+    @DisplayName("POST /auth/crew/login returns 401 for wrong crew passcode")
+    void testCrewLoginBadPassword() {
+        ResponseEntity<AuthResponse> response = authController.crewLogin(new AuthRequest("AMB-01", "wrong")).block();
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode().value()).isEqualTo(401);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().success()).isFalse();
+    }
+
+    @Test
+    @DisplayName("POST /auth/crew/register successfully registers new ambulance unit")
+    void testCrewRegister() {
+        Map<String, String> payload = Map.of(
+                "callSign", "AMB-15",
+                "type", "ALS",
+                "password", "secret123"
+        );
+        ResponseEntity<AuthResponse> response = authController.crewRegister(payload).block();
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode().value()).isEqualTo(200);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().success()).isTrue();
+        assertThat(response.getBody().username()).isEqualTo("AMB-15");
+    }
+
+    @Test
+    @DisplayName("POST /auth/crew/logout returns 200 OK")
+    void testCrewLogout() {
+        ResponseEntity<Map<String, Object>> response = authController.crewLogout().block();
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode().value()).isEqualTo(200);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().get("success")).isEqualTo(true);
+    }
 }

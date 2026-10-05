@@ -80,6 +80,20 @@ public class AdminAuthService {
                 List.of("AUDITOR"),
                 "AUDITOR"
         ));
+
+        // 14 Default Registered Ambulance Units (passcode: crew123)
+        for (int i = 1; i <= 14; i++) {
+            String callSign = String.format("AMB-%02d", i);
+            String un1 = String.format("amb-%02d", i);
+            String un2 = String.format("amb%02d", i);
+            String un3 = callSign.toLowerCase();
+            String type = (i == 2 || i == 4 || i == 6 || i == 8 || i == 10 || i == 12) ? "BLS" : "ALS";
+            UserRecord record = new UserRecord(callSign, "crew123", callSign + " (" + type + ") Paramedic Crew", List.of("CREW"), "CREW");
+            userStore.put(un1, record);
+            userStore.put(un2, record);
+            userStore.put(un3, record);
+            userStore.put(callSign, record);
+        }
     }
 
     public AuthResult authenticate(AuthRequest request) {
@@ -119,6 +133,61 @@ public class AdminAuthService {
                 user.displayName(),
                 user.roles(),
                 user.primaryRole(),
+                tokenService.getExpirationSeconds()
+        );
+        return AuthResult.ok(response);
+    }
+
+    public AuthResult authenticateCrew(AuthRequest request) {
+        if (request == null || request.username() == null || request.password() == null) {
+            return AuthResult.unauthorized("Call sign and passcode are required.");
+        }
+
+        String usernameKey = request.username().trim().toLowerCase().replace("-", "");
+        UserRecord user = userStore.get(usernameKey);
+        if (user == null) {
+            user = userStore.get(request.username().trim().toLowerCase());
+        }
+
+        if (user == null || !user.password().equals(request.password())) {
+            log.warn("Failed crew login attempt for call sign: {}", request.username());
+            return AuthResult.unauthorized("Invalid ambulance call sign or passcode.");
+        }
+
+        String token = tokenService.generateToken(user.username(), user.displayName(), user.roles());
+        log.info("Crew authentication successful for: {}", user.username());
+
+        AuthResponse response = AuthResponse.success(
+                token,
+                user.username(),
+                user.displayName(),
+                user.roles(),
+                user.primaryRole(),
+                tokenService.getExpirationSeconds()
+        );
+        return AuthResult.ok(response);
+    }
+
+    public AuthResult registerCrew(String callSign, String type, String password) {
+        if (callSign == null || callSign.isBlank() || password == null || password.isBlank()) {
+            return AuthResult.unauthorized("Call sign and passcode are required.");
+        }
+        String clean = callSign.trim().toUpperCase();
+        if (userStore.containsKey(clean.toLowerCase()) || userStore.containsKey(clean.toLowerCase().replace("-", ""))) {
+            return AuthResult.forbidden("Ambulance unit " + clean + " is already registered.");
+        }
+        UserRecord record = new UserRecord(clean, password, clean + " (" + type + ") Crew", List.of("CREW"), "CREW");
+        userStore.put(clean, record);
+        userStore.put(clean.toLowerCase(), record);
+        userStore.put(clean.toLowerCase().replace("-", ""), record);
+
+        String token = tokenService.generateToken(clean, record.displayName(), record.roles());
+        AuthResponse response = AuthResponse.success(
+                token,
+                clean,
+                record.displayName(),
+                record.roles(),
+                record.primaryRole(),
                 tokenService.getExpirationSeconds()
         );
         return AuthResult.ok(response);

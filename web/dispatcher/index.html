@@ -559,6 +559,16 @@
             border: 1px solid rgba(6, 182, 212, 0.4);
         }
 
+        .rb-offline {
+            background: rgba(148, 163, 184, 0.12);
+            color: #94a3b8;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+        }
+
+        .roster-card.roster-offline {
+            opacity: 0.6;
+        }
+
         /* Map Canvas */
         #map {
             width: 100%;
@@ -1203,7 +1213,11 @@
                 <p class="auth-subtitle">Restricted to Authorized Tactical Administrators &amp; Chief Dispatchers</p>
             </div>
 
-            <form id="admin-login-form" onsubmit="handleAdminLogin(event)" class="auth-form" autocomplete="off">
+            <form id="admin-login-form" onsubmit="handleAdminLogin(event)" class="auth-form" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                <!-- Hidden dummy inputs to prevent browser autofill and strong password suggestions -->
+                <input type="text" style="position:absolute;opacity:0;pointer-events:none;height:0;width:0;" tabindex="-1" aria-hidden="true">
+                <input type="password" style="position:absolute;opacity:0;pointer-events:none;height:0;width:0;" tabindex="-1" aria-hidden="true">
+
                 <div id="auth-error-banner" class="auth-error-banner" style="display: none;">
                     <span class="err-icon">⚠️</span>
                     <span id="auth-error-text">Invalid credentials or insufficient clearance.</span>
@@ -1213,7 +1227,7 @@
                     <label for="auth-username">Tactical Call ID / Username</label>
                     <div class="input-with-icon">
                         <span class="input-icon">👤</span>
-                        <input type="text" id="auth-username" required placeholder="Enter admin username" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+                        <input type="text" id="auth-username" name="tactical_call_id" required placeholder="Enter admin username" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off" data-lpignore="true" data-form-type="other" readonly onfocus="this.removeAttribute('readonly');">
                     </div>
                 </div>
 
@@ -1221,7 +1235,7 @@
                     <label for="auth-password">Security Passcode / Secret</label>
                     <div class="input-with-icon">
                         <span class="input-icon">🔑</span>
-                        <input type="password" id="auth-password" required placeholder="Enter passcode" autocomplete="new-password" spellcheck="false">
+                        <input type="password" id="auth-password" name="tactical_auth_key" required placeholder="Enter passcode" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-form-type="other" readonly onfocus="this.removeAttribute('readonly');">
                         <button type="button" class="btn-toggle-pwd" onclick="togglePasswordVisibility()" title="Show/Hide Password">👁️</button>
                     </div>
                 </div>
@@ -1758,20 +1772,20 @@
 
 
         const defaultFleet = [
-            { unitId: 'aaaaaaaa-1111-1111-1111-111111111111', callSign: 'AMB-01', lat: 26.9150, lon: 75.8100, type: 'ALS', status: 'AVAILABLE' },
-            { unitId: 'bbbbbbbb-2222-2222-2222-222222222222', callSign: 'AMB-02', lat: 26.9239, lon: 75.8267, type: 'BLS', status: 'AVAILABLE' },
-            { unitId: 'cccccccc-3333-3333-3333-333333333333', callSign: 'AMB-03', lat: 26.8988, lon: 75.8164, type: 'ALS', status: 'AVAILABLE' },
-            { unitId: 'dddddddd-4444-4444-4444-444444444444', callSign: 'AMB-04', lat: 26.9073, lon: 75.7925, type: 'BLS', status: 'AVAILABLE' },
-            { unitId: '55555555-0005-0005-0005-000000000005', callSign: 'AMB-05', lat: 26.8524, lon: 75.8054, type: 'ALS', status: 'AVAILABLE' },
-            { unitId: '66666666-0006-0006-0006-000000000006', callSign: 'AMB-06', lat: 26.8512, lon: 75.7892, type: 'BLS', status: 'AVAILABLE' },
-            { unitId: '77777777-0007-0007-0007-000000000007', callSign: 'AMB-07', lat: 26.8623, lon: 75.7584, type: 'ALS', status: 'AVAILABLE' },
-            { unitId: '88888888-0008-0008-0008-000000000008', callSign: 'AMB-08', lat: 26.9077, lon: 75.7397, type: 'BLS', status: 'AVAILABLE' },
-            { unitId: '99999999-0009-0009-0009-000000000009', callSign: 'AMB-09', lat: 26.8973, lon: 75.8260, type: 'ALS', status: 'AVAILABLE' },
-            { unitId: 'aaaaaaaa-0010-0010-0010-000000000010', callSign: 'AMB-10', lat: 26.9452, lon: 75.7337, type: 'BLS', status: 'AVAILABLE' },
-            { unitId: 'bbbbbbbb-0011-0011-0011-000000000011', callSign: 'AMB-11', lat: 26.9734, lon: 75.7766, type: 'ALS', status: 'AVAILABLE' },
-            { unitId: 'cccccccc-0012-0012-0012-000000000012', callSign: 'AMB-12', lat: 26.9050, lon: 75.7780, type: 'BLS', status: 'AVAILABLE' },
-            { unitId: 'dddddddd-0013-0013-0013-000000000013', callSign: 'AMB-13', lat: 26.8285, lon: 75.8522, type: 'ALS', status: 'AVAILABLE' },
-            { unitId: 'eeeeeeee-0014-0014-0014-000000000014', callSign: 'AMB-14', lat: 26.7788, lon: 75.8277, type: 'ALS', status: 'AVAILABLE' }
+            { unitId: 'aaaaaaaa-1111-1111-1111-111111111111', callSign: 'AMB-01', lat: 26.9150, lon: 75.8100, type: 'ALS', status: 'OFFLINE' },
+            { unitId: 'bbbbbbbb-2222-2222-2222-222222222222', callSign: 'AMB-02', lat: 26.9239, lon: 75.8267, type: 'BLS', status: 'OFFLINE' },
+            { unitId: 'cccccccc-3333-3333-3333-333333333333', callSign: 'AMB-03', lat: 26.8988, lon: 75.8164, type: 'ALS', status: 'OFFLINE' },
+            { unitId: 'dddddddd-4444-4444-4444-444444444444', callSign: 'AMB-04', lat: 26.9073, lon: 75.7925, type: 'BLS', status: 'OFFLINE' },
+            { unitId: '55555555-0005-0005-0005-000000000005', callSign: 'AMB-05', lat: 26.8524, lon: 75.8054, type: 'ALS', status: 'OFFLINE' },
+            { unitId: '66666666-0006-0006-0006-000000000006', callSign: 'AMB-06', lat: 26.8512, lon: 75.7892, type: 'BLS', status: 'OFFLINE' },
+            { unitId: '77777777-0007-0007-0007-000000000007', callSign: 'AMB-07', lat: 26.8623, lon: 75.7584, type: 'ALS', status: 'OFFLINE' },
+            { unitId: '88888888-0008-0008-0008-000000000008', callSign: 'AMB-08', lat: 26.9077, lon: 75.7397, type: 'BLS', status: 'OFFLINE' },
+            { unitId: '99999999-0009-0009-0009-000000000009', callSign: 'AMB-09', lat: 26.8973, lon: 75.8260, type: 'ALS', status: 'OFFLINE' },
+            { unitId: 'aaaaaaaa-0010-0010-0010-000000000010', callSign: 'AMB-10', lat: 26.9452, lon: 75.7337, type: 'BLS', status: 'OFFLINE' },
+            { unitId: 'bbbbbbbb-0011-0011-0011-000000000011', callSign: 'AMB-11', lat: 26.9734, lon: 75.7766, type: 'ALS', status: 'OFFLINE' },
+            { unitId: 'cccccccc-0012-0012-0012-000000000012', callSign: 'AMB-12', lat: 26.9050, lon: 75.7780, type: 'BLS', status: 'OFFLINE' },
+            { unitId: 'dddddddd-0013-0013-0013-000000000013', callSign: 'AMB-13', lat: 26.8285, lon: 75.8522, type: 'ALS', status: 'OFFLINE' },
+            { unitId: 'eeeeeeee-0014-0014-0014-000000000014', callSign: 'AMB-14', lat: 26.7788, lon: 75.8277, type: 'ALS', status: 'OFFLINE' }
         ];
 
         // Fetch Live Units from Backend
@@ -1796,24 +1810,46 @@
         function renderUnitsOnMap(units) {
             let availCount = 0;
             let busyCount = 0;
+            let offlineCount = 0;
 
             if (Array.isArray(units) && units.length > 0) {
                 units.forEach(live => {
                     const uid = live.id || live.unitId;
-                    const found = defaultFleet.find(f => f.unitId === uid);
+                    const found = defaultFleet.find(f => f.unitId === uid || f.callSign.toUpperCase() === (live.callSign || '').toUpperCase());
                     if (found) {
                         if (live.lat != null && live.lon != null) {
                             found.lat = live.lat;
                             found.lon = live.lon;
                         }
                         if (live.status) found.status = live.status;
+                        if (live.type) found.type = live.type;
+                    } else if (live.callSign) {
+                        // Dynamically registered unit from Crew PWA
+                        defaultFleet.push({
+                            unitId: uid,
+                            callSign: live.callSign,
+                            lat: live.lat,
+                            lon: live.lon,
+                            type: live.type || 'ALS',
+                            status: live.status || 'OFFLINE'
+                        });
                     }
                 });
             }
 
-
             defaultFleet.forEach(u => {
-                const status = (u.status || 'AVAILABLE').toUpperCase();
+                const status = (u.status || 'OFFLINE').toUpperCase();
+
+                // Hard Rule: If unit is OFFLINE (crew not logged in), DO NOT show on map!
+                if (status === 'OFFLINE') {
+                    offlineCount++;
+                    if (unitMarkers[u.unitId]) {
+                        map.removeLayer(unitMarkers[u.unitId]);
+                        delete unitMarkers[u.unitId];
+                    }
+                    return;
+                }
+
                 const isAvailable = (status === 'AVAILABLE');
                 if (isAvailable) availCount++; else busyCount++;
 
@@ -1877,28 +1913,46 @@
 
             let filtered = defaultFleet;
             if (currentRosterFilter === 'AVAILABLE') {
-                filtered = defaultFleet.filter(u => (u.status || 'AVAILABLE').toUpperCase() === 'AVAILABLE');
+                filtered = defaultFleet.filter(u => (u.status || 'OFFLINE').toUpperCase() === 'AVAILABLE');
             } else if (currentRosterFilter === 'BUSY') {
-                filtered = defaultFleet.filter(u => (u.status || 'AVAILABLE').toUpperCase() !== 'AVAILABLE');
+                filtered = defaultFleet.filter(u => {
+                    const st = (u.status || 'OFFLINE').toUpperCase();
+                    return st !== 'AVAILABLE' && st !== 'OFFLINE';
+                });
             }
 
-            document.getElementById('fleet-filter-count').innerText = `${filtered.length} Units`;
+            const onlineCount = defaultFleet.filter(u => (u.status || 'OFFLINE').toUpperCase() !== 'OFFLINE').length;
+            const filterCountEl = document.getElementById('fleet-filter-count');
+            if (filterCountEl) {
+                filterCountEl.innerText = `${onlineCount} Online / ${defaultFleet.length} Registered`;
+            }
 
             container.innerHTML = filtered.map(u => {
-                const st = (u.status || 'AVAILABLE').toUpperCase();
+                const st = (u.status || 'OFFLINE').toUpperCase();
+                const isOffline = (st === 'OFFLINE');
                 let badgeClass = 'rb-avail';
                 let label = 'AVAILABLE';
-                if (st === 'DISPATCHED' || st === 'EN_ROUTE_SCENE') { badgeClass = 'rb-busy'; label = 'EN-ROUTE'; }
-                else if (st === 'ON_SCENE') { badgeClass = 'rb-scene'; label = 'ON-SCENE'; }
-                else if (st === 'TRANSPORTING' || st === 'EN_ROUTE_HOSPITAL' || st === 'AT_HOSPITAL') { badgeClass = 'rb-hosp'; label = 'AT ED'; }
+                if (isOffline) {
+                    badgeClass = 'rb-offline';
+                    label = 'OFFLINE';
+                } else if (st === 'DISPATCHED' || st === 'EN_ROUTE_SCENE') { 
+                    badgeClass = 'rb-busy'; 
+                    label = 'EN-ROUTE'; 
+                } else if (st === 'ON_SCENE') { 
+                    badgeClass = 'rb-scene'; 
+                    label = 'ON-SCENE'; 
+                } else if (st === 'TRANSPORTING' || st === 'EN_ROUTE_HOSPITAL' || st === 'AT_HOSPITAL') { 
+                    badgeClass = 'rb-hosp'; 
+                    label = 'AT ED'; 
+                }
 
                 return `
-                    <div class="roster-card" onclick="panToUnit('${u.unitId}', ${u.lat}, ${u.lon})">
+                    <div class="roster-card ${isOffline ? 'roster-offline' : ''}" ${isOffline ? '' : `onclick="panToUnit('${u.unitId}', ${u.lat}, ${u.lon})"`} style="${isOffline ? 'cursor: default;' : ''}">
                         <div class="roster-left">
-                            <span style="font-size: 1.2rem;">🚑</span>
+                            <span style="font-size: 1.2rem;">${isOffline ? '💤' : '🚑'}</span>
                             <div>
                                 <div class="roster-callsign">${u.callSign} <span style="font-size: 0.7rem; color: var(--accent-cyan);">(${u.type})</span></div>
-                                <div style="font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono';">${u.lat.toFixed(4)}, ${u.lon.toFixed(4)}</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono';">${isOffline ? 'Crew Not Logged In' : `${u.lat.toFixed(4)}, ${u.lon.toFixed(4)}`}</div>
                             </div>
                         </div>
                         <span class="roster-badge ${badgeClass}">${label}</span>
@@ -2006,7 +2060,15 @@
             document.getElementById('cand-count').innerText = `${candidates.length} Scored Units`;
 
             if (!candidates || candidates.length === 0) {
-                container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 2rem 1rem;">No available units found.</div>';
+                container.innerHTML = `
+                    <div style="color: var(--text-secondary); text-align: center; padding: 2rem 1rem; border: 1px dashed rgba(255,255,255,0.12); border-radius: 12px; background: rgba(15,23,42,0.65);">
+                        <span style="font-size: 2rem; display: block; margin-bottom: 0.6rem;">🚑💤</span>
+                        <div style="color: var(--accent-amber); font-weight: 800; font-size: 0.95rem;">No On-Duty Ambulances Online</div>
+                        <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.4rem; line-height: 1.45;">
+                            All units are currently offline. Paramedic crews must sign in via the <b>Crew PWA</b> with GPS enabled to appear on the map and become available for dispatch.
+                        </p>
+                    </div>
+                `;
                 return;
             }
 

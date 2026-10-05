@@ -24,24 +24,58 @@
         }
     }
 
+    var DEFAULT_CREW_ACCOUNTS = [
+        { username: 'amb-01', callSign: 'AMB-01', password: 'crew123', unitId: 'aaaaaaaa-1111-1111-1111-111111111111', type: 'ALS', label: 'Mobile ICU', lat: 26.9150, lon: 75.8100 },
+        { username: 'amb-02', callSign: 'AMB-02', password: 'crew123', unitId: 'bbbbbbbb-2222-2222-2222-222222222222', type: 'BLS', label: 'Basic Tactical', lat: 26.9239, lon: 75.8267 },
+        { username: 'amb-03', callSign: 'AMB-03', password: 'crew123', unitId: 'cccccccc-3333-3333-3333-333333333333', type: 'ALS', label: 'Trauma Unit', lat: 26.8988, lon: 75.8164 },
+        { username: 'amb-04', callSign: 'AMB-04', password: 'crew123', unitId: 'dddddddd-4444-4444-4444-444444444444', type: 'BLS', label: 'Basic Tactical', lat: 26.9073, lon: 75.7925 },
+        { username: 'amb-05', callSign: 'AMB-05', password: 'crew123', unitId: '55555555-0005-0005-0005-000000000005', type: 'ALS', label: 'Paramedic ALS', lat: 26.8524, lon: 75.8054 },
+        { username: 'amb-06', callSign: 'AMB-06', password: 'crew123', unitId: '66666666-0006-0006-0006-000000000006', type: 'BLS', label: 'Basic Tactical', lat: 26.8512, lon: 75.7892 },
+        { username: 'amb-07', callSign: 'AMB-07', password: 'crew123', unitId: '77777777-0007-0007-0007-000000000007', type: 'ALS', label: 'Paramedic ALS', lat: 26.8623, lon: 75.7584 },
+        { username: 'amb-08', callSign: 'AMB-08', password: 'crew123', unitId: '88888888-0008-0008-0008-000000000008', type: 'BLS', label: 'Basic Tactical', lat: 26.9077, lon: 75.7397 },
+        { username: 'amb-09', callSign: 'AMB-09', password: 'crew123', unitId: '99999999-0009-0009-0009-000000000009', type: 'ALS', label: 'Paramedic ALS', lat: 26.8973, lon: 75.8260 },
+        { username: 'amb-10', callSign: 'AMB-10', password: 'crew123', unitId: 'aaaaaaaa-0010-0010-0010-000000000010', type: 'BLS', label: 'Basic Tactical', lat: 26.9452, lon: 75.7337 },
+        { username: 'amb-11', callSign: 'AMB-11', password: 'crew123', unitId: 'bbbbbbbb-0011-0011-0011-000000000011', type: 'ALS', label: 'Paramedic ALS', lat: 26.9734, lon: 75.7766 },
+        { username: 'amb-12', callSign: 'AMB-12', password: 'crew123', unitId: 'cccccccc-0012-0012-0012-000000000012', type: 'BLS', label: 'Basic Tactical', lat: 26.9050, lon: 75.7780 },
+        { username: 'amb-13', callSign: 'AMB-13', password: 'crew123', unitId: 'dddddddd-0013-0013-0013-000000000013', type: 'ALS', label: 'Paramedic ALS', lat: 26.8285, lon: 75.8522 },
+        { username: 'amb-14', callSign: 'AMB-14', password: 'crew123', unitId: 'eeeeeeee-0014-0014-0014-000000000014', type: 'ALS', label: 'Paramedic ALS', lat: 26.7788, lon: 75.8277 }
+    ];
+
+    function findCrewAccount(state, query) {
+        if (!query) return null;
+        var q = query.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+        var accounts = (state && state.crewAccounts && state.crewAccounts.length > 0) ? state.crewAccounts : DEFAULT_CREW_ACCOUNTS;
+        for (var i = 0; i < accounts.length; i++) {
+            var a = accounts[i];
+            var un = a.username.toLowerCase().replace(/[^a-z0-9]/g, '');
+            var cs = a.callSign.toLowerCase().replace(/[^a-z0-9]/g, '');
+            if (un === q || cs === q || ('amb' + q) === cs || cs === ('amb0' + q) || cs === ('amb' + q.padStart(2, '0'))) {
+                return a;
+            }
+        }
+        return null;
+    }
+
     function createDefaultState() {
         return {
+            version: 4,
             fleet: [
-                { id: 'aaaaaaaa-1111-1111-1111-111111111111', unitId: 'aaaaaaaa-1111-1111-1111-111111111111', callSign: 'AMB-01', lat: 26.9150, lon: 75.8100, type: 'ALS', status: 'AVAILABLE' },
-                { id: 'bbbbbbbb-2222-2222-2222-222222222222', unitId: 'bbbbbbbb-2222-2222-2222-222222222222', callSign: 'AMB-02', lat: 26.9239, lon: 75.8267, type: 'BLS', status: 'AVAILABLE' },
-                { id: 'cccccccc-3333-3333-3333-333333333333', unitId: 'cccccccc-3333-3333-3333-333333333333', callSign: 'AMB-03', lat: 26.8988, lon: 75.8164, type: 'ALS', status: 'AVAILABLE' },
-                { id: 'dddddddd-4444-4444-4444-444444444444', unitId: 'dddddddd-4444-4444-4444-444444444444', callSign: 'AMB-04', lat: 26.9073, lon: 75.7925, type: 'BLS', status: 'AVAILABLE' },
-                { id: '55555555-0005-0005-0005-000000000005', unitId: '55555555-0005-0005-0005-000000000005', callSign: 'AMB-05', lat: 26.8524, lon: 75.8054, type: 'ALS', status: 'AVAILABLE' },
-                { id: '66666666-0006-0006-0006-000000000006', unitId: '66666666-0006-0006-0006-000000000006', callSign: 'AMB-06', lat: 26.8512, lon: 75.7892, type: 'BLS', status: 'AVAILABLE' },
-                { id: '77777777-0007-0007-0007-000000000007', unitId: '77777777-0007-0007-0007-000000000007', callSign: 'AMB-07', lat: 26.8623, lon: 75.7584, type: 'ALS', status: 'AVAILABLE' },
-                { id: '88888888-0008-0008-0008-000000000008', unitId: '88888888-0008-0008-0008-000000000008', callSign: 'AMB-08', lat: 26.9077, lon: 75.7397, type: 'BLS', status: 'AVAILABLE' },
-                { id: '99999999-0009-0009-0009-000000000009', unitId: '99999999-0009-0009-0009-000000000009', callSign: 'AMB-09', lat: 26.8973, lon: 75.8260, type: 'ALS', status: 'AVAILABLE' },
-                { id: 'aaaaaaaa-0010-0010-0010-000000000010', unitId: 'aaaaaaaa-0010-0010-0010-000000000010', callSign: 'AMB-10', lat: 26.9452, lon: 75.7337, type: 'BLS', status: 'AVAILABLE' },
-                { id: 'bbbbbbbb-0011-0011-0011-000000000011', unitId: 'bbbbbbbb-0011-0011-0011-000000000011', callSign: 'AMB-11', lat: 26.9734, lon: 75.7766, type: 'ALS', status: 'AVAILABLE' },
-                { id: 'cccccccc-0012-0012-0012-000000000012', unitId: 'cccccccc-0012-0012-0012-000000000012', callSign: 'AMB-12', lat: 26.9050, lon: 75.7780, type: 'BLS', status: 'AVAILABLE' },
-                { id: 'dddddddd-0013-0013-0013-000000000013', unitId: 'dddddddd-0013-0013-0013-000000000013', callSign: 'AMB-13', lat: 26.8285, lon: 75.8522, type: 'ALS', status: 'AVAILABLE' },
-                { id: 'eeeeeeee-0014-0014-0014-000000000014', unitId: 'eeeeeeee-0014-0014-0014-000000000014', callSign: 'AMB-14', lat: 26.7788, lon: 75.8277, type: 'ALS', status: 'AVAILABLE' }
+                { id: 'aaaaaaaa-1111-1111-1111-111111111111', unitId: 'aaaaaaaa-1111-1111-1111-111111111111', callSign: 'AMB-01', lat: 26.9150, lon: 75.8100, type: 'ALS', status: 'OFFLINE', label: 'Mobile ICU', loggedIn: false },
+                { id: 'bbbbbbbb-2222-2222-2222-222222222222', unitId: 'bbbbbbbb-2222-2222-2222-222222222222', callSign: 'AMB-02', lat: 26.9239, lon: 75.8267, type: 'BLS', status: 'OFFLINE', label: 'Basic Tactical', loggedIn: false },
+                { id: 'cccccccc-3333-3333-3333-333333333333', unitId: 'cccccccc-3333-3333-3333-333333333333', callSign: 'AMB-03', lat: 26.8988, lon: 75.8164, type: 'ALS', status: 'OFFLINE', label: 'Trauma Unit', loggedIn: false },
+                { id: 'dddddddd-4444-4444-4444-444444444444', unitId: 'dddddddd-4444-4444-4444-444444444444', callSign: 'AMB-04', lat: 26.9073, lon: 75.7925, type: 'BLS', status: 'OFFLINE', label: 'Basic Tactical', loggedIn: false },
+                { id: '55555555-0005-0005-0005-000000000005', unitId: '55555555-0005-0005-0005-000000000005', callSign: 'AMB-05', lat: 26.8524, lon: 75.8054, type: 'ALS', status: 'OFFLINE', label: 'Paramedic ALS', loggedIn: false },
+                { id: '66666666-0006-0006-0006-000000000006', unitId: '66666666-0006-0006-0006-000000000006', callSign: 'AMB-06', lat: 26.8512, lon: 75.7892, type: 'BLS', status: 'OFFLINE', label: 'Basic Tactical', loggedIn: false },
+                { id: '77777777-0007-0007-0007-000000000007', unitId: '77777777-0007-0007-0007-000000000007', callSign: 'AMB-07', lat: 26.8623, lon: 75.7584, type: 'ALS', status: 'OFFLINE', label: 'Paramedic ALS', loggedIn: false },
+                { id: '88888888-0008-0008-0008-000000000008', unitId: '88888888-0008-0008-0008-000000000008', callSign: 'AMB-08', lat: 26.9077, lon: 75.7397, type: 'BLS', status: 'OFFLINE', label: 'Basic Tactical', loggedIn: false },
+                { id: '99999999-0009-0009-0009-000000000009', unitId: '99999999-0009-0009-0009-000000000009', callSign: 'AMB-09', lat: 26.8973, lon: 75.8260, type: 'ALS', status: 'OFFLINE', label: 'Paramedic ALS', loggedIn: false },
+                { id: 'aaaaaaaa-0010-0010-0010-000000000010', unitId: 'aaaaaaaa-0010-0010-0010-000000000010', callSign: 'AMB-10', lat: 26.9452, lon: 75.7337, type: 'BLS', status: 'OFFLINE', label: 'Basic Tactical', loggedIn: false },
+                { id: 'bbbbbbbb-0011-0011-0011-000000000011', unitId: 'bbbbbbbb-0011-0011-0011-000000000011', callSign: 'AMB-11', lat: 26.9734, lon: 75.7766, type: 'ALS', status: 'OFFLINE', label: 'Paramedic ALS', loggedIn: false },
+                { id: 'cccccccc-0012-0012-0012-000000000012', unitId: 'cccccccc-0012-0012-0012-000000000012', callSign: 'AMB-12', lat: 26.9050, lon: 75.7780, type: 'BLS', status: 'OFFLINE', label: 'Basic Tactical', loggedIn: false },
+                { id: 'dddddddd-0013-0013-0013-000000000013', unitId: 'dddddddd-0013-0013-0013-000000000013', callSign: 'AMB-13', lat: 26.8285, lon: 75.8522, type: 'ALS', status: 'OFFLINE', label: 'Paramedic ALS', loggedIn: false },
+                { id: 'eeeeeeee-0014-0014-0014-000000000014', unitId: 'eeeeeeee-0014-0014-0014-000000000014', callSign: 'AMB-14', lat: 26.7788, lon: 75.8277, type: 'ALS', status: 'OFFLINE', label: 'Paramedic ALS', loggedIn: false }
             ],
+            crewAccounts: JSON.parse(JSON.stringify(DEFAULT_CREW_ACCOUNTS)),
             hospitals: [
                 { id: 'aaaaaaaa-0001-0001-0001-000000000001', name: 'SMS Hospital & Apex Trauma Center', lat: 26.8988, lon: 75.8164, capabilities: ['Trauma', 'Cardiac', 'PCI', 'Neuro'], edBedsFree: 8, icuBedsFree: 3, ventilatorsFree: 4, diversion: false },
                 { id: 'bbbbbbbb-0002-0002-0002-000000000002', name: 'Fortis Escorts Hospital', lat: 26.8524, lon: 75.8054, capabilities: ['Cardiac', 'PCI', 'Trauma'], edBedsFree: 5, icuBedsFree: 2, ventilatorsFree: 2, diversion: false },
@@ -56,9 +90,17 @@
     function getState() {
         try {
             var raw = localStorage.getItem(STORAGE_KEY);
-            if (!raw) return createDefaultState();
+            if (!raw) {
+                var init = createDefaultState();
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(init));
+                return init;
+            }
             var s = JSON.parse(raw);
-            if (!s || !s.fleet || !s.hospitals) return createDefaultState();
+            if (!s || !s.fleet || !s.hospitals || s.version !== 4) {
+                var fresh = createDefaultState();
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(fresh));
+                return fresh;
+            }
             return s;
         } catch (e) { return createDefaultState(); }
     }
@@ -322,9 +364,194 @@
             return jsonResponse({ status: 'UP' });
         }
 
+        // GET /auth/crew/accounts
+        if (method === 'GET' && pathname === '/auth/crew/accounts') {
+            state = getState();
+            var list = (state.crewAccounts || DEFAULT_CREW_ACCOUNTS).map(function(acc) {
+                var u = state.fleet.find(function(fl) { return fl.unitId === acc.unitId || fl.callSign === acc.callSign; });
+                return {
+                    callSign: acc.callSign,
+                    username: acc.username,
+                    unitId: acc.unitId,
+                    type: acc.type,
+                    label: acc.label,
+                    status: u ? (u.status || 'OFFLINE') : 'OFFLINE',
+                    lat: u ? u.lat : acc.lat,
+                    lon: u ? u.lon : acc.lon
+                };
+            });
+            return jsonResponse(list);
+        }
+
+        // POST /auth/crew/login
+        if (method === 'POST' && pathname === '/auth/crew/login') {
+            state = getState();
+            var username = (body.username || '').trim();
+            var password = body.password || '';
+            var account = findCrewAccount(state, username);
+
+            if (!account || account.password !== password) {
+                return new Response(JSON.stringify({
+                    success: false,
+                    message: "Invalid Call Sign or Passcode. Default accounts are AMB-01 to AMB-14 with passcode 'crew123'."
+                }), { status: 401, headers: { 'Content-Type': 'application/json' } });
+            }
+
+            // Find or restore unit in fleet
+            unit = state.fleet.find(function(u) { return u.unitId === account.unitId || u.id === account.unitId || u.callSign === account.callSign; });
+            if (!unit) {
+                unit = {
+                    id: account.unitId,
+                    unitId: account.unitId,
+                    callSign: account.callSign,
+                    type: account.type || 'ALS',
+                    lat: account.lat || 26.9150,
+                    lon: account.lon || 75.8100,
+                    status: 'AVAILABLE',
+                    label: account.label || 'Tactical Unit',
+                    loggedIn: true
+                };
+                state.fleet.push(unit);
+            }
+
+            // Set coordinates if passed from device GPS
+            if (body.lat != null && !isNaN(body.lat)) unit.lat = parseFloat(body.lat);
+            if (body.lon != null && !isNaN(body.lon)) unit.lon = parseFloat(body.lon);
+
+            // Set unit to AVAILABLE on duty
+            unit.status = 'AVAILABLE';
+            unit.loggedIn = true;
+            unit.loggedInAt = new Date().toISOString();
+            setState(state);
+
+            try {
+                channel.postMessage({ type: 'state_changed' });
+                channel.postMessage({
+                    type: 'unit_online',
+                    unitId: unit.unitId || unit.id,
+                    callSign: unit.callSign,
+                    lat: unit.lat,
+                    lon: unit.lon,
+                    type: unit.type,
+                    status: 'AVAILABLE'
+                });
+            } catch(e) {}
+
+            return jsonResponse({
+                success: true,
+                token: 'h8-crew-token-' + btoa(account.callSign + ':' + Date.now()),
+                unitId: unit.unitId || unit.id,
+                callSign: unit.callSign,
+                type: unit.type,
+                label: account.label || unit.label,
+                lat: unit.lat,
+                lon: unit.lon,
+                status: 'AVAILABLE',
+                message: 'Ambulance ' + unit.callSign + ' authenticated & on-duty.'
+            });
+        }
+
+        // POST /auth/crew/register
+        if (method === 'POST' && pathname === '/auth/crew/register') {
+            state = getState();
+            var rawCallSign = (body.callSign || '').trim().toUpperCase();
+            var type = (body.type || 'ALS').toUpperCase();
+            var pwd = body.password || '';
+            var label = body.label || (type === 'ALS' ? 'Paramedic ALS' : 'Basic Tactical');
+            var lat = (body.lat != null && !isNaN(body.lat)) ? parseFloat(body.lat) : 26.9124;
+            var lon = (body.lon != null && !isNaN(body.lon)) ? parseFloat(body.lon) : 75.7873;
+
+            if (!rawCallSign) {
+                return new Response(JSON.stringify({ success: false, message: 'Call Sign is required (e.g. AMB-15)' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+            }
+            if (!pwd || pwd.length < 4) {
+                return new Response(JSON.stringify({ success: false, message: 'Passcode must be at least 4 characters.' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+            }
+
+            var callSign = rawCallSign.startsWith('AMB-') ? rawCallSign : ('AMB-' + rawCallSign.replace(/[^0-9A-Z]/g, ''));
+            var existingAcc = findCrewAccount(state, callSign);
+            if (existingAcc) {
+                return new Response(JSON.stringify({ success: false, message: 'Unit ' + callSign + ' is already registered. Please sign in.' }), { status: 409, headers: { 'Content-Type': 'application/json' } });
+            }
+
+            var newUnitId = makeId();
+            var newAccount = {
+                username: callSign.toLowerCase(),
+                callSign: callSign,
+                password: pwd,
+                unitId: newUnitId,
+                type: type,
+                label: label,
+                lat: lat,
+                lon: lon
+            };
+            if (!state.crewAccounts) state.crewAccounts = JSON.parse(JSON.stringify(DEFAULT_CREW_ACCOUNTS));
+            state.crewAccounts.push(newAccount);
+
+            var newUnit = {
+                id: newUnitId,
+                unitId: newUnitId,
+                callSign: callSign,
+                type: type,
+                lat: lat,
+                lon: lon,
+                status: 'AVAILABLE',
+                label: label,
+                loggedIn: true,
+                loggedInAt: new Date().toISOString()
+            };
+            state.fleet.push(newUnit);
+            setState(state);
+
+            try {
+                channel.postMessage({ type: 'state_changed' });
+                channel.postMessage({
+                    type: 'unit_online',
+                    unitId: newUnitId,
+                    callSign: callSign,
+                    lat: lat,
+                    lon: lon,
+                    type: type,
+                    status: 'AVAILABLE'
+                });
+            } catch(e) {}
+
+            return jsonResponse({
+                success: true,
+                token: 'h8-crew-token-' + btoa(callSign + ':' + Date.now()),
+                unitId: newUnitId,
+                callSign: callSign,
+                type: type,
+                label: label,
+                lat: lat,
+                lon: lon,
+                status: 'AVAILABLE',
+                message: 'Unit ' + callSign + ' successfully registered and on-duty.'
+            });
+        }
+
+        // POST /auth/crew/logout
+        if (method === 'POST' && (pathname === '/auth/crew/logout' || (pathname.indexOf('/dispatch/units/') === 0 && pathname.indexOf('/logout') > 0))) {
+            state = getState();
+            unitId = (body && body.unitId) || pathname.split('/')[3];
+            unit = state.fleet.find(function(u) { return u.id === unitId || u.unitId === unitId; });
+            if (unit) {
+                unit.status = 'OFFLINE';
+                unit.loggedIn = false;
+                delete unit.assignedIncident;
+                setState(state);
+                try {
+                    channel.postMessage({ type: 'state_changed' });
+                    channel.postMessage({ type: 'unit_offline', unitId: unit.unitId || unit.id, callSign: unit.callSign });
+                } catch(e) {}
+            }
+            return jsonResponse({ success: true, message: 'Unit taken off-duty successfully.' });
+        }
+
         // POST /auth/login
         if (method === 'POST' && pathname === '/auth/login') {
-            var username = (body.username || '').trim().toLowerCase();
+            var rawUser = (body.username || '').trim();
+            var username = rawUser.toLowerCase();
             var password = body.password || '';
 
             if ((username === 'admin' && password === 'admin123') ||
@@ -348,6 +575,36 @@
                     message: "Access Denied: Account '" + username + "' does not possess administrator clearance. The Dispatcher Command Center requires Administrator clearance."
                 }), { status: 403, headers: { 'Content-Type': 'application/json' } });
             } else {
+                // Check if it's a crew account attempting login
+                state = getState();
+                var crewAcc = findCrewAccount(state, rawUser);
+                if (crewAcc && crewAcc.password === password) {
+                    unit = state.fleet.find(function(u) { return u.unitId === crewAcc.unitId || u.id === crewAcc.unitId || u.callSign === crewAcc.callSign; });
+                    if (unit) {
+                        unit.status = 'AVAILABLE';
+                        unit.loggedIn = true;
+                        if (body.lat != null && !isNaN(body.lat)) unit.lat = parseFloat(body.lat);
+                        if (body.lon != null && !isNaN(body.lon)) unit.lon = parseFloat(body.lon);
+                        setState(state);
+                        try {
+                            channel.postMessage({ type: 'state_changed' });
+                        } catch(e) {}
+                    }
+                    return jsonResponse({
+                        success: true,
+                        token: 'h8-crew-token-' + btoa(crewAcc.callSign + ':' + Date.now()),
+                        username: crewAcc.username,
+                        unitId: crewAcc.unitId,
+                        callSign: crewAcc.callSign,
+                        type: crewAcc.type,
+                        displayName: crewAcc.callSign + ' (' + crewAcc.type + ') Crew',
+                        roles: ['CREW'],
+                        primaryRole: 'CREW',
+                        expiresIn: 86400,
+                        message: 'Crew authentication successful'
+                    });
+                }
+
                 return new Response(JSON.stringify({
                     success: false,
                     message: "Invalid username or password."
