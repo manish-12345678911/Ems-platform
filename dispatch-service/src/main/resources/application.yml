@@ -1,0 +1,61 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: dispatch-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/h8?currentSchema=dispatch
+    username: h8
+    password: ${PG_PASSWORD:changeme_pg}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+  flyway:
+    schemas: dispatch
+    locations: classpath:db/migration/dispatch
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      acks: all
+      properties:
+        enable.idempotence: true
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: dispatch-service
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.h8.ems.contracts.*
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8180/realms/h8
+
+h8:
+  routing:
+    url: http://localhost:8084
+    timeout-ms: 300
+  tracking:
+    url: http://localhost:8083
+    timeout-ms: 500
+  dispatch:
+    nearby-radius-km: 25.0
+    max-candidates: 15
+    rural-fallback-radius-km: 50.0
+    max-radius-km: 100.0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus

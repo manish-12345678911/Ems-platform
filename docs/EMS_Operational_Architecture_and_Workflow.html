@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>H8 Capability-Aware EMS — Operational Architecture & Tactical Workflow</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+        @page {
+            size: A4 portrait;
+            margin: 12mm 14mm 14mm 14mm;
+            @bottom-right {
+                content: "Page " counter(page);
+                font-family: 'Plus Jakarta Sans', sans-serif;
+                font-size: 8pt;
+                color: #64748b;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: #0f172a;
+            background: #ffffff;
+            font-size: 9.5pt;
+            line-height: 1.5;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .page {
+            page-break-after: always;
+            padding-bottom: 10px;
+        }
+
+        .page:last-child {
+            page-break-after: avoid;
+        }
+
+        .header-bar {
+            border-bottom: 2.5px solid #2563eb;
+            padding-bottom: 12px;
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .brand-title {
+            font-size: 16pt;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-sub {
+            font-size: 8.5pt;
+            color: #64748b;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        .meta-pill {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1d4ed8;
+            font-size: 8pt;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        h2 {
+            font-size: 12.5pt;
+            font-weight: 800;
+            color: #0f172a;
+            margin-top: 14px;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+            border-left: 4px solid #2563eb;
+            padding-left: 8px;
+        }
+
+        h3 {
+            font-size: 10pt;
+            font-weight: 700;
+            color: #1e293b;
+            margin-top: 10px;
+            margin-bottom: 4px;
+        }
+
+        p {
+            margin-bottom: 8px;
+            color: #334155;
+        }
+
+        /* Callout Box */
+        .callout {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #0284c7;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin-bottom: 14px;
+        }
+
+        .callout-title {
+            font-weight: 800;
+            font-size: 9pt;
+            color: #0369a1;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        /* Problem comparison table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0 16px 0;
+            font-size: 8.5pt;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #334155;
+            font-weight: 700;
+            text-align: left;
+            padding: 7px 10px;
+            border: 1px solid #cbd5e1;
+            font-size: 8pt;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        td {
+            padding: 7px 10px;
+            border: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) td {
+            background: #f8fafc;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 7.5pt;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .badge-fail { background: #fee2e2; color: #991b1b; }
+        .badge-pass { background: #dcfce7; color: #166534; }
+        .badge-als { background: #ffe4e6; color: #be123c; }
+        .badge-bls { background: #dbeafe; color: #1e40af; }
+
+        /* SVG Diagram Containers */
+        .diagram-container {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0 16px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .diagram-caption {
+            font-size: 8pt;
+            font-weight: 700;
+            color: #64748b;
+            text-align: center;
+            margin-top: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        /* 2-Column Grid */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+
+        .card-header {
+            font-weight: 800;
+            font-size: 9pt;
+            color: #1e293b;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            background: #2563eb;
+            color: #ffffff;
+            border-radius: 50%;
+            font-size: 7.5pt;
+            font-weight: 800;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 8.5pt;
+            background: #f1f5f9;
+            color: #0f172a;
+            padding: 1px 5px;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PAGE 1: EXECUTIVE SUMMARY & PROBLEM RESOLUTION -->
+    <div class="page">
+        <div class="header-bar">
+            <div>
+                <div class="brand-title">🚑 H8 EMS &bull; Dispatcher Command Platform</div>
+                <div class="brand-sub">Capability-Aware Ambulance Dispatch & Real-Time Tactical Management (Jaipur Sector)</div>
+            </div>
+            <div class="meta-pill">TECHNICAL BLUEPRINT &bull; VERIFIED 2026</div>
+        </div>
+
+        <div class="callout">
+            <div class="callout-title">🚨 Real-World Problem Scenario</div>
+            <strong>Location:</strong> Jaipur-Ajmer Expressway (Coordinates: <code>26.9124, 75.7873</code>)<br>
+            <strong>Incident:</strong> High-speed highway collision with two trapped victims suffering traumatic head and chest injuries.<br>
+            <strong>Clinical Requirement:</strong> Polytrauma requiring <strong>Advanced Life Support (ALS)</strong> with mechanical ventilation, rapid road transit, and admission to an Apex Level-1 Trauma Emergency Department.
+        </div>
+
+        <h2>1. Why Traditional 911 / 108 EMS Systems Fail This Scenario</h2>
+        <p>Legacy emergency dispatch systems rely on naive Euclidean (straight-line) distance and assign whatever vehicle is closest, creating severe systemic breakdowns:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 25%;">Failure Dimension</th>
+                    <th style="width: 35%;">Traditional EMS Behavior</th>
+                    <th style="width: 40%;">H8 Capability-Aware Solution</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>1. Vehicle Capability Match</strong></td>
+                    <td><span class="badge badge-fail">FATAL ERROR</span> Dispatches the closest unit, which is a Basic Life Support (<span class="badge badge-bls">BLS</span>) van without ventilator or doctor.</td>
+                    <td><span class="badge badge-pass">SOLVED</span> <code>DispatchScorer</code> checks <code>requiresAls=true</code>. BLS units are heavily penalized; ALS unit <span class="badge badge-als">AMB-01</span> ranks #1.</td>
+                </tr>
+                <tr>
+                    <td><strong>2. City Coverage Vacuum</strong></td>
+                    <td><span class="badge badge-fail">VACUUM CREATED</span> Pulls the last remaining ambulance from South Jaipur, leaving 60,000 citizens with zero emergency coverage.</td>
+                    <td><span class="badge badge-pass">SOLVED</span> <code>redeployment-service</code> runs MEXCLP algorithms and proactively orders idle unit <code>AMB-02</code> to reposition.</td>
+                </tr>
+                <tr>
+                    <td><strong>3. Receiving ED Selection</strong></td>
+                    <td><span class="badge badge-fail">ED OVERLOAD</span> Transports to the nearest clinic, which is on diversion and has 0 trauma ICU beds. 45-minute delay ensues.</td>
+                    <td><span class="badge badge-pass">SOLVED</span> <code>DestinationRanker</code> evaluates live bed capacity, diversion flags, and specialist capabilities to route directly to SMS Apex Hospital.</td>
+                </tr>
+                <tr>
+                    <td><strong>4. Concurrency & Liability</strong></td>
+                    <td><span class="badge badge-fail">RACE CONDITIONS</span> Two call-takers double-book the same ambulance. Paper logs lack legal audit trail.</td>
+                    <td><span class="badge badge-pass">SOLVED</span> Zero-race conditional SQL updates (`status = 'AVAILABLE'`) and SHA-256 Merkle hash chain auditability.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>2. System Architecture Diagram</h2>
+        <p>The system is built on a clean multi-module architecture: a pure Java 21 algorithmic engine (<code>common</code>) surrounded by event-driven Spring Boot 3 microservices, Kafka, Redis, and PostGIS:</p>
+
+        <div class="diagram-container">
+            <svg viewBox="0 0 740 230" width="100%" height="210" xmlns="http://www.w3.org/2000/svg">
+                <!-- Background Styles -->
+                <defs>
+                    <linearGradient id="gradBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#2563eb" />
+                        <stop offset="100%" stop-color="#1d4ed8" />
+                    </linearGradient>
+                    <linearGradient id="gradGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#10b981" />
+                        <stop offset="100%" stop-color="#059669" />
+                    </linearGradient>
+                    <linearGradient id="gradOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#f59e0b" />
+                        <stop offset="100%" stop-color="#d97706" />
+                    </linearGradient>
+                    <filter id="cardShadow" x="-2%" y="-2%" width="104%" height="106%">
+                        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.1"/>
+                    </filter>
+                </defs>
+
+                <!-- Layer 1: Client Web Apps -->
+                <rect x="20" y="15" width="200" height="70" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" filter="url(#cardShadow)"/>
+                <text x="120" y="38" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="11" fill="#0f172a">🖥️ Tactical Web Client</text>
+                <text x="120" y="56" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#2563eb">web/dispatcher (:8088)</text>
+                <text x="120" y="70" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#64748b">Map Pinning & Candidate Scoring</text>
+
+                <rect x="20" y="115" width="200" height="70" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" filter="url(#cardShadow)"/>
+                <text x="120" y="138" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="11" fill="#0f172a">📱 Crew Mobile PWA</text>
+                <text x="120" y="156" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#10b981">web/crew (:8088)</text>
+                <text x="120" y="170" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#64748b">Device GPS & ED Pre-Alert</text>
+
+                <!-- Arrow 1 to Gateway -->
+                <line x1="220" y1="50" x2="265" y2="95" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+                <line x1="220" y1="150" x2="265" y2="105" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+
+                <!-- Gateway -->
+                <rect x="270" y="75" width="100" height="50" rx="6" fill="#1e293b" filter="url(#cardShadow)"/>
+                <text x="320" y="96" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="10" fill="#ffffff">🌐 API GATEWAY</text>
+                <text x="320" y="112" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="#38bdf8">Port 8080</text>
+
+                <!-- Arrow 2 to Services -->
+                <line x1="370" y1="100" x2="410" y2="100" stroke="#94a3b8" stroke-width="2"/>
+
+                <!-- Microservices Box -->
+                <rect x="415" y="10" width="150" height="205" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+                <text x="490" y="26" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="9" fill="#475569">SPRING BOOT MICROSERVICES</text>
+
+                <rect x="425" y="34" width="130" height="26" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+                <text x="490" y="51" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="8.5" fill="#0f172a">🚨 incident-service (:8081)</text>
+
+                <rect x="425" y="66" width="130" height="26" rx="4" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+                <text x="490" y="83" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="8.5" fill="#2563eb">🚑 dispatch-service (:8082)</text>
+
+                <rect x="425" y="98" width="130" height="26" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+                <text x="490" y="115" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="8.5" fill="#0f172a">🗺️ routing-service (:8083)</text>
+
+                <rect x="425" y="130" width="130" height="26" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+                <text x="490" y="147" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="8.5" fill="#0f172a">🏥 hospital-service (:8085)</text>
+
+                <rect x="425" y="162" width="130" height="26" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+                <text x="490" y="179" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="8.5" fill="#0f172a">🔒 audit-service (:8086)</text>
+
+                <!-- Core Common Engine -->
+                <rect x="585" y="10" width="145" height="98" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+                <text x="657" y="27" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="9" fill="#1d4ed8">COMMON ENGINE (Java 21)</text>
+                <text x="657" y="44" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="#0f172a">⚖️ DispatchScorer</text>
+                <text x="657" y="60" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="#0f172a">🛡️ CoverageModel</text>
+                <text x="657" y="76" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="#0f172a">🏥 DestinationRanker</text>
+                <text x="657" y="93" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="600" font-size="7" fill="#2563eb">Zero Framework Dependencies</text>
+
+                <!-- Persistence Box -->
+                <rect x="585" y="118" width="145" height="97" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+                <text x="657" y="135" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="9" fill="#475569">INFRASTRUCTURE</text>
+                <text x="657" y="152" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="#0f172a">🐘 PostgreSQL PostGIS</text>
+                <text x="657" y="169" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="#0f172a">⚡ Apache Kafka 3.7</text>
+                <text x="657" y="186" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="#0f172a">⚡ Redis 7 GeoCache</text>
+                <text x="657" y="203" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="#0f172a">🔑 Keycloak 25 (RBAC)</text>
+            </svg>
+            <div class="diagram-caption">Figure 1: High-Level EMS Microservices & Common Engine Architecture</div>
+        </div>
+    </div>
+
+    <!-- PAGE 2: DISPATCHER WEB APP MINDMAP & TACTICAL WORKFLOW -->
+    <div class="page">
+        <div class="header-bar">
+            <div>
+                <div class="brand-title">🗺️ Tactical Dispatcher Web Application</div>
+                <div class="brand-sub">Visual Functional Mindmap of <code>web/dispatcher/index.html</code></div>
+            </div>
+            <div class="meta-pill">INTERACTIVE UI BREAKDOWN</div>
+        </div>
+
+        <h2>3. Visual Mindmap of the Web Application</h2>
+        <p>The Dispatcher Command tactical dashboard maps user actions directly to algorithmic calculations and atomic database events:</p>
+
+        <div class="diagram-container">
+            <svg viewBox="0 0 740 290" width="100%" height="270" xmlns="http://www.w3.org/2000/svg">
+                <!-- Root Hub -->
+                <circle cx="370" cy="145" r="54" fill="#1e293b" stroke="#38bdf8" stroke-width="3"/>
+                <text x="370" y="140" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="11" fill="#ffffff">TACTICAL</text>
+                <text x="370" y="155" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="11" fill="#ffffff">DISPATCHER</text>
+                <text x="370" y="170" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="#38bdf8">:8088/dispatcher</text>
+
+                <!-- Branch 1: Leaflet Tactical Map (Top Left) -->
+                <line x1="330" y1="110" x2="210" y2="50" stroke="#cbd5e1" stroke-width="2"/>
+                <rect x="30" y="15" width="200" height="65" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+                <text x="130" y="33" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="9.5" fill="#1d4ed8">1. LEAFLET TACTICAL GIS</text>
+                <text x="130" y="48" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#334155">• Click Map to drop incident pin</text>
+                <text x="130" y="60" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#334155">• Live 2s polling of fleet positions</text>
+                <text x="130" y="72" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#334155">• Green = Available, Amber = Dispatched</text>
+
+                <!-- Branch 2: Clinical Intake Panel (Bottom Left) -->
+                <line x1="330" y1="175" x2="210" y2="230" stroke="#cbd5e1" stroke-width="2"/>
+                <rect x="30" y="200" width="200" height="68" rx="6" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+                <text x="130" y="218" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="9.5" fill="#b91c1c">2. CLINICAL INTAKE PANEL</text>
+                <text x="130" y="233" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#334155">• Coordinates auto-sync from pin</text>
+                <text x="130" y="245" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#334155">• Severity: CRITICAL, EMERGENCY, URGENT</text>
+                <text x="130" y="257" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#334155">• Clinical Need: TRAUMA, CARDIAC, STROKE</text>
+
+                <!-- Branch 3: DispatchScorer Engine (Top Right) -->
+                <line x1="410" y1="110" x2="520" y2="50" stroke="#cbd5e1" stroke-width="2"/>
+                <rect x="500" y="15" width="210" height="65" rx="6" fill="#f0fdf4" stroke="#10b981" stroke-width="1.5"/>
+                <text x="605" y="33" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="9.5" fill="#15803d">3. RANKED CANDIDATES</text>
+                <text x="605" y="48" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#334155">• Evaluated by DispatchScorer</text>
+                <text x="605" y="60" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#334155">• Score = ETA + Capability + Coverage</text>
+                <text x="605" y="72" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#334155">• Rank #1 highlighted automatically</text>
+
+                <!-- Branch 4: Execution & Override (Bottom Right) -->
+                <line x1="410" y1="175" x2="520" y2="230" stroke="#cbd5e1" stroke-width="2"/>
+                <rect x="500" y="200" width="210" height="68" rx="6" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+                <text x="605" y="218" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="9.5" fill="#b45309">4. EXECUTION & AUDIT</text>
+                <text x="605" y="233" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#334155">• "Confirm Dispatch" locks unit atomically</text>
+                <text x="605" y="245" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#334155">• Override requires mandatory reason</text>
+                <text x="605" y="257" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#334155">• Signed into SHA-256 Merkle Hash Chain</text>
+
+                <!-- Branch 5: Redeployment Guard (Top Center) -->
+                <line x1="370" y1="91" x2="370" y2="35" stroke="#cbd5e1" stroke-width="2"/>
+                <rect x="275" y="10" width="190" height="35" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="1.2"/>
+                <text x="370" y="24" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="8.5" fill="#0f172a">5. REDEPLOYMENT COVERAGE</text>
+                <text x="370" y="36" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="#16a34a">MEXCLP Coverage: 100.0%</text>
+            </svg>
+            <div class="diagram-caption">Figure 2: Mindmap of Dispatcher Dashboard Modules & Algorithmic Triggers</div>
+        </div>
+
+        <h2>4. Step-by-Step Incident Lifecycle Workflow</h2>
+
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-header">
+                    <span class="step-number">1</span> Emergency Call Intake
+                </div>
+                <p>Call received at central intake. Caller phone number is hashed with a secret salt (<code>CallerHashUtil.java</code>). Raw citizen PII is never stored (Rule #6). Incident location is saved as PostGIS Point in schema <code>incident</code>.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="step-number">2</span> Multi-Factor Candidate Scoring
+                </div>
+                <p><code>DispatchScorer</code> evaluates all available ambulances. Computes turn-by-turn road travel time via GraphHopper, capability penalty for non-ALS units, and freshness penalty for stale GPS pings (>60s). Ranks best units in real time.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="step-number">3</span> Atomic Zero-Race Reservation
+                </div>
+                <p>Dispatcher hits <strong>"Confirm Dispatch"</strong>. Database executes conditional SQL: <code>UPDATE ambulance_unit SET status = 'DISPATCHED' WHERE id = :id AND status = 'AVAILABLE'</code>. Eliminates double-booking bugs. Decision hashed to Merkle chain.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="step-number">4</span> Proactive City Protection
+                </div>
+                <p>The moment unit departs, <code>redeployment-service</code> runs the MEXCLP coverage algorithm. If a suburban zone drops below safety thresholds, it triggers a repositioning order for an idle unit to preserve citywide safety.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="step-number">5</span> Live Device GPS Telemetry
+                </div>
+                <p>Crew taps <strong>"📡 Transmit My Device Live GPS"</strong> on mobile phone (<code>/crew/index.html</code>). High-accuracy coordinates stream every 2s. Dispatcher map updates the ambulance marker sliding along roads toward patient.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="step-number">6</span> Hospital ED Matching & Handover
+                </div>
+                <p><code>DestinationRanker</code> scores all receiving hospitals by road transit time, free trauma beds, and diversion states. Top hospital is pre-alerted via SSE. Paramedics complete digital handover, resetting unit status to <code>AVAILABLE</code>.</p>
+            </div>
+        </div>
+
+        <div class="callout" style="margin-top: 6px; padding: 8px 12px; font-size: 8pt;">
+            <strong>Verification Status:</strong> Microservices active on ports 8080-8087. Docker infrastructure (PostGIS 5432, Kafka 9092, Redis 6379, Keycloak 8180) healthy. Web portals live on port 8088.
+        </div>
+    </div>
+
+</body>
+</html>

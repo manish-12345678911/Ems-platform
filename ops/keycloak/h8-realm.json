@@ -1,0 +1,77 @@
+{
+  "realm": "h8",
+  "enabled": true,
+  "roles": {
+    "realm": [
+      { "name": "DISPATCHER", "description": "Dispatchers managing incidents and assignments" },
+      { "name": "CREW", "description": "Ambulance crew members with GPS and status updates" },
+      { "name": "ED_STAFF", "description": "Emergency department staff managing capacity and alerts" },
+      { "name": "SUPERVISOR", "description": "Supervisors overseeing redeployment and coverage" },
+      { "name": "AUDITOR", "description": "Auditors with read access to audit logs and metrics" }
+    ]
+  },
+  "users": [
+    {
+      "username": "dispatcher1",
+      "enabled": true,
+      "emailVerified": true,
+      "requiredActions": [],
+      "credentials": [{ "type": "password", "value": "test123", "temporary": false }],
+      "realmRoles": ["DISPATCHER"]
+    },
+    {
+      "username": "crew1",
+      "enabled": true,
+      "emailVerified": true,
+      "requiredActions": [],
+      "credentials": [{ "type": "password", "value": "test123", "temporary": false }],
+      "realmRoles": ["CREW"],
+      "attributes": { "unit_id": ["00000000-0000-0000-0000-000000000001"] }
+    },
+    {
+      "username": "ednurse1",
+      "enabled": true,
+      "emailVerified": true,
+      "requiredActions": [],
+      "credentials": [{ "type": "password", "value": "test123", "temporary": false }],
+      "realmRoles": ["ED_STAFF"],
+      "attributes": { "hospital_id": ["00000000-0000-0000-0000-000000000010"] }
+    },
+    {
+      "username": "supervisor1",
+      "enabled": true,
+      "emailVerified": true,
+      "requiredActions": [],
+      "credentials": [{ "type": "password", "value": "test123", "temporary": false }],
+      "realmRoles": ["SUPERVISOR"]
+    },
+    {
+      "username": "auditor1",
+      "enabled": true,
+      "emailVerified": true,
+      "requiredActions": [],
+      "credentials": [{ "type": "password", "value": "test123", "temporary": false }],
+      "realmRoles": ["AUDITOR"]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "h8-web",
+      "enabled": true,
+      "publicClient": true,
+      "redirectUris": ["http://localhost:8088/*"],
+      "webOrigins": ["http://localhost:8088"],
+      "directAccessGrantsEnabled": true
+    },
+    {
+      "clientId": "h8-service",
+      "enabled": true,
+      "publicClient": false,
+      "serviceAccountsEnabled": true,
+      "secret": "service-secret-changeme",
+      "directAccessGrantsEnabled": false
+    }
+  ],
+  "clientScopes": [],
+  "defaultDefaultClientScopes": ["profile", "email", "roles"]
+}

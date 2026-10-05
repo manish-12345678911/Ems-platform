@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="850" height="420" viewBox="0 0 850 420" style="background-color: #0f172a; font-family: Inter, system-ui, sans-serif;">
+<text x="80" y="35" fill="#f8fafc" font-size="18" font-weight="700">Figure 2: ALS Clinical Appropriateness Rate (%) by Policy</text>
+<line x1="80" y1="360.0" x2="690" y2="360.0" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+<text x="68" y="364.0" fill="#94a3b8" font-size="12" text-anchor="end">0%</text>
+<line x1="80" y1="300.0" x2="690" y2="300.0" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+<text x="68" y="304.0" fill="#94a3b8" font-size="12" text-anchor="end">20%</text>
+<line x1="80" y1="240.0" x2="690" y2="240.0" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+<text x="68" y="244.0" fill="#94a3b8" font-size="12" text-anchor="end">40%</text>
+<line x1="80" y1="180.0" x2="690" y2="180.0" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+<text x="68" y="184.0" fill="#94a3b8" font-size="12" text-anchor="end">60%</text>
+<line x1="80" y1="120.0" x2="690" y2="120.0" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+<text x="68" y="124.0" fill="#94a3b8" font-size="12" text-anchor="end">80%</text>
+<line x1="80" y1="60.0" x2="690" y2="60.0" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+<text x="68" y="64.0" fill="#94a3b8" font-size="12" text-anchor="end">100%</text>
+<line x1="80" y1="360" x2="690" y2="360" stroke="#64748b" stroke-width="2"/>
+<line x1="80" y1="60" x2="80" y2="360" stroke="#64748b" stroke-width="2"/>
+<text x="35" y="210" fill="#cbd5e1" font-size="13" font-weight="600" transform="rotate(-90 35 210)" text-anchor="middle">ALS Match Rate (%)</text>
+<text x="141.0" y="385" fill="#f1f5f9" font-size="13" font-weight="600" text-anchor="middle">S1: Urban</text>
+<rect x="95.86" y="179.76" width="26.84" height="180.24" rx="3" fill="#94a3b8" opacity="0.9"/>
+<text x="109.28" y="173.76" fill="#f8fafc" font-size="11" font-weight="600" text-anchor="middle">60.1%</text>
+<rect x="127.58" y="174.66" width="26.84" height="185.34" rx="3" fill="#64748b" opacity="0.9"/>
+<text x="141.0" y="168.66" fill="#f8fafc" font-size="11" font-weight="600" text-anchor="middle">61.8%</text>
+<rect x="159.3" y="169.98000000000002" width="26.84" height="190.01999999999998" rx="3" fill="#10b981" opacity="0.9"/>
+<text x="172.72" y="163.98000000000002" fill="#f8fafc" font-size="11" font-weight="600" text-anchor="middle">63.3%</text>
+<text x="263.0" y="385" fill="#f1f5f9" font-size="13" font-weight="600" text-anchor="middle">S2: Surge</text>
+<rect x="217.86" y="205.38" width="26.84" height="154.62" rx="3" fill="#94a3b8" opacity="0.9"/>
+<text x="231.28" y="199.38" fill="#f8fafc" font-size="11" font-weight="600" text-anchor="middle">51.5%</text>
+<rect x="249.58" y="193.65" width="26.84" height="166.35" rx="3" fill="#64748b" opacity="0.9"/>
+<text x="263.0" y="187.65" fill="#f8fafc" font-size="11" font-weight="600" text-anchor="middle">55.5%</text>
+<rect x="281.3" y="191.82" width="26.84" height="168.18" rx="3" fill="#10b981" opacity="0.9"/>
+<text x="294.72" y="185.82" fill="#f8fafc" font-size="11" font-weight="600" text-anchor="middle">56.1%</text>
+<text x="385.0" y="385" fill="#f1f5f9" font-size="13" font-weight="600" text-anchor="middle">S3: Rural</text>
+<rect x="339.86" y="205.53" width="26.84" height="154.47" rx="3" fill="#94a3b8" opacity="0.9"/>
+<text x="353.28000000000003" y="199.53" fill="#f8fafc" font-size="11" font-weight="600" text-anchor="middle">51.5%</text>
+<rect x="371.58000000000004" y="196.59" width="26.84" height="163.41" rx="3" fill="#64748b" opacity="0.9"/>
+<text x="385.00000000000006" y="190.59" fill="#f8fafc" font-size="11" font-weight="600" text-anchor="middle">54.5%</text>
+<rect x="403.3" y="194.19" width="26.84" height="165.81" rx="3" fill="#10b981" opacity="0.9"/>
+<text x="416.72" y="188.19" fill="#f8fafc" font-size="11" font-weight="600" text-anchor="middle">55.3%</text>
+<text x="507.0" y="385" fill="#f1f5f9" font-size="13" font-weight="600" text-anchor="middle">S4: Overcrowd</text>
+<rect x="461.86" y="194.55" width="26.84" height="165.45" rx="3" fill="#94a3b8" opacity="0.9"/>
+<text x="475.28000000000003" y="188.55" fill="#f8fafc" font-size="11" font-weight="600" text-anchor="middle">55.1%</text>
+<rect x="493.58000000000004" y="187.89000000000001" width="26.84" height="172.10999999999999" rx="3" fill="#64748b" opacity="0.9"/>
+<text x="507.00000000000006" y="181.89000000000001" fill="#f8fafc" font-size="11" font-weight="600" text-anchor="middle">57.4%</text>
+<rect x="525.3" y="177.33" width="26.84" height="182.67" rx="3" fill="#10b981" opacity="0.9"/>
+<text x="538.7199999999999" y="171.33" fill="#f8fafc" font-size="11" font-weight="600" text-anchor="middle">60.9%</text>
+<text x="629.0" y="385" fill="#f1f5f9" font-size="13" font-weight="600" text-anchor="middle">S5: Ablation</text>
+<rect x="583.86" y="185.94" width="26.84" height="174.06" rx="3" fill="#94a3b8" opacity="0.9"/>
+<text x="597.28" y="179.94" fill="#f8fafc" font-size="11" font-weight="600" text-anchor="middle">58.0%</text>
+<rect x="615.58" y="167.22000000000003" width="26.84" height="192.77999999999997" rx="3" fill="#64748b" opacity="0.9"/>
+<text x="629.0" y="161.22000000000003" fill="#f8fafc" font-size="11" font-weight="600" text-anchor="middle">64.3%</text>
+<rect x="647.3" y="156.72000000000003" width="26.84" height="203.27999999999997" rx="3" fill="#10b981" opacity="0.9"/>
+<text x="660.7199999999999" y="150.72000000000003" fill="#f8fafc" font-size="11" font-weight="600" text-anchor="middle">67.8%</text>
+<rect x="710" y="65" width="125" height="110" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+<text x="720" y="80" fill="#94a3b8" font-size="12" font-weight="700">POLICIES</text>
+<rect x="720" y="92" width="14" height="14" rx="2" fill="#94a3b8"/>
+<text x="742" y="104" fill="#e2e8f0" font-size="12">B1</text>
+<rect x="720" y="116" width="14" height="14" rx="2" fill="#64748b"/>
+<text x="742" y="128" fill="#e2e8f0" font-size="12">B2</text>
+<rect x="720" y="140" width="14" height="14" rx="2" fill="#10b981"/>
+<text x="742" y="152" fill="#e2e8f0" font-size="12">P3</text>
+</svg>

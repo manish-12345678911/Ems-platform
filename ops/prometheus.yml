@@ -1,0 +1,43 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'api-gateway'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['api-gateway:8080']
+
+  - job_name: 'incident-service'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['incident-service:8081']
+
+  - job_name: 'dispatch-service'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['dispatch-service:8082']
+
+  - job_name: 'tracking-service'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['tracking-service:8083']
+
+  - job_name: 'routing-service'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['routing-service:8084']
+
+  - job_name: 'hospital-service'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['hospital-service:8085']
+
+  - job_name: 'redeployment-service'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['redeployment-service:8086']
+
+  - job_name: 'audit-service'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['audit-service:8087']

@@ -1,0 +1,262 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 1,
+      "panels": [],
+      "title": "Dispatch Engine & Decision Latency",
+      "type": "row"
+    },
+    {
+      "id": 2,
+      "gridPos": { "h": 7, "w": 8, "x": 0, "y": 1 },
+      "type": "timeseries",
+      "title": "Dispatch Decision Latency (p50, p90, p95, p99)",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.50, sum(rate(dispatch_decision_seconds_bucket[1m])) by (le))",
+          "legendFormat": "p50"
+        },
+        {
+          "expr": "histogram_quantile(0.90, sum(rate(dispatch_decision_seconds_bucket[1m])) by (le))",
+          "legendFormat": "p90"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(dispatch_decision_seconds_bucket[1m])) by (le))",
+          "legendFormat": "p95"
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(dispatch_decision_seconds_bucket[1m])) by (le))",
+          "legendFormat": "p99"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": { "drawStyle": "line", "lineInterpolation": "smooth" }
+        }
+      }
+    },
+    {
+      "id": 3,
+      "gridPos": { "h": 7, "w": 8, "x": 8, "y": 1 },
+      "type": "stat",
+      "title": "Dispatch Reservation Conflicts",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "sum(dispatch_reservation_conflicts_total)",
+          "legendFormat": "Conflicts"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 1 },
+              { "color": "red", "value": 5 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "gridPos": { "h": 7, "w": 8, "x": 16, "y": 1 },
+      "type": "gauge",
+      "title": "System Coverage Ratio (8-min Target)",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "coverage_ratio",
+          "legendFormat": "Coverage"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "max": 1,
+          "unit": "percentunit",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "orange", "value": 0.70 },
+              { "color": "green", "value": 0.85 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 8 },
+      "id": 5,
+      "panels": [],
+      "title": "Fleet Tracking & Heartbeats",
+      "type": "row"
+    },
+    {
+      "id": 6,
+      "gridPos": { "h": 7, "w": 8, "x": 0, "y": 9 },
+      "type": "timeseries",
+      "title": "Location Ingest Throughput (per sec)",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "rate(location_ingest_total[1m])",
+          "legendFormat": "Locations/sec"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps"
+        }
+      }
+    },
+    {
+      "id": 7,
+      "gridPos": { "h": 7, "w": 8, "x": 8, "y": 9 },
+      "type": "stat",
+      "title": "Stale Fleet Units (Heartbeat TTL > 30s)",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "stale_units",
+          "legendFormat": "Stale Units"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1 },
+              { "color": "red", "value": 3 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 8,
+      "gridPos": { "h": 7, "w": 8, "x": 16, "y": 9 },
+      "type": "timeseries",
+      "title": "Routing Circuit Breaker Status & Fallbacks",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "rate(routing_fallback_calls_total[1m])",
+          "legendFormat": "Fallback Calls/sec"
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 16 },
+      "id": 9,
+      "panels": [],
+      "title": "Reliability: Outbox, Kafka Lag & Audit Cryptographic Integrity",
+      "type": "row"
+    },
+    {
+      "id": 10,
+      "gridPos": { "h": 7, "w": 8, "x": 0, "y": 17 },
+      "type": "stat",
+      "title": "Outbox Pending Events",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "sum(outbox_pending)",
+          "legendFormat": "Pending Events"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 10 },
+              { "color": "red", "value": 50 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 11,
+      "gridPos": { "h": 7, "w": 8, "x": 8, "y": 17 },
+      "type": "timeseries",
+      "title": "Kafka Consumer Lag by Topic",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "kafka_consumer_lag",
+          "legendFormat": "{{topic}}"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "gridPos": { "h": 7, "w": 8, "x": 16, "y": 17 },
+      "type": "stat",
+      "title": "Audit Hash Chain Validity (SHA-256)",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        {
+          "expr": "audit_chain_valid",
+          "legendFormat": "Chain Integrity"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "TAMPERED / BROKEN", "color": "red" }, "1": { "text": "VERIFIED VALID", "color": "green" } } }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 1 }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": ["h8", "ems", "dispatch", "telemetry"],
+  "time": { "from": "now-15m", "to": "now" },
+  "timepicker": { "refresh_intervals": ["5s", "10s", "30s", "1m"] },
+  "timezone": "browser",
+  "title": "H8 EMS Platform - Operational & Reliability Overview",
+  "uid": "h8-ems-platform",
+  "version": 1
+}

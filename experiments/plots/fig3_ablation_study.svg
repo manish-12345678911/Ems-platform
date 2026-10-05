@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="750" height="380" viewBox="0 0 750 380" style="background-color: #0f172a; font-family: Inter, system-ui, sans-serif;">
+<text x="150" y="35" fill="#f8fafc" font-size="18" font-weight="700">Figure 3: Ablation Analysis (Scenario S5 Parameter Effects)</text>
+<line x1="150.0" y1="60" x2="150.0" y2="320" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+<text x="150.0" y="338" fill="#94a3b8" font-size="11" text-anchor="middle">0s</text>
+<line x1="228.57142857142856" y1="60" x2="228.57142857142856" y2="320" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+<text x="228.57142857142856" y="338" fill="#94a3b8" font-size="11" text-anchor="middle">20s</text>
+<line x1="307.1428571428571" y1="60" x2="307.1428571428571" y2="320" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+<text x="307.1428571428571" y="338" fill="#94a3b8" font-size="11" text-anchor="middle">40s</text>
+<line x1="385.71428571428567" y1="60" x2="385.71428571428567" y2="320" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+<text x="385.71428571428567" y="338" fill="#94a3b8" font-size="11" text-anchor="middle">60s</text>
+<line x1="464.2857142857143" y1="60" x2="464.2857142857143" y2="320" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+<text x="464.2857142857143" y="338" fill="#94a3b8" font-size="11" text-anchor="middle">80s</text>
+<line x1="542.8571428571429" y1="60" x2="542.8571428571429" y2="320" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+<text x="542.8571428571429" y="338" fill="#94a3b8" font-size="11" text-anchor="middle">100s</text>
+<line x1="621.4285714285713" y1="60" x2="621.4285714285713" y2="320" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+<text x="621.4285714285713" y="338" fill="#94a3b8" font-size="11" text-anchor="middle">120s</text>
+<line x1="700.0" y1="60" x2="700.0" y2="320" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+<text x="700.0" y="338" fill="#94a3b8" font-size="11" text-anchor="middle">140s</text>
+<text x="138" y="90.0" fill="#cbd5e1" font-size="12" font-weight="500" text-anchor="end">P3</text>
+<rect x="150" y="71.7" width="435.20714285714286" height="28.6" rx="3" fill="#10b981" opacity="0.88"/>
+<text x="597.2071428571428" y="90.0" fill="#f8fafc" font-size="12" font-weight="600">110.8s</text>
+<text x="138" y="142.0" fill="#cbd5e1" font-size="12" font-weight="500" text-anchor="end">P3-no-redeploy</text>
+<rect x="150" y="123.7" width="435.20714285714286" height="28.6" rx="3" fill="#f59e0b" opacity="0.88"/>
+<text x="597.2071428571428" y="142.0" fill="#f8fafc" font-size="12" font-weight="600">110.8s</text>
+<text x="138" y="194.0" fill="#cbd5e1" font-size="12" font-weight="500" text-anchor="end">P3-no-hosp</text>
+<rect x="150" y="175.7" width="435.20714285714286" height="28.6" rx="3" fill="#ef4444" opacity="0.88"/>
+<text x="597.2071428571428" y="194.0" fill="#f8fafc" font-size="12" font-weight="600">110.8s</text>
+<text x="138" y="246.0" fill="#cbd5e1" font-size="12" font-weight="500" text-anchor="end">P3-no-coverage</text>
+<rect x="150" y="227.7" width="435.20714285714286" height="28.6" rx="3" fill="#3b82f6" opacity="0.88"/>
+<text x="597.2071428571428" y="246.0" fill="#f8fafc" font-size="12" font-weight="600">110.8s</text>
+<text x="138" y="298.0" fill="#cbd5e1" font-size="12" font-weight="500" text-anchor="end">P3-no-fatigue</text>
+<rect x="150" y="279.7" width="435.20714285714286" height="28.6" rx="3" fill="#8b5cf6" opacity="0.88"/>
+<text x="597.2071428571428" y="298.0" fill="#f8fafc" font-size="12" font-weight="600">110.8s</text>
+</svg>

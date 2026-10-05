@@ -1,0 +1,2494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>H8 EMS — Paramedic Crew Mobile Tactical PWA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <style>
+        :root {
+            --bg-base: #070b14;
+            --bg-surface: #0e1526;
+            --bg-card: rgba(15, 23, 42, 0.88);
+            --bg-elevated: #162035;
+            --border-card: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(59, 130, 246, 0.35);
+            --accent-blue: #3b82f6;
+            --accent-indigo: #6366f1;
+            --accent-cyan: #06b6d4;
+            --accent-green: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-rose: #f43f5e;
+            --accent-purple: #a855f7;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-base);
+            color: var(--text-primary);
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        /* Desktop Layout (>900px): Split-Screen Tactical Layout */
+        .crew-layout {
+            display: grid;
+            grid-template-columns: minmax(460px, 490px) 1fr;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        /* Mobile Segmented View Mode Bar */
+        .mobile-nav-bar {
+            display: none;
+            background: #090e1a;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 6px 10px;
+            gap: 5px;
+            position: sticky;
+            top: 0;
+            z-index: 1200;
+            backdrop-filter: blur(16px);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .mobile-tab-btn {
+            flex: 1 0 auto;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.74rem;
+            font-weight: 700;
+            padding: 7px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .mobile-tab-btn.active {
+            background: rgba(56, 189, 248, 0.2);
+            color: #38bdf8;
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+        }
+
+        /* Mobile Viewport Architecture (<= 900px) */
+        @media (max-width: 900px) {
+            body {
+                overflow-x: hidden;
+                overflow-y: auto;
+                min-height: 100dvh;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .mobile-nav-bar {
+                display: flex !important;
+            }
+
+            .crew-layout {
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+                width: 100vw;
+                height: auto;
+                min-height: calc(100dvh - 46px);
+                overflow: visible;
+                padding-bottom: 74px;
+                /* space for bottom quick action bar */
+            }
+
+            /* Modes with sidebar visible */
+            .crew-layout.mobile-mode-console .crew-sidebar,
+            .crew-layout.mobile-mode-vitals .crew-sidebar,
+            .crew-layout.mobile-mode-hospitals .crew-sidebar {
+                display: flex !important;
+                flex-direction: column;
+                width: 100vw;
+                height: auto;
+                overflow-y: visible;
+                padding: 0.75rem;
+                gap: 0.85rem;
+            }
+
+            .crew-layout.mobile-mode-console .crew-map-container,
+            .crew-layout.mobile-mode-vitals .crew-map-container,
+            .crew-layout.mobile-mode-hospitals .crew-map-container {
+                display: none !important;
+            }
+
+            /* Full Map View */
+            .crew-layout.mobile-mode-map .crew-sidebar {
+                display: none !important;
+            }
+
+            .crew-layout.mobile-mode-map .crew-map-container {
+                display: block !important;
+                height: calc(100dvh - 120px) !important;
+                width: 100vw;
+            }
+
+            /* Split View */
+            .crew-layout.mobile-mode-split .crew-map-container {
+                display: block !important;
+                height: min(36vh, 260px) !important;
+                width: 100vw;
+                flex-shrink: 0;
+                position: sticky;
+                top: 44px;
+                z-index: 1000;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            }
+
+            .crew-layout.mobile-mode-split .crew-sidebar {
+                display: flex !important;
+                flex-direction: column;
+                width: 100vw;
+                height: auto;
+                overflow-y: visible;
+                padding: 0.75rem;
+                gap: 0.85rem;
+            }
+
+            /* Mobile Bottom Quick Action Bar */
+            .mobile-bottom-bar {
+                display: flex !important;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 1300;
+                background: rgba(10, 16, 30, 0.95);
+                backdrop-filter: blur(16px);
+                border-top: 1px solid rgba(255, 255, 255, 0.12);
+                padding: 8px 12px;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+                box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.6);
+            }
+        }
+
+        .mobile-bottom-bar {
+            display: none;
+        }
+
+        /* Left Navigation & Control Sidebar (Laptop & Desktop) */
+        .crew-sidebar {
+            height: 100vh;
+            overflow-y: auto;
+            padding: 1.15rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background: var(--bg-surface);
+            border-right: 1px solid var(--border-card);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+        }
+
+        /* Prevent flex children inside sidebar from getting squashed */
+        .crew-sidebar>* {
+            flex-shrink: 0;
+        }
+
+        /* Right Viewport Half: Tactical Map Canvas */
+        .crew-map-container {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            background: #080c16;
+        }
+
+        #crew-map {
+            width: 100%;
+            height: 100%;
+            background: #080c16;
+        }
+
+        /* Free OpenStreetMap Dark Mode CSS Filter */
+        .dark-tiles .leaflet-tile {
+            filter: brightness(0.65) invert(1) contrast(2.6) hue-rotate(200deg) saturate(0.35) brightness(0.8);
+        }
+
+        /* Floating Tactical Map HUD Controls */
+        .crew-map-hud {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            right: 16px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+
+        .hud-route-badge {
+            pointer-events: auto;
+            background: rgba(14, 21, 38, 0.92);
+            backdrop-filter: blur(14px);
+            border: 1px solid var(--border-glow);
+            padding: 0.55rem 1rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        }
+
+        .hud-controls {
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(14, 21, 38, 0.92);
+            backdrop-filter: blur(14px);
+            border: 1px solid var(--border-card);
+            padding: 0.35rem 0.65rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        }
+
+        .btn-hud {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.35rem 0.65rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .btn-hud:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-hud.active {
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+
+        /* Top Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.85rem 1.15rem;
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-card);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .unit-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .unit-icon {
+            font-size: 1.6rem;
+            filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.6));
+        }
+
+        .unit-callsign {
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .unit-type {
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 0.15rem 0.5rem;
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--accent-cyan);
+            border-radius: 6px;
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .status-pill {
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .status-available {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-green);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        .status-dispatched {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--accent-amber);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+
+        .status-on-scene {
+            background: rgba(168, 85, 247, 0.18);
+            color: #c084fc;
+            border: 1px solid rgba(168, 85, 247, 0.4);
+        }
+
+        .status-hospital {
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+        }
+
+        /* Mission Milestone Stepper */
+        .stepper-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.25rem;
+            background: rgba(14, 21, 38, 0.9);
+            border: 1px solid var(--border-card);
+            border-radius: 14px;
+            padding: 0.85rem 0.65rem 0.75rem;
+            flex-shrink: 0 !important;
+            min-height: 72px;
+            box-sizing: border-box;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .stepper-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .step-item {
+            flex: 1 1 0;
+            min-width: 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            font-size: 0.64rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            cursor: pointer;
+            padding: 4px 2px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .step-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-primary);
+        }
+
+        .step-item span {
+            display: block;
+            line-height: 1.2;
+            overflow: visible;
+        }
+
+        /* Quick Jump Section Navigation Chips */
+        .quick-jump-chips {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding: 2px 0;
+            flex-shrink: 0;
+        }
+
+        .quick-jump-chips::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chip-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .chip-btn:hover {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border-color: rgba(56, 189, 248, 0.35);
+        }
+
+        .step-item.active {
+            color: var(--accent-cyan);
+        }
+
+        .step-item.completed {
+            color: var(--accent-green);
+        }
+
+        .step-circle {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-card);
+            color: var(--text-muted);
+        }
+
+        .step-item.active .step-circle {
+            background: var(--accent-cyan);
+            color: #000;
+            font-weight: 800;
+            box-shadow: 0 0 12px var(--accent-cyan);
+        }
+
+        .step-item.completed .step-circle {
+            background: var(--accent-green);
+            color: #fff;
+        }
+
+        @keyframes stepCardFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-card-active {
+            animation: stepCardFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .chip-btn.active {
+            background: rgba(56, 189, 248, 0.25) !important;
+            border-color: rgba(56, 189, 248, 0.5) !important;
+            color: #38bdf8 !important;
+            font-weight: 800 !important;
+        }
+
+        /* Card container */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 14px;
+            padding: 0.95rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-card);
+            padding-bottom: 0.65rem;
+            gap: 0.5rem;
+        }
+
+        .card-title {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Map Pin Styles */
+        .map-marker-pin {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 0.725rem;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.8);
+            white-space: nowrap;
+        }
+
+        .marker-amb {
+            background: #0284c7;
+            color: #fff;
+            border: 2px solid #38bdf8;
+            box-shadow: 0 0 14px rgba(56, 189, 248, 0.9);
+        }
+
+        .marker-scene {
+            background: #be123c;
+            color: #fff;
+            border: 2px solid #fb7185;
+            box-shadow: 0 0 14px rgba(225, 29, 72, 0.9);
+        }
+
+        .marker-hosp {
+            background: #047857;
+            color: #fff;
+            border: 2px solid #34d399;
+            box-shadow: 0 0 14px rgba(16, 185, 129, 0.9);
+        }
+
+        /* Patient Support & Stabilization Panel */
+        .patient-support-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(15, 23, 42, 0.95) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.35);
+        }
+
+        .checklist-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.45rem;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 0.55rem 0.75rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .check-item.checked {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+
+        .check-icon {
+            width: 18px;
+            height: 18px;
+            border-radius: 5px;
+            border: 1.5px solid var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 800;
+        }
+
+        .check-item.checked .check-icon {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+            color: #fff;
+        }
+
+        .vitals-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.45rem;
+            margin-top: 0.25rem;
+        }
+
+        @media (max-width: 480px) {
+            .vitals-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.45rem;
+            }
+        }
+
+        .vital-box {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 0.55rem 0.35rem;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .vital-val {
+            font-size: 1rem;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-cyan);
+            line-height: 1.2;
+        }
+
+        .vital-label {
+            font-size: 0.62rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-top: 2px;
+        }
+
+        /* GPS Telemetry Grid */
+        .telemetry-card {
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.06) 0%, rgba(15, 23, 42, 0.9) 100%);
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.5rem;
+        }
+
+        .meta-item {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 0.55rem 0.7rem;
+            border-radius: 10px;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .meta-label {
+            color: var(--text-muted);
+            font-size: 0.62rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 0.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .meta-val {
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Incident Hero */
+        .incident-hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            background: linear-gradient(135deg, rgba(244, 63, 94, 0.12) 0%, rgba(244, 63, 94, 0.03) 100%);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            border-radius: 14px;
+            padding: 0.75rem 0.95rem;
+            flex-wrap: wrap;
+        }
+
+        .severity-badge {
+            font-size: 0.725rem;
+            font-weight: 800;
+            padding: 0.3rem 0.65rem;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            flex-shrink: 0;
+        }
+
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        }
+
+        .severity-critical {
+            background: var(--accent-rose);
+            color: #fff;
+            box-shadow: 0 0 12px rgba(244, 63, 94, 0.4);
+        }
+
+        .severity-urgent {
+            background: var(--accent-amber);
+            color: #111;
+        }
+
+        .severity-low {
+            background: var(--accent-green);
+            color: #fff;
+        }
+
+        /* Action Buttons */
+        .btn {
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 800;
+            padding: 0.8rem 1.25rem;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.6);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.6);
+        }
+
+        .btn-danger {
+            background: rgba(244, 63, 94, 0.12);
+            color: #fb7185;
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            font-size: 0.825rem;
+        }
+
+        .btn-danger:hover {
+            background: rgba(244, 63, 94, 0.2);
+        }
+
+        /* Hospital Recommendations List */
+        .hospital-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 0.85rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .hospital-card:hover,
+        .hospital-card.selected {
+            border-color: var(--accent-cyan);
+            background: rgba(6, 182, 212, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .hosp-name {
+            font-weight: 800;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hosp-score {
+            font-size: 0.725rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-cyan);
+            background: rgba(6, 182, 212, 0.15);
+            padding: 0.15rem 0.5rem;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+
+        .hosp-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .hosp-stats span strong {
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Notification Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            padding: 0.85rem 1.25rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: none;
+            z-index: 2000;
+            animation: fadeIn 0.3s forwards;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Instantaneous real-time vehicle tracking without animation delay */
+        .leaflet-marker-pane .leaflet-marker-icon {
+            transition: none !important;
+        }
+
+        .map-marker-pin {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            border-radius: 9999px;
+            padding: 3px 8px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+            white-space: nowrap;
+        }
+
+        .marker-amb {
+            background: #3b82f6;
+            color: #fff;
+            border: 2px solid #93c5fd;
+            box-shadow: 0 0 16px rgba(59, 130, 246, 0.7);
+        }
+
+        .marker-scene {
+            background: #ef4444;
+            color: #fff;
+            border: 2px solid #fca5a5;
+        }
+
+        .marker-hosp {
+            background: #10b981;
+            color: #fff;
+            border: 2px solid #6ee7b7;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Mobile View Mode Segmented Bar -->
+    <div class="mobile-nav-bar" id="crew-mobile-tabs">
+        <button type="button" class="mobile-tab-btn active" id="btn-tab-console" onclick="setMobileView('console')">
+            <span>📋</span> Console
+        </button>
+        <button type="button" class="mobile-tab-btn" id="btn-tab-map" onclick="setMobileView('map')">
+            <span>🗺️</span> Map
+        </button>
+        <button type="button" class="mobile-tab-btn" id="btn-tab-vitals" onclick="setMobileView('vitals')">
+            <span>🩺</span> Vitals
+        </button>
+        <button type="button" class="mobile-tab-btn" id="btn-tab-hospitals" onclick="setMobileView('hospitals')">
+            <span>🏥</span> EDs
+        </button>
+        <button type="button" class="mobile-tab-btn" id="btn-tab-split" onclick="setMobileView('split')">
+            <span>⚡</span> Split
+        </button>
+    </div>
+
+    <div class="crew-layout mobile-mode-console">
+
+        <!-- Left Navigation Sidebar -->
+        <div class="crew-sidebar">
+
+            <!-- Top Header -->
+            <header>
+                <div class="unit-badge">
+                    <span class="unit-icon">🚑</span>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 0.45rem;">
+                            <div class="unit-callsign" id="callsign-display">AMB-01</div>
+                            <select id="header-unit-select" onchange="selectActiveUnit(this.value, true)"
+                                style="background: #0f172a; color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 8px; padding: 2px 6px; font-weight: 800; font-size: 0.74rem; font-family: inherit; cursor: pointer;">
+                            </select>
+                        </div>
+                        <span class="unit-type" id="type-display">ALS Paramedic</span>
+                    </div>
+                </div>
+                <div class="status-pill status-available" id="status-pill">
+                    <span style="font-size: 8px;">●</span> <span id="status-text">AVAILABLE</span>
+                </div>
+            </header>
+
+            <!-- Mission Milestone Stepper (Clickable to jump directly to any progressive step) -->
+            <div class="stepper-container" id="mission-stepper">
+                <div class="step-item active" id="step-0" onclick="goToStep(0)"
+                    title="Step 0: Standby Pool & Telemetry">
+                    <div class="step-circle">0</div>
+                    <span>Pool</span>
+                </div>
+                <div class="step-item" id="step-1" onclick="goToStep(1)" title="Step 1: Emergency Dispatch Intake">
+                    <div class="step-circle">1</div>
+                    <span>Dispatch</span>
+                </div>
+                <div class="step-item" id="step-2" onclick="goToStep(2)" title="Step 2: En-Route Transit Navigation">
+                    <div class="step-circle">2</div>
+                    <span>En-Route</span>
+                </div>
+                <div class="step-item" id="step-3" onclick="goToStep(3)" title="Step 3: On-Scene Clinical Care">
+                    <div class="step-circle">3</div>
+                    <span>Scene</span>
+                </div>
+                <div class="step-item" id="step-4" onclick="goToStep(4)" title="Step 4: Hospital Destination & Transit">
+                    <div class="step-circle">4</div>
+                    <span>Hospital</span>
+                </div>
+                <div class="step-item" id="step-5" onclick="goToStep(5)" title="Step 5: Clinical Handover & Reset">
+                    <div class="step-circle">5</div>
+                    <span>Handover</span>
+                </div>
+            </div>
+
+            <!-- Quick Progressive Process Navigation Chips -->
+            <div class="quick-jump-chips">
+                <button type="button" class="chip-btn active" id="chip-step-0" onclick="goToStep(0)">📡 Pool</button>
+                <button type="button" class="chip-btn" id="chip-step-1" onclick="goToStep(1)">🚨 Dispatch</button>
+                <button type="button" class="chip-btn" id="chip-step-2" onclick="goToStep(2)">🚀 En-Route</button>
+                <button type="button" class="chip-btn" id="chip-step-3" onclick="goToStep(3)">🩺 Vitals</button>
+                <button type="button" class="chip-btn" id="chip-step-4" onclick="goToStep(4)">🏥 Hospitals</button>
+                <button type="button" class="chip-btn" id="chip-step-5" onclick="goToStep(5)">✓ Handover</button>
+            </div>
+
+            <!-- STEP 0: Standby Pool & Real-Time Telemetry Card -->
+            <div class="card telemetry-card" id="card-standby"
+                style="border-color: rgba(16, 185, 129, 0.4); background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(15, 23, 42, 0.95));">
+                <div class="card-header">
+                    <span class="card-title">📡 Unit Standby & Telemetry</span>
+                    <span id="gps-status-badge"
+                        style="font-size: 0.7rem; padding: 0.2rem 0.55rem; border-radius: 9999px; background: rgba(16, 185, 129, 0.2); color: #34d399; font-weight: 800; font-family: 'JetBrains Mono', monospace;">STANDBY
+                        POOL</span>
+                </div>
+
+                <div style="font-size: 0.775rem; color: var(--text-secondary); line-height: 1.4;">
+                    Unit is <strong>AVAILABLE</strong> in the standby fleet. Real-time GPS coordinates stream to the
+                    central Autonomous Dispatcher.
+                </div>
+
+                <div class="meta-grid">
+                    <div class="meta-item">
+                        <div class="meta-label">DEVICE LATITUDE</div>
+                        <div class="meta-val" id="gps-lat">26.9150</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">DEVICE LONGITUDE</div>
+                        <div class="meta-val" id="gps-lon">75.8100</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">GPS ACCURACY</div>
+                        <div class="meta-val" id="gps-accuracy" style="color: var(--accent-cyan);">High (3.2m)</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">READINESS</div>
+                        <div class="meta-val" style="color: var(--accent-green);">100% READY</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">PINGS BROADCASTED</div>
+                        <div class="meta-val" id="gps-ping-count" style="color: var(--accent-green);">0</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">LAST BROADCAST</div>
+                        <div class="meta-val" id="gps-last-ping" style="font-size: 0.8rem;">Just now</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <button class="btn btn-primary" id="btn-toggle-gps" onclick="toggleGpsTracking()"
+                        style="flex: 2; min-width: 170px; background: linear-gradient(135deg, #10b981, #059669); font-size: 0.82rem;">
+                        📡 Phone GPS Sharing
+                    </button>
+                    <select id="select-unit-for-gps" onchange="selectActiveUnit(this.value, true)"
+                        style="flex: 1; min-width: 120px; background: #0f172a; color: var(--text-primary); border: 1px solid var(--border-card); border-radius: 10px; padding: 0.5rem; font-weight: 700; font-size: 0.8rem;">
+                    </select>
+                </div>
+
+                <div
+                    style="display: flex; align-items: center; justify-content: space-between; padding-top: 0.4rem; border-top: 1px solid rgba(255, 255, 255, 0.06); font-size: 0.75rem;">
+                    <span style="color: var(--text-muted);">Classroom Demo Mode?</span>
+                    <button type="button" onclick="toggleMapClickToMove()" id="btn-map-tap-mode"
+                        style="background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 6px; color: #38bdf8; font-size: 0.72rem; font-weight: 700; padding: 3px 8px; cursor: pointer;">
+                        📍 Tap Map to Move Location
+                    </button>
+                </div>
+
+                <button class="btn btn-primary" onclick="simulateNextMission()"
+                    style="margin-top: 0.35rem; background: linear-gradient(135deg, #3b82f6, #1d4ed8); font-size: 0.88rem; font-weight: 800; box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);">
+                    ⚡ Simulate Incoming Dispatch (Step 1)
+                </button>
+            </div>
+
+            <!-- STEP 1: Emergency Mission Intake Card -->
+            <div class="card" id="incident-card"
+                style="display: none; border-color: rgba(239, 68, 68, 0.4); background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(15, 23, 42, 0.95));">
+                <div class="card-header">
+                    <span class="card-title">🚨 Emergency Mission Assigned</span>
+                    <span style="font-size: 0.8rem; font-family: 'JetBrains Mono'; color: var(--accent-cyan);"
+                        id="incident-id-display">#INC-7210BE9C</span>
+                </div>
+
+                <div class="incident-hero">
+                    <div>
+                        <div
+                            style="font-size: 0.725rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">
+                            PATIENT CONDITION</div>
+                        <div style="font-size: 1.1rem; font-weight: 800;" id="clinical-need-display">TRAUMA &bull; ALS
+                            MANDATORY</div>
+                    </div>
+                    <div class="severity-badge severity-critical" id="severity-badge">CRITICAL</div>
+                </div>
+
+                <div class="meta-grid">
+                    <div class="meta-item">
+                        <div class="meta-label">TARGET LOCATION</div>
+                        <div class="meta-val" id="loc-display">26.9124, 75.7873</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">TRANSIT ETA</div>
+                        <div class="meta-val" id="eta-display">4.2 min (2.1 km)</div>
+                    </div>
+                </div>
+
+                <!-- Status Transition Controls -->
+                <div style="display: flex; flex-direction: column; gap: 0.65rem;">
+                    <button class="btn btn-primary" id="btn-next-status" onclick="advanceMissionStatus()"
+                        style="background: linear-gradient(135deg, #06b6d4, #0284c7); font-size: 0.88rem; font-weight: 800;">
+                        🚀 Accept & En-Route to Scene (Step 2)
+                    </button>
+                    <button class="btn btn-danger" id="btn-reject" onclick="rejectAssignment()">
+                        ✕ Reject Assignment (Crew Rest / Maintenance)
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 2: En-Route Transit Navigation Card -->
+            <div class="card" id="enroute-scene-card"
+                style="display: none; border-color: rgba(56, 189, 248, 0.4); background: linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(15, 23, 42, 0.95));">
+                <div class="card-header">
+                    <span class="card-title">🚀 En-Route Navigation to Scene</span>
+                    <span
+                        style="font-size: 0.7rem; padding: 0.2rem 0.55rem; border-radius: 9999px; background: rgba(56, 189, 248, 0.2); color: #38bdf8; font-weight: 800; font-family: 'JetBrains Mono', monospace;">TRANSIT
+                        ACTIVE</span>
+                </div>
+
+                <div
+                    style="display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 0.85rem; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-card); border-radius: 10px;">
+                    <div>
+                        <div
+                            style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">
+                            DESTINATION SCENE</div>
+                        <div style="font-size: 0.92rem; font-weight: 800; color: #f8fafc;" id="enroute-scene-title">
+                            Ashok Nagar, C-Scheme</div>
+                        <div style="font-size: 0.72rem; color: var(--accent-cyan); font-family: 'JetBrains Mono';"
+                            id="enroute-scene-coords">26.9124, 75.7873</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">GREEN CORRIDOR</div>
+                        <span
+                            style="display: inline-block; font-size: 0.7rem; color: var(--accent-green); font-weight: 800; background: rgba(16, 185, 129, 0.15); padding: 2px 7px; border-radius: 6px;">ACTIVE</span>
+                    </div>
+                </div>
+
+                <div class="meta-grid">
+                    <div class="meta-item">
+                        <div class="meta-label">DISTANCE REMAINING</div>
+                        <div class="meta-val" id="enroute-dist">2.1 km</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">DYNAMIC ETA</div>
+                        <div class="meta-val" id="enroute-eta" style="color: var(--accent-amber);">3.8 min</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">TRANSIT SPEED</div>
+                        <div class="meta-val" id="enroute-speed" style="color: var(--accent-cyan);">48 km/h</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">TRAFFIC PROFILE</div>
+                        <div class="meta-val" style="color: var(--accent-green);">Clear</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 0.65rem;">
+                    <button class="btn btn-primary" onclick="advanceMissionStatus()"
+                        style="background: linear-gradient(135deg, #10b981, #059669); font-size: 0.88rem; font-weight: 800;">
+                        📍 Confirm Arrival on Scene (Step 3: Begin Patient Care)
+                    </button>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button type="button" class="btn"
+                            onclick="showToast('🚨 Traffic Signal Preemption signal active!')"
+                            style="flex: 1; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-card); font-size: 0.75rem;">
+                            🚦 Signal Priority
+                        </button>
+                        <button type="button" class="btn"
+                            onclick="showToast('📞 Police traffic clearance alert dispatched.')"
+                            style="flex: 1; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-card); font-size: 0.75rem;">
+                            🚔 Police Escort
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3: On-Scene Patient Support & Clinical Care Panel -->
+            <div class="card patient-support-card" id="patient-support-card"
+                style="display: none; border-color: rgba(99, 102, 241, 0.4); background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(15, 23, 42, 0.95));">
+                <div class="card-header">
+                    <span class="card-title">🩺 Patient Support & Stabilization</span>
+                    <span id="stabilization-badge"
+                        style="font-size: 0.7rem; padding: 0.2rem 0.55rem; border-radius: 9999px; background: rgba(239, 68, 68, 0.2); color: #f87171; font-weight: 800; font-family: 'JetBrains Mono';">ACTIVE
+                        PROTOCOL</span>
+                </div>
+
+                <div style="font-size: 0.78rem; color: var(--text-secondary);">
+                    Stabilize hemodynamics, secure airway, and record initial triage vitals before initiating hospital
+                    transit.
+                </div>
+
+                <!-- Pre-hospital Stabilization Checklist -->
+                <div class="checklist-grid">
+                    <div class="check-item checked" onclick="toggleCheck(this)">
+                        <div class="check-icon">✓</div>
+                        <div style="font-size: 0.8rem; font-weight: 700;">🫁 Airway & High-Flow O₂ Mask Secured (SpO₂
+                            &gt; 96%)</div>
+                    </div>
+                    <div class="check-item checked" onclick="toggleCheck(this)">
+                        <div class="check-icon">✓</div>
+                        <div style="font-size: 0.8rem; font-weight: 700;">🩸 Hemostasis & 18G Bilateral IV Line
+                            Established</div>
+                    </div>
+                    <div class="check-item checked" onclick="toggleCheck(this)">
+                        <div class="check-icon">✓</div>
+                        <div style="font-size: 0.8rem; font-weight: 700;">🦴 Cervical Collar & Vacuum Spine Board
+                            Splinted</div>
+                    </div>
+                    <div class="check-item" onclick="toggleCheck(this)">
+                        <div class="check-icon"></div>
+                        <div style="font-size: 0.8rem; font-weight: 700;">💊 Tranexamic Acid (TXA) / Analgesia
+                            Administered</div>
+                    </div>
+                </div>
+
+                <!-- Live Vitals Capture -->
+                <div class="vitals-grid">
+                    <div class="vital-box">
+                        <div class="vital-val" id="vital-spo2">98%</div>
+                        <div class="vital-label">SpO₂</div>
+                    </div>
+                    <div class="vital-box">
+                        <div class="vital-val" id="vital-hr">84</div>
+                        <div class="vital-label">PULSE</div>
+                    </div>
+                    <div class="vital-box">
+                        <div class="vital-val" id="vital-bp">120/78</div>
+                        <div class="vital-label">BP</div>
+                    </div>
+                    <div class="vital-box">
+                        <div class="vital-val" id="vital-gcs">14/15</div>
+                        <div class="vital-label">GCS</div>
+                    </div>
+                </div>
+
+                <button class="btn btn-success" id="btn-stabilized" onclick="completeStabilizationAndTransport()"
+                    style="font-size: 0.88rem; font-weight: 800; background: linear-gradient(135deg, #10b981, #059669);">
+                    🚑 Patient Stabilized — Begin Transport to ED (Step 4)
+                </button>
+            </div>
+
+            <!-- STEP 4: Hospital Recommendation & Destination Selection -->
+            <div class="card" id="hospitals-card"
+                style="display: none; border-color: rgba(6, 182, 212, 0.4); background: linear-gradient(135deg, rgba(6, 182, 212, 0.08), rgba(15, 23, 42, 0.95));">
+                <div class="card-header">
+                    <span class="card-title">🏥 Recommended Receiving EDs</span>
+                    <span
+                        style="font-size: 0.725rem; color: var(--accent-cyan); font-family: 'JetBrains Mono';">DestinationRanker</span>
+                </div>
+
+                <p style="font-size: 0.775rem; color: var(--text-secondary);">
+                    Tap any hospital below to dynamically recalculate route and redraw polyline on the tactical map.
+                </p>
+
+                <div id="hospitals-list" style="display: flex; flex-direction: column; gap: 0.55rem;">
+                    <div class="hospital-card selected" data-id="hosp-01" data-lat="26.8988" data-lon="75.8164"
+                        data-name="SMS Apex Trauma Hospital" onclick="selectHospital(this)">
+                        <div class="hosp-name">
+                            <span>SMS Apex Trauma Hospital</span>
+                            <span class="hosp-score">Rank #1 &bull; 88 pts</span>
+                        </div>
+                        <div class="hosp-stats">
+                            <span>Free Beds: <strong>6</strong></span>
+                            <span>ICU Beds: <strong>2</strong></span>
+                            <span>ETA: <strong>6 min (3.8 km)</strong></span>
+                        </div>
+                    </div>
+                    <div class="hospital-card" data-id="hosp-02" data-lat="26.8524" data-lon="75.8054"
+                        data-name="Fortis Escorts Hospital" onclick="selectHospital(this)">
+                        <div class="hosp-name">
+                            <span>Fortis Escorts Hospital</span>
+                            <span class="hosp-score">Rank #2 &bull; 81 pts</span>
+                        </div>
+                        <div class="hosp-stats">
+                            <span>Free Beds: <strong>9</strong></span>
+                            <span>ICU Beds: <strong>4</strong></span>
+                            <span>ETA: <strong>9 min (6.2 km)</strong></span>
+                        </div>
+                    </div>
+                    <div class="hospital-card" data-id="hosp-03" data-lat="26.8623" data-lon="75.7584"
+                        data-name="EHCC Superspecialty Hospital" onclick="selectHospital(this)">
+                        <div class="hosp-name">
+                            <span>Eternal Heart Care (EHCC)</span>
+                            <span class="hosp-score">Rank #3 &bull; 74 pts</span>
+                        </div>
+                        <div class="hosp-stats">
+                            <span>Free Beds: <strong>4</strong></span>
+                            <span>ICU Beds: <strong>1</strong></span>
+                            <span>ETA: <strong>12 min (8.5 km)</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 0.65rem; margin-top: 0.4rem;">
+                    <button class="btn btn-primary" id="btn-send-alert" onclick="sendPreArrivalAlert()"
+                        style="background: linear-gradient(135deg, #06b6d4, #0284c7);">
+                        📡 Transmit Pre-Arrival Alert to ED
+                    </button>
+                    <button class="btn btn-success" id="btn-handover" onclick="advanceMissionStatus()"
+                        style="background: linear-gradient(135deg, #10b981, #059669); font-size: 0.88rem; font-weight: 800;">
+                        🏥 Arrived at ED — Complete Handover (Step 5)
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 5: Clinical Handover & Mission Wrap-Up -->
+            <div class="card" id="post-handover-card"
+                style="display: none; border-color: rgba(16, 185, 129, 0.4); background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(15, 23, 42, 0.95));">
+                <div class="card-header">
+                    <span class="card-title">🏥 Clinical Handover Protocol</span>
+                    <span
+                        style="font-size: 0.7rem; padding: 0.2rem 0.55rem; border-radius: 9999px; background: rgba(16, 185, 129, 0.2); color: #34d399; font-weight: 800; font-family: 'JetBrains Mono', monospace;">AT
+                        RECEIVING ED</span>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <span style="font-size: 1.8rem;">🎉</span>
+                    <div>
+                        <div style="font-weight: 800; font-size: 1rem; color: var(--accent-green);">Clinical Handover
+                            Protocol</div>
+                        <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.2rem;">
+                            Patient delivered to Trauma Lead at <strong id="handover-hospital-name">SMS Apex Trauma
+                                Hospital</strong>. Sign-off and return unit to available pool.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="meta-grid">
+                    <div class="meta-item">
+                        <div class="meta-label">MISSION STATUS</div>
+                        <div class="meta-val" style="color: var(--accent-green);">HANDOVER READY</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">RECEIVING ED</div>
+                        <div class="meta-val" id="handover-summary-hosp"
+                            style="color: var(--accent-cyan); font-size: 0.82rem;">SMS Apex ED</div>
+                    </div>
+                </div>
+
+                <button class="btn btn-success" id="btn-complete-handover-action" onclick="completeHandover()"
+                    style="background: linear-gradient(135deg, #10b981, #059669); font-size: 0.88rem; font-weight: 800;">
+                    ✓ Sign-Off & Complete Handover
+                </button>
+
+                <div style="display: flex; gap: 0.5rem; margin-top: 0.35rem;">
+                    <button class="btn btn-primary" onclick="simulateNextMission()"
+                        style="flex: 1; background: linear-gradient(135deg, #f43f5e, #be123c); font-size: 0.8rem;">
+                        🚨 Test Next Mission
+                    </button>
+                    <button class="btn btn-primary" onclick="resetToAvailablePool()"
+                        style="flex: 1; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border-card); font-size: 0.8rem;">
+                        🟢 Standby Pool
+                    </button>
+                </div>
+            </div>
+
+
+
+        </div>
+
+        <!-- Right Half Viewport: Free Tactical Map Canvas -->
+        <div class="crew-map-container">
+
+            <!-- Map Overlay HUD -->
+            <div class="crew-map-hud">
+                <div class="hud-route-badge" id="route-guidance-badge">
+                    <span id="route-guidance-text">📍 Leg 1: En-Route to Scene • 2.1 km • 4.2 min</span>
+                    <span style="color: var(--accent-green); font-weight: 800; font-size: 0.725rem;">GREEN
+                        CORRIDOR</span>
+                </div>
+                <div class="hud-controls">
+                    <button class="btn-hud active" onclick="recenterMap()">🎯 Recenter</button>
+                    <button class="btn-hud" id="btn-toggle-crew-map" onclick="toggleMapTheme()">🌙 Dark</button>
+                    <a href="../dispatcher/" class="btn-hud" style="text-decoration:none;">🗺️ Dispatcher</a>
+                    <a href="../" class="btn-hud" style="text-decoration:none;">🏠 Portal</a>
+                </div>
+            </div>
+
+            <!-- Free Leaflet Map Canvas (No API Key Required) -->
+            <div id="crew-map"></div>
+        </div>
+
+    </div>
+
+    <div id="toast-banner" class="toast toast-success"></div>
+
+    <script src="../demo-bridge.js"></script>
+    <script>
+        const API_HOST = window.location.hostname || 'localhost';
+        const GATEWAY_URL = ''; // Same-origin proxy through unified server
+
+        // Full 14-Unit Metropolitan Fleet Configuration
+        const FLEET_UNITS = [
+            { unitId: 'aaaaaaaa-1111-1111-1111-111111111111', callSign: 'AMB-01', type: 'ALS', lat: 26.9150, lon: 75.8100, label: 'Mobile ICU' },
+            { unitId: 'bbbbbbbb-2222-2222-2222-222222222222', callSign: 'AMB-02', type: 'BLS', lat: 26.9239, lon: 75.8267, label: 'Basic Tactical' },
+            { unitId: 'cccccccc-3333-3333-3333-333333333333', callSign: 'AMB-03', type: 'ALS', lat: 26.8988, lon: 75.8164, label: 'Trauma Unit' },
+            { unitId: 'dddddddd-4444-4444-4444-444444444444', callSign: 'AMB-04', type: 'BLS', lat: 26.9073, lon: 75.7925, label: 'Basic Tactical' },
+            { unitId: '55555555-0005-0005-0005-000000000005', callSign: 'AMB-05', type: 'ALS', lat: 26.8524, lon: 75.8054, label: 'Paramedic ALS' },
+            { unitId: '66666666-0006-0006-0006-000000000006', callSign: 'AMB-06', type: 'BLS', lat: 26.8512, lon: 75.7892, label: 'Basic Tactical' },
+            { unitId: '77777777-0007-0007-0007-000000000007', callSign: 'AMB-07', type: 'ALS', lat: 26.8623, lon: 75.7584, label: 'Paramedic ALS' },
+            { unitId: '88888888-0008-0008-0008-000000000008', callSign: 'AMB-08', type: 'BLS', lat: 26.9077, lon: 75.7397, label: 'Basic Tactical' },
+            { unitId: '99999999-0009-0009-0009-000000000009', callSign: 'AMB-09', type: 'ALS', lat: 26.8973, lon: 75.8260, label: 'Paramedic ALS' },
+            { unitId: 'aaaaaaaa-0010-0010-0010-000000000010', callSign: 'AMB-10', type: 'BLS', lat: 26.9452, lon: 75.7337, label: 'Basic Tactical' },
+            { unitId: 'bbbbbbbb-0011-0011-0011-000000000011', callSign: 'AMB-11', type: 'ALS', lat: 26.9734, lon: 75.7766, label: 'Paramedic ALS' },
+            { unitId: 'cccccccc-0012-0012-0012-000000000012', callSign: 'AMB-12', type: 'BLS', lat: 26.9050, lon: 75.7780, label: 'Basic Tactical' },
+            { unitId: 'dddddddd-0013-0013-0013-000000000013', callSign: 'AMB-13', type: 'ALS', lat: 26.8285, lon: 75.8522, label: 'Paramedic ALS' },
+            { unitId: 'eeeeeeee-0014-0014-0014-000000000014', callSign: 'AMB-14', type: 'ALS', lat: 26.7788, lon: 75.8277, label: 'Paramedic ALS' }
+        ];
+
+        let currentUnit = FLEET_UNITS[0];
+        let currentUnitId = currentUnit.unitId;
+
+        const MISSION_STATES = [
+            { key: 'AVAILABLE', label: 'AVAILABLE', btnText: 'Wait for Dispatch', pillClass: 'status-available', step: 0 },
+            { key: 'DISPATCHED', label: 'DISPATCHED', btnText: '🚀 En-Route to Scene', pillClass: 'status-dispatched', step: 1 },
+            { key: 'EN_ROUTE_SCENE', label: 'EN ROUTE SCENE', btnText: '📍 Arrived on Scene', pillClass: 'status-dispatched', step: 2 },
+            { key: 'ON_SCENE', label: 'ON SCENE (Support & Stabilize)', btnText: '🚑 En-Route to Hospital', pillClass: 'status-on-scene', step: 3 },
+            { key: 'EN_ROUTE_HOSPITAL', label: 'EN ROUTE HOSPITAL', btnText: '🏥 Arrived at Hospital ED', pillClass: 'status-hospital', step: 4 },
+            { key: 'AT_HOSPITAL', label: 'AT HOSPITAL ED', btnText: '✓ Complete Handover', pillClass: 'status-hospital', step: 5 }
+        ];
+
+        let currentStateIndex = 0; // Starts at AVAILABLE pool on standby
+        let currentIncidentId = '7210be9c-f9fb-4c11-8fd3-6b94f9d95131';
+        let selectedHospitalId = '00000000-0000-0000-0000-000000000010';
+        let selectedHospitalName = 'SMS Apex Trauma Hospital';
+
+        // Coordinates
+        let ambCoords = [currentUnit.lat, currentUnit.lon];
+        let incidentCoords = [26.9124, 75.7873];
+        let hospCoords = [26.8988, 75.8164];
+
+        // Map variables
+        let map = null;
+        let tileLayer = null;
+        let isDarkTiles = true;
+        let ambMarker = null;
+        let incidentMarker = null;
+        let hospMarker = null;
+        let routePolyline = null;
+
+        // Haversine distance in km
+        function calcHaversine(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        }
+
+        // Apply incident information dynamically to Step 1 & Step 2 UI
+        function applyIncidentData(inc) {
+            if (!inc) return;
+            currentIncidentId = inc.incidentId || currentIncidentId;
+            if (inc.lat != null && inc.lon != null && !isNaN(inc.lat) && !isNaN(inc.lon)) {
+                incidentCoords = [parseFloat(inc.lat), parseFloat(inc.lon)];
+                if (incidentMarker) incidentMarker.setLatLng(incidentCoords);
+            }
+
+            const incIdDisplay = document.getElementById('incident-id-display');
+            if (incIdDisplay) {
+                const rawId = currentIncidentId || '';
+                incIdDisplay.innerText = `#${rawId.length > 12 ? rawId.substring(0, 12).toUpperCase() : rawId.toUpperCase()}`;
+            }
+
+            const needDisplay = document.getElementById('clinical-need-display');
+            if (needDisplay) {
+                const alsTag = inc.requiresAls ? 'ALS MANDATORY' : 'BLS PRIORITY';
+                const need = inc.clinicalNeed || inc.need || 'TRAUMA';
+                needDisplay.innerText = `${need} • ${alsTag}`;
+            }
+
+            const sevBadge = document.getElementById('severity-badge');
+            if (sevBadge) {
+                const sev = (inc.severity || 'CRITICAL').toUpperCase();
+                sevBadge.innerText = sev;
+                sevBadge.className = `severity-badge ${sev === 'CRITICAL' ? 'severity-critical' : 'severity-urgent'}`;
+            }
+
+            const locDisplay = document.getElementById('loc-display');
+            const targetAddr = inc.targetAddress || 'Incident Scene';
+            if (locDisplay) {
+                locDisplay.innerText = `${incidentCoords[0].toFixed(4)}, ${incidentCoords[1].toFixed(4)} (${targetAddr})`;
+            }
+
+            const eTitle = document.getElementById('enroute-scene-title');
+            if (eTitle) eTitle.innerText = targetAddr;
+
+            const eCoords = document.getElementById('enroute-scene-coords');
+            if (eCoords) eCoords.innerText = `${incidentCoords[0].toFixed(4)}, ${incidentCoords[1].toFixed(4)}`;
+
+            const distKm = Math.max(0.3, calcHaversine(ambCoords[0], ambCoords[1], incidentCoords[0], incidentCoords[1]));
+            const etaMins = Math.max(1.0, (distKm / 35) * 60).toFixed(1);
+
+            const etaDisplay = document.getElementById('eta-display');
+            if (etaDisplay) etaDisplay.innerText = `${etaMins} min (${distKm.toFixed(1)} km)`;
+
+            const eDist = document.getElementById('enroute-dist');
+            if (eDist) eDist.innerText = `${distKm.toFixed(1)} km`;
+
+            const eEta = document.getElementById('enroute-eta');
+            if (eEta) eEta.innerText = `${etaMins} min`;
+
+            updateMapRoute();
+        }
+
+        // Dynamic Unit Selection & Multi-Device Support
+        function initUnitSelection() {
+            const params = new URLSearchParams(window.location.search);
+            const unitParam = (params.get('unit') || params.get('callSign') || params.get('unitId') || '').trim();
+
+            let matched = null;
+            if (unitParam) {
+                const norm = unitParam.toUpperCase();
+                matched = FLEET_UNITS.find(u =>
+                    u.callSign.toUpperCase() === norm ||
+                    u.callSign.toUpperCase().replace('-', '') === norm ||
+                    u.callSign.toUpperCase() === `AMB-${norm.padStart(2, '0')}` ||
+                    u.unitId.toLowerCase() === unitParam.toLowerCase()
+                );
+            }
+
+            if (!matched) matched = FLEET_UNITS[0];
+
+            populateUnitDropdown();
+            selectActiveUnit(matched.unitId, false);
+        }
+
+        function populateUnitDropdown() {
+            const options = FLEET_UNITS.map(u =>
+                `<option value="${u.unitId}">${u.callSign} (${u.type}) - ${u.label}</option>`
+            ).join('');
+            const sel1 = document.getElementById('select-unit-for-gps');
+            if (sel1) sel1.innerHTML = options;
+            const sel2 = document.getElementById('header-unit-select');
+            if (sel2) sel2.innerHTML = FLEET_UNITS.map(u =>
+                `<option value="${u.unitId}">${u.callSign}</option>`
+            ).join('');
+        }
+
+        function updateUnitDropdownBadges(units) {
+            if (!units || !Array.isArray(units)) return;
+            const sel2 = document.getElementById('header-unit-select');
+            const sel1 = document.getElementById('select-unit-for-gps');
+            const currentVal = sel2 ? sel2.value : currentUnitId;
+
+            const formatOpt = (u) => {
+                const live = units.find(lu => (lu.id === u.unitId || lu.unitId === u.unitId));
+                const st = live ? (live.status || 'AVAILABLE').toUpperCase() : 'AVAILABLE';
+                let tag = '';
+                if (st === 'DISPATCHED') tag = ' [🚨 DISPATCHED]';
+                else if (st === 'EN_ROUTE_SCENE') tag = ' [🚀 EN ROUTE]';
+                else if (st === 'ON_SCENE') tag = ' [🩺 ON SCENE]';
+                else if (st === 'EN_ROUTE_HOSPITAL') tag = ' [🏥 TO ED]';
+                else if (st === 'AT_HOSPITAL') tag = ' [🏥 AT ED]';
+                return `<option value="${u.unitId}">${u.callSign} (${u.type})${tag}</option>`;
+            };
+
+            if (sel2) {
+                sel2.innerHTML = FLEET_UNITS.map(formatOpt).join('');
+                sel2.value = currentVal;
+            }
+            if (sel1) {
+                sel1.innerHTML = FLEET_UNITS.map(u => {
+                    return `<option value="${u.unitId}">${u.callSign} (${u.type}) - ${u.label}</option>`;
+                }).join('');
+                sel1.value = currentVal;
+            }
+        }
+
+        async function selectActiveUnit(unitId, isUserChange = true) {
+            const found = FLEET_UNITS.find(u => u.unitId === unitId);
+            if (!found) return;
+            currentUnit = found;
+            currentUnitId = found.unitId;
+            ambCoords = [found.lat, found.lon];
+
+            const csDisp = document.getElementById('callsign-display');
+            if (csDisp) csDisp.innerText = found.callSign;
+            const tyDisp = document.getElementById('type-display');
+            if (tyDisp) tyDisp.innerText = `${found.type} Paramedic (${found.label})`;
+            const gLat = document.getElementById('gps-lat');
+            if (gLat) gLat.innerText = found.lat.toFixed(4);
+            const gLon = document.getElementById('gps-lon');
+            if (gLon) gLon.innerText = found.lon.toFixed(4);
+
+            const sel1 = document.getElementById('select-unit-for-gps');
+            if (sel1 && sel1.value !== found.unitId) sel1.value = found.unitId;
+            const sel2 = document.getElementById('header-unit-select');
+            if (sel2 && sel2.value !== found.unitId) sel2.value = found.unitId;
+            const mCallsign = document.getElementById('mobile-bar-callsign');
+            if (mCallsign) mCallsign.innerText = found.callSign;
+
+            if (ambMarker) {
+                ambMarker.setLatLng(ambCoords);
+                ambMarker.setIcon(L.divIcon({
+                    className: 'map-marker-pin marker-amb',
+                    html: `🚑 ${found.callSign}`,
+                    iconSize: [85, 24],
+                    iconAnchor: [42, 12]
+                }));
+            }
+
+            const url = new URL(window.location.href || window.location);
+            url.searchParams.set('unit', found.callSign);
+            if (window.history && window.history.replaceState) {
+                window.history.replaceState({}, '', url);
+            }
+
+            await syncStateForUnit(found.unitId, isUserChange);
+
+            if (isUserChange) {
+                showToast(`Switched active unit to ${found.callSign} (${found.type})`);
+                recenterMap();
+                updateMapRoute();
+            }
+        }
+
+        async function syncStateForUnit(unitId, isUserChange = false) {
+            try {
+                const res = await fetch(`${GATEWAY_URL}/dispatch/units`);
+                if (res.ok) {
+                    const units = await res.json();
+                    updateUnitDropdownBadges(units);
+                    const live = units.find(u => (u.id === unitId || u.unitId === unitId));
+                    if (live) {
+                        if (live.lat != null && live.lon != null) {
+                            ambCoords = [live.lat, live.lon];
+                            currentUnit.lat = live.lat;
+                            currentUnit.lon = live.lon;
+                            if (ambMarker) ambMarker.setLatLng(ambCoords);
+                        }
+
+                        if (live.assignedIncident) {
+                            applyIncidentData(live.assignedIncident);
+                        }
+
+                        const statusMap = {
+                            'AVAILABLE': 0,
+                            'DISPATCHED': 1,
+                            'EN_ROUTE_SCENE': 2,
+                            'ON_SCENE': 3,
+                            'EN_ROUTE_HOSPITAL': 4,
+                            'AT_HOSPITAL': 5
+                        };
+                        const liveSt = (live.status || 'AVAILABLE').toUpperCase();
+                        if (statusMap[liveSt] !== undefined) {
+                            currentStateIndex = statusMap[liveSt];
+                        }
+                        updateUIState(false);
+                    }
+                }
+            } catch (e) {
+                console.warn('Unit sync notice:', e);
+            }
+        }
+
+        // Initialize 100% Free OpenStreetMap (No API Key Required)
+        function initFreeMap() {
+            if (map) return;
+            map = L.map('crew-map', {
+                zoomControl: true,
+                attributionControl: false
+            }).setView(ambCoords, 13);
+
+            // Free OpenStreetMap Standard Tiles (No API key needed!)
+            tileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                className: 'dark-tiles'
+            }).addTo(map);
+
+            // Markers
+            ambMarker = L.marker(ambCoords, {
+                icon: L.divIcon({
+                    className: 'map-marker-pin marker-amb',
+                    html: `🚑 ${currentUnit.callSign}`,
+                    iconSize: [85, 24],
+                    iconAnchor: [42, 12]
+                })
+            }).addTo(map);
+
+            incidentMarker = L.marker(incidentCoords, {
+                icon: L.divIcon({
+                    className: 'map-marker-pin marker-scene',
+                    html: '📍 INCIDENT SCENE',
+                    iconSize: [120, 24],
+                    iconAnchor: [60, 12]
+                })
+            }).addTo(map);
+
+            hospMarker = L.marker(hospCoords, {
+                icon: L.divIcon({
+                    className: 'map-marker-pin marker-hosp',
+                    html: '🏥 SMS APEX ED',
+                    iconSize: [110, 24],
+                    iconAnchor: [55, 12]
+                })
+            }).addTo(map);
+
+            // Tap Map to Move Ambulance (Classroom demo / desk presentation fallback)
+            map.on('click', async (e) => {
+                if (!isMapClickToMoveActive) return;
+                const lat = e.latlng.lat;
+                const lon = e.latlng.lng;
+                ambCoords = [lat, lon];
+                if (ambMarker) ambMarker.setLatLng(ambCoords);
+                gpsPingCount++;
+
+                document.getElementById('gps-lat').innerText = lat.toFixed(5);
+                document.getElementById('gps-lon').innerText = lon.toFixed(5);
+                document.getElementById('gps-accuracy').innerText = 'Manual (Tap)';
+                document.getElementById('gps-ping-count').innerText = gpsPingCount;
+                document.getElementById('gps-last-ping').innerText = new Date().toLocaleTimeString();
+
+                const currentStatus = MISSION_STATES[currentStateIndex].key;
+                const unitSelect = document.getElementById('select-unit-for-gps');
+                const targetUnitId = unitSelect ? unitSelect.value : currentUnitId;
+
+                try {
+                    await fetch(`${GATEWAY_URL}/dispatch/units/${targetUnitId}/location?lat=${lat}&lon=${lon}&status=${currentStatus}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ lat: lat, lon: lon, status: currentStatus })
+                    });
+                } catch (err) { }
+
+                updateMapRoute();
+                showToast(`📍 ${currentUnit.callSign} moved to [${lat.toFixed(4)}, ${lon.toFixed(4)}] & broadcasted to Dispatcher!`);
+            });
+
+            updateMapRoute();
+
+            // Resize fix for grid view
+            setTimeout(() => { map.invalidateSize(); }, 300);
+        }
+
+        function toggleMapTheme() {
+            isDarkTiles = !isDarkTiles;
+            const container = tileLayer.getContainer();
+            const btn = document.getElementById('btn-toggle-crew-map');
+            if (isDarkTiles) {
+                if (container) container.classList.add('dark-tiles');
+                btn.innerHTML = '🌙 Dark';
+            } else {
+                if (container) container.classList.remove('dark-tiles');
+                btn.innerHTML = '☀️ Light';
+            }
+        }
+
+        function recenterMap() {
+            if (!map) return;
+            const st = MISSION_STATES[currentStateIndex].key;
+            if (st === 'EN_ROUTE_HOSPITAL' || st === 'AT_HOSPITAL') {
+                map.fitBounds([incidentCoords, hospCoords], { padding: [40, 40] });
+            } else if (st === 'ON_SCENE') {
+                map.setView(incidentCoords, 15);
+            } else {
+                map.fitBounds([ambCoords, incidentCoords], { padding: [40, 40] });
+            }
+        }
+
+        // Generate realistic street waypoints between two points with road curvature
+        function generateHighDensityRoute(start, end, numSteps = 30) {
+            const points = [start];
+            const dLat = (end[0] - start[0]) / numSteps;
+            const dLon = (end[1] - start[1]) / numSteps;
+
+            for (let i = 1; i < numSteps; i++) {
+                const curve = Math.sin((i / numSteps) * Math.PI) * 0.0022;
+                points.push([
+                    start[0] + dLat * i + curve,
+                    start[1] + dLon * i - (curve * 0.6)
+                ]);
+            }
+            points.push(end);
+            return points;
+        }
+
+        // Real-Time Location & Desk Presentation Tap Mode
+        let isMapClickToMoveActive = false;
+
+        function toggleMapClickToMove() {
+            isMapClickToMoveActive = !isMapClickToMoveActive;
+            const btn = document.getElementById('btn-map-tap-mode');
+            if (isMapClickToMoveActive) {
+                btn.style.background = 'rgba(16, 185, 129, 0.25)';
+                btn.style.color = '#34d399';
+                btn.style.borderColor = '#10b981';
+                btn.innerHTML = '🟢 Tap Map Active (Click Map to Move)';
+                showToast('Click/tap anywhere on the map to set and broadcast ambulance location!');
+            } else {
+                btn.style.background = 'rgba(56, 189, 248, 0.12)';
+                btn.style.color = '#38bdf8';
+                btn.style.borderColor = 'rgba(56, 189, 248, 0.3)';
+                btn.innerHTML = '📍 Tap Map to Move Location';
+                showToast('Tap map mode disabled');
+            }
+        }
+
+        function updateMapRoute() {
+            if (!map) return;
+
+            if (routePolyline) {
+                map.removeLayer(routePolyline);
+                routePolyline = null;
+            }
+
+            const st = MISSION_STATES[currentStateIndex].key;
+            const badge = document.getElementById('route-guidance-text');
+
+            if (st === 'DISPATCHED' || st === 'EN_ROUTE_SCENE') {
+                const waypoints = generateHighDensityRoute(ambCoords, incidentCoords, 28);
+                routePolyline = L.polyline(waypoints, {
+                    color: '#38bdf8',
+                    weight: 5,
+                    opacity: 0.9,
+                    dashArray: '8, 8'
+                }).addTo(map);
+
+                badge.innerHTML = `📍 <strong>En-Route to Scene</strong> • 2.1 km • 4.2 min via MI Road`;
+                map.fitBounds([ambCoords, incidentCoords], { padding: [40, 40] });
+                document.getElementById('loc-display').innerText = `${incidentCoords[0].toFixed(4)}, ${incidentCoords[1].toFixed(4)}`;
+                document.getElementById('eta-display').innerText = '4.2 min (2.1 km)';
+
+            } else if (st === 'ON_SCENE') {
+                badge.innerHTML = `🩺 <strong>On Scene Triaging</strong> • Patient Stabilization Active`;
+                map.setView(incidentCoords, 15);
+                document.getElementById('loc-display').innerText = 'Scene: Ajmer Gate, Jaipur';
+                document.getElementById('eta-display').innerText = '0 min (Arrived)';
+
+            } else if (st === 'EN_ROUTE_HOSPITAL' || st === 'AT_HOSPITAL') {
+                const waypoints = generateHighDensityRoute(incidentCoords, hospCoords, 28);
+                routePolyline = L.polyline(waypoints, {
+                    color: '#10b981',
+                    weight: 6,
+                    opacity: 0.9
+                }).addTo(map);
+
+                badge.innerHTML = `🏥 <strong>En-Route to Hospital</strong> • Destination: ${selectedHospitalName} (3.8 km • 6 min)`;
+                map.fitBounds([incidentCoords, hospCoords], { padding: [40, 40] });
+                document.getElementById('loc-display').innerText = `${selectedHospitalName}`;
+                document.getElementById('eta-display').innerText = '6.0 min (3.8 km)';
+
+            } else if (st === 'AVAILABLE') {
+                badge.innerHTML = `🟢 <strong>Unit Available</strong> • Tracking Live on Dispatcher Map`;
+                map.setView(ambCoords, 14);
+                document.getElementById('loc-display').innerText = 'Standby Pool';
+                document.getElementById('eta-display').innerText = 'Ready for Dispatch';
+            }
+        }
+
+        function updateUIState(syncBackend = true) {
+            const st = MISSION_STATES[currentStateIndex];
+            const pill = document.getElementById('status-pill');
+            const text = document.getElementById('status-text');
+            const btn = document.getElementById('btn-next-status');
+
+            if (pill) pill.className = `status-pill ${st.pillClass}`;
+            if (text) text.innerText = st.label;
+            if (btn) btn.innerText = st.btnText;
+
+            // 1. Update Mission Stepper (0 to 5)
+            for (let i = 0; i <= 5; i++) {
+                const el = document.getElementById(`step-${i}`);
+                if (el) {
+                    el.className = 'step-item';
+                    const circle = el.querySelector('.step-circle');
+                    if (i < currentStateIndex) {
+                        el.classList.add('completed');
+                        if (circle) circle.innerText = '✓';
+                    } else if (i === currentStateIndex) {
+                        el.classList.add('active');
+                        if (circle) circle.innerText = i;
+                    } else {
+                        if (circle) circle.innerText = i;
+                    }
+                }
+
+                // Update quick jump chip
+                const chip = document.getElementById(`chip-step-${i}`);
+                if (chip) {
+                    chip.classList.toggle('active', i === currentStateIndex);
+                }
+            }
+
+            // 2. Progressive Step-by-Step Card Disclosure: SHOW ONLY ACTIVE STEP'S PROCESS
+            const stepCards = [
+                document.getElementById('card-standby'),         // Step 0: Standby Pool & Telemetry
+                document.getElementById('incident-card'),         // Step 1: Emergency Mission Intake
+                document.getElementById('enroute-scene-card'),    // Step 2: En-Route Transit Navigation
+                document.getElementById('patient-support-card'),  // Step 3: On-Scene Clinical Care & Vitals
+                document.getElementById('hospitals-card'),        // Step 4: Hospital Recommendation & Transit
+                document.getElementById('post-handover-card')     // Step 5: Clinical Handover & Reset
+            ];
+
+            stepCards.forEach((card, idx) => {
+                if (!card) return;
+                if (idx === currentStateIndex) {
+                    card.style.display = 'flex';
+                    card.classList.add('step-card-active');
+                } else {
+                    card.style.display = 'none';
+                    card.classList.remove('step-card-active');
+                }
+            });
+
+            // Keep hospital name in sync
+            const hHosp = document.getElementById('handover-hospital-name');
+            if (hHosp) hHosp.innerText = selectedHospitalName;
+            const hSumm = document.getElementById('handover-summary-hosp');
+            if (hSumm) hSumm.innerText = selectedHospitalName;
+
+            // Update enroute scene card data if on step 2
+            if (currentStateIndex === 2) {
+                const distKm = Math.max(0.3, calcHaversine(ambCoords[0], ambCoords[1], incidentCoords[0], incidentCoords[1]));
+                const etaMins = Math.max(1.0, (distKm / 35) * 60).toFixed(1);
+                const eDist = document.getElementById('enroute-dist');
+                if (eDist) eDist.innerText = `${distKm.toFixed(1)} km`;
+                const eEta = document.getElementById('enroute-eta');
+                if (eEta) eEta.innerText = `${etaMins} min`;
+                const eCoords = document.getElementById('enroute-scene-coords');
+                if (eCoords) eCoords.innerText = `${incidentCoords[0].toFixed(4)}, ${incidentCoords[1].toFixed(4)}`;
+            }
+
+            // 3. Sync Mobile Bottom Quick Action Bar
+            const mBarBtn = document.getElementById('mobile-bar-btn');
+            const mBarPill = document.getElementById('mobile-bar-pill');
+            const mBarSub = document.getElementById('mobile-bar-subtext');
+            const mCallsign = document.getElementById('mobile-bar-callsign');
+            if (mCallsign) mCallsign.innerText = currentUnit.callSign;
+
+            if (mBarBtn) {
+                const stepBtnTexts = [
+                    '⚡ Simulate Dispatch',
+                    '🚀 Accept & En-Route',
+                    '📍 Arrived on Scene',
+                    '🚑 Begin ED Transit',
+                    '🏥 Arrived at ED',
+                    '✓ Complete Handover'
+                ];
+                mBarBtn.innerText = stepBtnTexts[currentStateIndex] || st.btnText;
+                mBarBtn.disabled = false;
+            }
+            if (mBarPill) {
+                mBarPill.className = `status-pill ${st.pillClass}`;
+                mBarPill.innerText = st.label;
+            }
+            if (mBarSub) {
+                const subtexts = [
+                    `Step 0: ${currentUnit.callSign} Standby Pool • GPS Active`,
+                    `Step 1: ${currentUnit.callSign} Dispatched • Review Mission`,
+                    `Step 2: ${currentUnit.callSign} En-Route Scene • Green Corridor`,
+                    `Step 3: ${currentUnit.callSign} On Scene • Patient Stabilization`,
+                    `Step 4: ${currentUnit.callSign} Transit to ${selectedHospitalName}`,
+                    `Step 5: ${currentUnit.callSign} Handover at ${selectedHospitalName}`
+                ];
+                mBarSub.innerText = subtexts[currentStateIndex] || st.label;
+            }
+
+            if (syncBackend) {
+                syncUnitStatusToBackend(st.key);
+            }
+            updateMapRoute();
+        }
+
+        // Clickable stepper step jump (Progressive step switcher)
+        function goToStep(index) {
+            currentStateIndex = index;
+            updateUIState();
+            const stepNames = [
+                'Step 0: Standby Pool',
+                'Step 1: Emergency Mission Intake',
+                'Step 2: En-Route Transit Navigation',
+                'Step 3: On-Scene Clinical Care & Vitals',
+                'Step 4: Hospital Destination & Transport',
+                'Step 5: Clinical Handover & Reset'
+            ];
+            showToast(`${stepNames[index]} active`);
+        }
+
+        // Quick jump to card in sidebar
+        function scrollToCard(cardId) {
+            const card = document.getElementById(cardId);
+            if (card) {
+                card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        async function advanceMissionStatus() {
+            if (currentStateIndex === 0) {
+                currentStateIndex = 1;
+                updateUIState();
+                showToast(`🚨 Emergency mission assigned for ${currentUnit.callSign}!`);
+            } else if (currentStateIndex === 1) {
+                currentStateIndex = 2; // EN_ROUTE_SCENE
+                updateUIState();
+                showToast(`🚀 Departed! En-route to Scene (Live transit tracking active).`);
+            } else if (currentStateIndex === 2) {
+                ambCoords = [incidentCoords[0], incidentCoords[1]];
+                if (ambMarker) ambMarker.setLatLng(ambCoords);
+                currentStateIndex = 3; // ON_SCENE
+                updateUIState();
+                showToast(`📍 Arrived On Scene! Patient pickup & stabilization active.`);
+            } else if (currentStateIndex === 3) {
+                currentStateIndex = 4; // EN_ROUTE_HOSPITAL
+                updateUIState();
+                showToast(`🚑 En-Route to ${selectedHospitalName} ED!`);
+            } else if (currentStateIndex === 4) {
+                ambCoords = [hospCoords[0], hospCoords[1]];
+                if (ambMarker) ambMarker.setLatLng(ambCoords);
+                currentStateIndex = 5; // AT_HOSPITAL
+                updateUIState();
+                showToast(`🏥 Arrived at ${selectedHospitalName} ED! Ready for Clinical Handover.`);
+            } else if (currentStateIndex === 5) {
+                await completeHandover();
+            }
+        }
+
+        async function completeStabilizationAndTransport() {
+            showToast('✓ Patient stabilized and loaded! Driving to receiving ED.');
+            currentStateIndex = 4; // EN_ROUTE_HOSPITAL
+            updateUIState();
+        }
+
+        function toggleCheck(el) {
+            el.classList.toggle('checked');
+            const icon = el.querySelector('.check-icon');
+            icon.innerText = el.classList.contains('checked') ? '✓' : '';
+        }
+
+        function selectHospital(card) {
+            document.querySelectorAll('.hospital-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+
+            const lat = parseFloat(card.getAttribute('data-lat'));
+            const lon = parseFloat(card.getAttribute('data-lon'));
+            const name = card.getAttribute('data-name');
+
+            hospCoords = [lat, lon];
+            selectedHospitalName = name;
+
+            if (hospMarker) {
+                hospMarker.setLatLng(hospCoords);
+                hospMarker.setIcon(L.divIcon({
+                    className: 'map-marker-pin marker-hosp',
+                    html: `🏥 ${name.split(' ')[0]} ED`,
+                    iconSize: [110, 24],
+                    iconAnchor: [55, 12]
+                }));
+            }
+
+            updateMapRoute();
+            showToast(`Target ED: ${name}. Route updated.`);
+        }
+
+        async function rejectAssignment() {
+            currentStateIndex = 0;
+            updateUIState();
+            showToast('Assignment rejected — Unit returned to available pool');
+        }
+
+        async function sendPreArrivalAlert() {
+            const btn = document.getElementById('btn-send-alert');
+            btn.disabled = true;
+            btn.innerText = '📡 Alert Transmitted to ED!';
+            showToast(`Pre-Arrival Alert broadcast to ${selectedHospitalName} ED trauma team via AlertHub SSE`);
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerText = '📡 Transmit Pre-Arrival Alert to ED';
+            }, 3000);
+        }
+
+        async function completeHandover() {
+            showToast(`✓ Clinical handover completed! ${currentUnit.callSign} returned to AVAILABLE.`);
+
+            try {
+                await fetch(`${GATEWAY_URL}/hospitals/${selectedHospitalId}/handover`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        incidentId: currentIncidentId,
+                        unitId: currentUnitId,
+                        notes: 'Polytrauma stabilization completed on-scene. Handed over to Trauma Lead.'
+                    })
+                });
+            } catch (e) {
+                console.warn('Handover service call notice:', e);
+            }
+
+            try {
+                await fetch(`${GATEWAY_URL}/dispatch/units/${currentUnitId}/status?status=AVAILABLE`, {
+                    method: 'POST'
+                });
+            } catch (e) { }
+
+            ambCoords = [hospCoords[0], hospCoords[1]];
+            if (ambMarker) ambMarker.setLatLng(ambCoords);
+
+            currentStateIndex = 0; // AVAILABLE (Standby Pool)
+            updateUIState();
+            await syncUnitStatusToBackend('AVAILABLE');
+        }
+
+        async function resetToAvailablePool() {
+            currentStateIndex = 0;
+            updateUIState();
+            try {
+                await fetch(`${GATEWAY_URL}/dispatch/units/${currentUnitId}/status?status=AVAILABLE`, { method: 'POST' });
+            } catch (e) { }
+            showToast(`Ambulance ${currentUnit.callSign} is AVAILABLE on standby in hospital bay`);
+        }
+
+        async function simulateNextMission() {
+            const incId = 'INC-' + Math.floor(Math.random() * 100000000).toString().padStart(8, '0');
+            const inc = {
+                incidentId: incId,
+                lat: 26.9124 + (Math.random() - 0.5) * 0.02,
+                lon: 75.7873 + (Math.random() - 0.5) * 0.02,
+                severity: 'CRITICAL',
+                clinicalNeed: 'TRAUMA',
+                requiresAls: currentUnit.type === 'ALS',
+                targetAddress: 'Ajmer Gate, Jaipur'
+            };
+            applyIncidentData(inc);
+            currentStateIndex = 1; // DISPATCHED
+            updateUIState();
+            showToast(`🚨 Emergency Call Dispatched! ${currentUnit.callSign} assigned.`);
+            try {
+                await fetch(`${GATEWAY_URL}/dispatch/units/${currentUnitId}/status?status=DISPATCHED`, { method: 'POST' });
+            } catch (e) { }
+        }
+
+        async function syncUnitStatusToBackend(statusKey) {
+            const unitSelect = document.getElementById('select-unit-for-gps');
+            const targetUnitId = unitSelect ? unitSelect.value : currentUnitId;
+            try {
+                await fetch(`${GATEWAY_URL}/dispatch/units/${targetUnitId}/location?lat=${ambCoords[0]}&lon=${ambCoords[1]}&status=${statusKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ lat: ambCoords[0], lon: ambCoords[1], status: statusKey })
+                });
+            } catch (err) {
+                console.warn('Status sync notice:', err);
+            }
+        }
+
+        // Live Real-Time Dispatch Listener from Central Control
+        async function pollMyUnitStatus() {
+            try {
+                const res = await fetch(`${GATEWAY_URL}/dispatch/units`);
+                if (res.ok) {
+                    const units = await res.json();
+                    updateUnitDropdownBadges(units);
+
+                    const me = units.find(u => (u.id === currentUnitId || u.unitId === currentUnitId));
+                    if (me) {
+                        const backendStatus = (me.status || 'AVAILABLE').toUpperCase();
+
+                        if (me.assignedIncident) {
+                            applyIncidentData(me.assignedIncident);
+                        }
+
+                        // If ambulance was AVAILABLE and central control dispatched this unit:
+                        if (currentStateIndex === 0 && (backendStatus === 'DISPATCHED' || backendStatus === 'EN_ROUTE_SCENE')) {
+                            currentStateIndex = (backendStatus === 'EN_ROUTE_SCENE') ? 2 : 1;
+                            updateUIState(false);
+                            showToast(`🚨 Incoming Mission! ${currentUnit.callSign} assigned by Control.`);
+                            recenterMap();
+                        }
+                    }
+                }
+            } catch (e) { }
+        }
+        setInterval(pollMyUnitStatus, 2000);
+
+        // Instant cross-tab sync with Central Dispatcher
+        let syncChannel;
+        try {
+            syncChannel = new BroadcastChannel('h8_demo_sync');
+            syncChannel.onmessage = function (e) {
+                if (!e || !e.data) return;
+                if (e.data.type === 'unit_dispatched') {
+                    handleIncomingDispatch(e.data);
+                } else if (e.data.type === 'state_changed') {
+                    pollMyUnitStatus();
+                }
+            };
+        } catch (e) { }
+
+        function handleIncomingDispatch(data) {
+            const dispatchedUnitId = data.unitId;
+            const callSign = data.callSign;
+            const incident = data.incident;
+
+            // If the PWA is currently viewing this unit OR is in AVAILABLE standby (Step 0):
+            // Switch to this ambulance and show the dispatched emergency mission card!
+            if (currentUnitId === dispatchedUnitId || currentStateIndex === 0) {
+                selectActiveUnit(dispatchedUnitId, false).then(() => {
+                    if (incident) applyIncidentData(incident);
+                    currentStateIndex = 1; // Step 1: Emergency Mission Intake
+                    updateUIState(false);
+                    showToast(`🚨 Incoming Mission Assigned to ${callSign}! Emergency corridor activated.`);
+                    recenterMap();
+                });
+            } else {
+                showToast(`ℹ️ Central Control dispatched ${callSign} to Incident #${(incident.incidentId || '').substring(0, 8)}.`);
+                pollMyUnitStatus();
+            }
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast-banner');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 4000);
+        }
+
+        let gpsWatchId = null;
+        let isGpsActive = false;
+        let gpsPingCount = 0;
+
+        async function toggleGpsTracking() {
+            const btn = document.getElementById('btn-toggle-gps');
+            const badge = document.getElementById('gps-status-badge');
+
+            if (isGpsActive) {
+                if (gpsWatchId) {
+                    navigator.geolocation.clearWatch(gpsWatchId);
+                    gpsWatchId = null;
+                }
+                isGpsActive = false;
+                btn.innerText = '📡 Start Real-Time GPS Sharing';
+                btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                badge.innerText = 'GPS INACTIVE';
+                badge.style.background = 'rgba(239, 68, 68, 0.2)';
+                badge.style.color = '#f87171';
+                document.getElementById('gps-speed').innerText = '0.0 km/h';
+                showToast('Device GPS tracking stopped');
+                return;
+            }
+
+            if (!navigator.geolocation) {
+                alert('Geolocation is not supported by your browser. You can use the "Tap Map to Move Location" option below.');
+                return;
+            }
+
+            btn.innerText = 'Connecting Device GPS...';
+            isGpsActive = true;
+
+            const unitSelect = document.getElementById('select-unit-for-gps');
+            const targetUnitId = unitSelect ? unitSelect.value : currentUnitId;
+
+            gpsWatchId = navigator.geolocation.watchPosition(
+                async (pos) => {
+                    const lat = pos.coords.latitude;
+                    const lon = pos.coords.longitude;
+                    const accuracy = pos.coords.accuracy ? `±${Math.round(pos.coords.accuracy)}m` : '±5m';
+                    const speed = (pos.coords.speed && pos.coords.speed > 0) ? (pos.coords.speed * 3.6).toFixed(1) + ' km/h' : '0.0 km/h';
+                    const nowStr = new Date().toLocaleTimeString();
+                    gpsPingCount++;
+
+                    ambCoords = [lat, lon];
+                    if (ambMarker) {
+                        ambMarker.setLatLng(ambCoords);
+                    }
+
+                    document.getElementById('gps-lat').innerText = lat.toFixed(5);
+                    document.getElementById('gps-lon').innerText = lon.toFixed(5);
+                    document.getElementById('gps-accuracy').innerText = accuracy;
+                    document.getElementById('gps-speed').innerText = speed;
+                    document.getElementById('gps-ping-count').innerText = gpsPingCount;
+                    document.getElementById('gps-last-ping').innerText = nowStr;
+
+                    btn.innerText = `⏹ Stop GPS Sharing (${currentUnit.callSign})`;
+                    btn.style.background = 'linear-gradient(135deg, #ef4444, #b91c1c)';
+                    badge.innerText = 'LIVE GPS ACTIVE';
+                    badge.style.background = 'rgba(16, 185, 129, 0.2)';
+                    // If first time receiving real GPS, adapt local incident & hospital route
+                    setLocalDemoPoints(lat, lon);
+
+                    const currentStatus = MISSION_STATES[currentStateIndex].key;
+
+                    // Stream physical device coordinates to central Dispatcher & backend
+                    try {
+                        await fetch(`${GATEWAY_URL}/dispatch/units/${targetUnitId}/location?lat=${lat}&lon=${lon}&status=${currentStatus}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ lat: lat, lon: lon, status: currentStatus })
+                        });
+                    } catch (err) {
+                        console.warn('GPS ping notice:', err);
+                    }
+
+                    updateMapRoute();
+                },
+                (err) => {
+                    isGpsActive = false;
+                    btn.innerText = '📡 Start Real-Time GPS Sharing';
+                    btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                    badge.innerText = 'GPS BLOCKED';
+                    badge.style.background = 'rgba(239, 68, 68, 0.2)';
+                    badge.style.color = '#f87171';
+                    showToast(`Notice: Location access blocked (${err.message}). Touch map anywhere to move ambulance.`);
+                },
+                {
+                    enableHighAccuracy: true,
+                    maximumAge: 1000,
+                    timeout: 10000
+                }
+            );
+
+            showToast(`Real-time GPS sharing started for ${currentUnit.callSign}!`);
+        }
+
+        let hasInitializedLocalCoordinates = false;
+        function setLocalDemoPoints(lat, lon) {
+            if (hasInitializedLocalCoordinates) return;
+            hasInitializedLocalCoordinates = true;
+            // Set incident ~350m offset from phone location for a realistic demo
+            incidentCoords = [lat + 0.0032, lon + 0.0032];
+            // Set receiving ED ~800m offset
+            hospCoords = [lat - 0.0055, lon + 0.0045];
+
+            if (incidentMarker) incidentMarker.setLatLng(incidentCoords);
+            if (hospMarker) hospMarker.setLatLng(hospCoords);
+            updateMapRoute();
+        }
+
+        function autoConnectPhoneGPS() {
+            // Enable Tap Map mode by default as immediate fallback for presentations
+            isMapClickToMoveActive = true;
+            const tapBtn = document.getElementById('btn-map-tap-mode');
+            if (tapBtn) {
+                tapBtn.style.background = 'rgba(16, 185, 129, 0.25)';
+                tapBtn.style.color = '#34d399';
+                tapBtn.style.borderColor = '#10b981';
+                tapBtn.innerHTML = '🟢 Tap Map Active (Touch Screen to Move)';
+            }
+
+            if (!navigator.geolocation) {
+                showToast('📱 Touch map to set your ambulance location');
+                return;
+            }
+
+            // Immediately query real device position on phone load
+            navigator.geolocation.getCurrentPosition(
+                async (pos) => {
+                    const lat = pos.coords.latitude;
+                    const lon = pos.coords.longitude;
+                    ambCoords = [lat, lon];
+                    currentUnit.lat = lat;
+                    currentUnit.lon = lon;
+
+                    setLocalDemoPoints(lat, lon);
+
+                    if (ambMarker) ambMarker.setLatLng(ambCoords);
+                    if (map) map.setView(ambCoords, 15);
+
+                    document.getElementById('gps-lat').innerText = lat.toFixed(5);
+                    document.getElementById('gps-lon').innerText = lon.toFixed(5);
+                    document.getElementById('gps-accuracy').innerText = pos.coords.accuracy ? `±${Math.round(pos.coords.accuracy)}m` : '±5m';
+
+                    // Stream initial position to backend
+                    const currentStatus = MISSION_STATES[currentStateIndex].key;
+                    try {
+                        await fetch(`${GATEWAY_URL}/dispatch/units/${currentUnitId}/location?lat=${lat}&lon=${lon}&status=${currentStatus}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ lat: lat, lon: lon, status: currentStatus })
+                        });
+                    } catch (e) { }
+
+                    // Activate continuous streaming
+                    toggleGpsTracking();
+                    showToast(`📍 Connected phone GPS! Ambulance positioned at your physical location.`);
+                },
+                (err) => {
+                    console.warn('Phone GPS prompt notice:', err);
+                    showToast('📱 Tap anywhere on your phone screen to set & move your ambulance live!');
+                },
+                { enableHighAccuracy: true, timeout: 6000 }
+            );
+        }
+
+        // Mobile View Switching Logic
+        function setMobileView(mode) {
+            const layout = document.querySelector('.crew-layout');
+            const modes = ['console', 'map', 'vitals', 'hospitals', 'split'];
+            modes.forEach(m => {
+                const btn = document.getElementById(`btn-tab-${m}`);
+                if (btn) btn.classList.toggle('active', mode === m);
+            });
+
+            if (layout) {
+                modes.forEach(m => layout.classList.remove(`mobile-mode-${m}`));
+                layout.classList.add(`mobile-mode-${mode}`);
+            }
+
+            if (mode === 'vitals') {
+                goToStep(3);
+            } else if (mode === 'hospitals') {
+                goToStep(4);
+            }
+
+            if (map) {
+                setTimeout(() => {
+                    map.invalidateSize();
+                    if (mode === 'map' || mode === 'split') recenterMap();
+                }, 150);
+            }
+        }
+
+        // Fetch Real Hospitals from Backend API
+        async function loadHospitalsFromBackend() {
+            try {
+                const res = await fetch(`${GATEWAY_URL}/hospitals`);
+                if (res.ok) {
+                    const list = await res.json();
+                    if (Array.isArray(list) && list.length > 0) {
+                        renderHospitalList(list);
+                    }
+                }
+            } catch (err) {
+                console.warn('Could not fetch hospitals from backend:', err);
+            }
+        }
+
+        function renderHospitalList(list) {
+            const container = document.getElementById('hospitals-list');
+            if (!container) return;
+            container.innerHTML = list.map((h, idx) => {
+                const isSel = idx === 0;
+                if (isSel) {
+                    selectedHospitalId = h.id;
+                    selectedHospitalName = h.name;
+                    hospCoords = [h.lat, h.lon];
+                }
+                const caps = (h.capabilities || []).map(c => `<span style="font-size:0.65rem; padding:1px 5px; background:rgba(56,189,248,0.15); border:1px solid rgba(56,189,248,0.3); border-radius:4px; color:#38bdf8;">${c}</span>`).join(' ');
+                return `
+                    <div class="hospital-card ${isSel ? 'selected' : ''}" data-id="${h.id}" data-lat="${h.lat}" data-lon="${h.lon}" data-name="${h.name}" onclick="selectHospital(this)">
+                        <div class="hosp-name">
+                            <span>${h.name}</span>
+                            <span class="hosp-score">Rank #${idx + 1} &bull; ${90 - idx * 6} pts</span>
+                        </div>
+                        <div style="margin: 3px 0; display:flex; gap:4px; flex-wrap:wrap;">${caps}</div>
+                        <div class="hosp-stats">
+                            <span>Free Beds: <strong>${Math.max(3, 8 - idx * 2)}</strong></span>
+                            <span>ICU Beds: <strong>${Math.max(1, 3 - idx)}</strong></span>
+                            <span>ETA: <strong>${(5.2 + idx * 2.4).toFixed(1)} min (${(3.1 + idx * 1.7).toFixed(1)} km)</strong></span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        window.onload = () => {
+            initUnitSelection();
+            initFreeMap();
+            updateUIState();
+            autoConnectPhoneGPS();
+            loadHospitalsFromBackend();
+        };
+
+        window.onresize = () => {
+            if (map) map.invalidateSize();
+        };
+    </script>
+
+    <!-- Mobile Bottom Quick Action Bar -->
+    <div class="mobile-bottom-bar" id="mobile-bottom-bar">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <span class="unit-callsign" id="mobile-bar-callsign"
+                    style="font-size: 0.92rem; font-weight: 800;">AMB-01</span>
+                <span class="status-pill status-available" id="mobile-bar-pill"
+                    style="font-size: 0.65rem; padding: 2px 7px;">AVAILABLE</span>
+            </div>
+            <span style="font-size: 0.7rem; color: var(--accent-cyan);" id="mobile-bar-subtext">Standby Pool • GPS
+                Ready</span>
+        </div>
+        <button class="btn btn-primary" id="mobile-bar-btn" onclick="advanceMissionStatus()"
+            style="padding: 9px 14px; font-size: 0.78rem; font-weight: 800; min-width: 140px; box-shadow: 0 4px 14px rgba(56, 189, 248, 0.4);">
+            ⚡ Accept Mission
+        </button>
+    </div>
+</body>
+
+</html>

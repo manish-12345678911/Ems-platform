@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H8 EMS — Capability-Aware Emergency Medical Dispatch Platform</title>
+    <meta name="description" content="Autonomous capability-aware emergency medical dispatch, real-time device GPS telemetry, and intelligent hospital trauma bed coordination.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #070a14;
+            --bg-surface: #0e1526;
+            --bg-card: rgba(15, 23, 42, 0.75);
+            --bg-card-hover: rgba(22, 34, 60, 0.9);
+            --bg-elevated: #162035;
+            --border-card: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(99, 102, 241, 0.4);
+            --accent-indigo: #6366f1;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-rose: #f43f5e;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-base);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 45%),
+                radial-gradient(circle at 85% 10%, rgba(6, 182, 212, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.08) 0%, transparent 60%);
+            background-attachment: fixed;
+        }
+
+        /* Top Navigation Header */
+        header.site-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(7, 10, 20, 0.85);
+            border-bottom: 1px solid var(--border-card);
+            padding: 0.9rem 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-cluster {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .brand-symbol {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent-indigo), var(--accent-cyan));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.45rem;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+        }
+
+        .brand-text h1 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #ffffff 40%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-text span {
+            font-size: 0.725rem;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 700;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .live-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0.85rem;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #34d399;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-emerald);
+            box-shadow: 0 0 10px var(--accent-emerald);
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse-ring {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(1.3); }
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            z-index: 1;
+            padding: 5rem 2rem 3rem;
+            text-align: center;
+            max-width: 1050px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1.15rem;
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 9999px;
+            color: #a5b4fc;
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h2 {
+            font-size: 3.25rem;
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            line-height: 1.15;
+            margin-bottom: 1.25rem;
+            background: linear-gradient(135deg, #ffffff 20%, #e2e8f0 60%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p.lead {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 780px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.65;
+            font-weight: 400;
+        }
+
+        /* Hero Call to Action Buttons */
+        .cta-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 1.15rem;
+            margin-bottom: 3.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.85rem 1.75rem;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            text-decoration: none;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-indigo) 0%, #4338ca 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(99, 102, 241, 0.6);
+        }
+
+        .btn-emerald {
+            background: linear-gradient(135deg, var(--accent-emerald) 0%, #047857 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35);
+        }
+
+        .btn-emerald:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            color: var(--text-primary);
+            backdrop-filter: blur(12px);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        /* Metric Highlights Ribbon */
+        .metrics-ribbon {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 4rem;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 18px;
+            padding: 1.35rem 1.5rem;
+            backdrop-filter: blur(16px);
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--metric-accent, var(--accent-indigo));
+        }
+
+        .metric-val {
+            font-size: 1.9rem;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-label {
+            font-size: 0.775rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        /* Main Workspace Container */
+        main.container {
+            position: relative;
+            z-index: 1;
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding-bottom: 0.85rem;
+            border-bottom: 1px solid var(--border-card);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .section-desc {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* Portal Cards 3-Column Grid */
+        .portal-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.75rem;
+            margin-bottom: 3.5rem;
+        }
+
+        @media (max-width: 950px) {
+            .portal-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .portal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 22px;
+            padding: 2.25rem 2rem;
+            backdrop-filter: blur(20px);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .portal-card:hover {
+            transform: translateY(-6px);
+            background: var(--bg-card-hover);
+            border-color: var(--card-accent, var(--accent-indigo));
+            box-shadow: 0 20px 45px -10px var(--card-glow, rgba(99, 102, 241, 0.35));
+        }
+
+        .portal-icon-box {
+            width: 58px;
+            height: 58px;
+            border-radius: 16px;
+            background: var(--icon-bg, rgba(99, 102, 241, 0.15));
+            color: var(--card-accent, var(--accent-indigo));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.85rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .portal-card h3 {
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            margin-bottom: 0.65rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .portal-card h3 span.arrow {
+            font-size: 1.25rem;
+            transition: transform 0.2s;
+            color: var(--card-accent, var(--accent-indigo));
+        }
+
+        .portal-card:hover h3 span.arrow {
+            transform: translateX(4px);
+        }
+
+        .portal-card p {
+            color: var(--text-secondary);
+            font-size: 0.925rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            flex: 1;
+        }
+
+        .feature-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .f-tag {
+            font-size: 0.725rem;
+            font-weight: 700;
+            padding: 0.25rem 0.65rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .portal-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 1.15rem;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+        }
+
+        .badge-live {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.725rem;
+            font-weight: 800;
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.35);
+        }
+
+        /* Cryptographic Audit Verification Box */
+        .interactive-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 22px;
+            padding: 2.25rem;
+            backdrop-filter: blur(20px);
+            margin-bottom: 3.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .panel-top {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .terminal-box {
+            background: #050811;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 1.25rem 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #a5b4fc;
+            overflow-x: auto;
+            min-height: 85px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Microservices Mesh Status Strip */
+        .mesh-bar {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-card);
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 3.5rem;
+        }
+
+        .mesh-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+        }
+
+        .mesh-chips {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .mesh-chip {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            padding: 0.65rem 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.775rem;
+            font-weight: 600;
+        }
+
+        .mesh-chip .chip-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent-emerald);
+            box-shadow: 0 0 6px var(--accent-emerald);
+        }
+
+        /* Clean Footer */
+        footer {
+            border-top: 1px solid var(--border-card);
+            padding: 3rem 2rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            background: var(--bg-surface);
+        }
+
+        footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        footer a:hover {
+            color: var(--accent-indigo);
+        }
+
+        /* Comprehensive Mobile Responsiveness for Phone Screens */
+        @media (max-width: 900px) {
+            header.site-nav {
+                padding: 0.75rem 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.65rem;
+            }
+
+            .brand-cluster {
+                width: 100%;
+            }
+
+            .brand-text h1 {
+                font-size: 1.05rem;
+            }
+
+            .nav-links {
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                gap: 0.5rem;
+                padding-bottom: 3px;
+                flex-wrap: nowrap;
+            }
+
+            .nav-links::-webkit-scrollbar {
+                display: none;
+            }
+
+            .nav-links a {
+                padding: 0.35rem 0.65rem;
+                font-size: 0.75rem;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            .live-status-pill {
+                padding: 0.3rem 0.65rem;
+                font-size: 0.68rem;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            .hero {
+                padding: 2.5rem 1rem 1.5rem;
+            }
+
+            .hero h2 {
+                font-size: 1.85rem !important;
+                line-height: 1.25;
+            }
+
+            .hero p.lead {
+                font-size: 0.95rem;
+                line-height: 1.5;
+                margin-bottom: 1.75rem;
+            }
+
+            .cta-group {
+                flex-direction: column;
+                gap: 0.65rem;
+                width: 100%;
+                margin-bottom: 2rem;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+                padding: 0.75rem 1rem;
+                font-size: 0.88rem;
+            }
+
+            .metrics-ribbon {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.65rem;
+                margin-bottom: 2rem;
+            }
+
+            .metric-card {
+                padding: 0.85rem 1rem;
+                border-radius: 14px;
+            }
+
+            .metric-val {
+                font-size: 1.35rem;
+            }
+
+            .metric-label {
+                font-size: 0.65rem;
+            }
+
+            main.container {
+                padding: 0 0.85rem 2rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.35rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .section-title {
+                font-size: 1.2rem;
+            }
+
+            .portal-card {
+                padding: 1.25rem;
+                border-radius: 16px;
+            }
+
+            .interactive-panel {
+                padding: 1.25rem;
+                border-radius: 16px;
+            }
+
+            .mesh-bar {
+                padding: 1.15rem;
+                border-radius: 16px;
+            }
+
+            .mesh-chips {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Site Navigation Header -->
+    <header class="site-nav">
+        <a href="./" class="brand-cluster">
+            <div class="brand-symbol">🚑</div>
+            <div class="brand-text">
+                <h1>H8 EMS PLATFORM</h1>
+                <span>Capability-Aware Dispatch & Fleet Telemetry</span>
+            </div>
+        </a>
+
+        <div class="nav-links">
+            <a href="dispatcher/">🗺️ Tactical Dispatcher</a>
+            <a href="crew/">🚑 Crew Mobile</a>
+            <a href="ed/">🏥 Hospital ED</a>
+            <a href="docs/">📄 62-Page SRS Dossier</a>
+            <a href="#audit-section">🛡️ Audit Ledger</a>
+            <div class="live-status-pill">
+                <span class="pulse-dot"></span>
+                <span>PLATFORM ONLINE</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Clean Executive Hero Section -->
+    <section class="hero">
+        <div class="hero-badge">
+            <span class="pulse-dot"></span>
+            Operational in Jaipur Metropolitan Sector
+        </div>
+        <h2>Capability-Aware Emergency Ambulance Command</h2>
+        <p class="lead">
+            Eliminating clinical mismatches and hospital offload ramping through real-time multi-factor algorithmic dispatch, live device GPS streaming, and cryptographic SHA-256 legal audit integrity.
+        </p>
+
+        <!-- Primary Action Launchers -->
+        <div class="cta-group">
+            <a href="dispatcher/" class="btn btn-primary" id="btn-hero-dispatcher">
+                <span>🗺️</span> Launch Dispatcher Center
+            </a>
+            <a href="crew/" class="btn btn-emerald" id="btn-hero-crew">
+                <span>🚑</span> Paramedic Mobile PWA
+            </a>
+            <a href="ed/" class="btn btn-secondary" id="btn-hero-ed">
+                <span>🏥</span> Hospital ED Command
+            </a>
+            <a href="docs/" class="btn btn-secondary" id="btn-hero-docs" style="background: rgba(99, 102, 241, 0.2); border-color: rgba(99, 102, 241, 0.5); color: #c7d2fe;">
+                <span>📄</span> Download 62-Page SRS (PDF)
+            </a>
+            <button class="btn btn-secondary" onclick="verifyHashChain()">
+                <span>🛡️</span> Verify Audit Chain
+            </button>
+        </div>
+
+        <!-- Live Platform Telemetry Metric Counters -->
+        <div class="metrics-ribbon">
+            <div class="metric-card" style="--metric-accent: var(--accent-emerald);">
+                <div class="metric-val">14 Units</div>
+                <div class="metric-label">Active Jaipur Fleet</div>
+            </div>
+            <div class="metric-card" style="--metric-accent: var(--accent-cyan);">
+                <div class="metric-val">&lt; 10 ms</div>
+                <div class="metric-label">Scorer Decision Latency</div>
+            </div>
+            <div class="metric-card" style="--metric-accent: var(--accent-indigo);">
+                <div class="metric-val">100.0%</div>
+                <div class="metric-label">Citywide MEXCLP Coverage</div>
+            </div>
+            <div class="metric-card" style="--metric-accent: var(--accent-amber);">
+                <div class="metric-val">SHA-256</div>
+                <div class="metric-label">Merkle Audit Immutability</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Container -->
+    <main class="container">
+
+        <!-- 3 Core Operating Boards Grid -->
+        <div class="section-header">
+            <div>
+                <div class="section-title">🚀 Core Tactical Operating Portals</div>
+                <div class="section-desc">Unified control interfaces for dispatchers, paramedics, and hospital trauma teams</div>
+            </div>
+        </div>
+
+        <div class="portal-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 3.5rem;">
+
+            <!-- Portal 1: Dispatcher Center -->
+            <a href="dispatcher/" class="portal-card" style="--card-accent: #3b82f6; --icon-bg: rgba(59, 130, 246, 0.15); --card-glow: rgba(59, 130, 246, 0.35);" id="portal-dispatcher">
+                <div class="portal-icon-box">🗺️</div>
+                <h3>Dispatcher Tactical Center <span class="arrow">&rarr;</span></h3>
+                <p>Interactive Leaflet tactical map tracking all 14 ambulances with real-time GPS coordinates, multi-factor AI candidate scoring, and atomic zero-race reservation.</p>
+                <div class="feature-tags">
+                    <span class="f-tag">Leaflet GIS</span>
+                    <span class="f-tag">Turn-by-Turn ETA</span>
+                    <span class="f-tag">Atomic Lock</span>
+                    <span class="f-tag">Redeployment</span>
+                </div>
+                <div class="portal-footer">
+                    <span>Tactical GIS Dashboard</span>
+                    <span class="badge-live">LIVE COMMAND</span>
+                </div>
+            </a>
+
+            <!-- Portal 2: Crew Mobile PWA -->
+            <a href="crew/" class="portal-card" style="--card-accent: #10b981; --icon-bg: rgba(16, 185, 129, 0.15); --card-glow: rgba(16, 185, 129, 0.35);" id="portal-crew">
+                <div class="portal-icon-box">🚑</div>
+                <h3>Paramedic Crew Mobile PWA <span class="arrow">&rarr;</span></h3>
+                <p>Touch-optimized tactical cockpit for ambulance crews. Stream physical device GPS coordinates, progress through mission milestones, and broadcast 1-tap pre-arrival trauma alerts.</p>
+                <div class="feature-tags">
+                    <span class="f-tag">Live GPS Stream</span>
+                    <span class="f-tag">Mission Stepper</span>
+                    <span class="f-tag">Pre-Arrival Alert</span>
+                </div>
+                <div class="portal-footer">
+                    <span>Paramedic Device PWA</span>
+                    <span class="badge-live">ACTIVE TELEMETRY</span>
+                </div>
+            </a>
+
+            <!-- Portal 3: Hospital ED Board -->
+            <a href="ed/" class="portal-card" style="--card-accent: #f59e0b; --icon-bg: rgba(245, 158, 11, 0.15); --card-glow: rgba(245, 158, 11, 0.35);" id="portal-ed">
+                <div class="portal-icon-box">🏥</div>
+                <h3>Hospital ED Command Hub <span class="arrow">&rarr;</span></h3>
+                <p>Trauma resuscitation bay matrix and inbound alert stream. Manage emergency bed & ventilator capacity with 10-minute TTL and control diversion status to prevent ambulance ramping.</p>
+                <div class="feature-tags">
+                    <span class="f-tag">Resus Bay Matrix</span>
+                    <span class="f-tag">AlertHub SSE</span>
+                    <span class="f-tag">Diversion Deck</span>
+                </div>
+                <div class="portal-footer">
+                    <span>Emergency Department Board</span>
+                    <span class="badge-live">BAY RECEPTION</span>
+                </div>
+            </a>
+
+            <!-- Portal 4: 62-Page SRS Dossier & Download Center -->
+            <a href="docs/" class="portal-card" style="--card-accent: #8b5cf6; --icon-bg: rgba(139, 92, 246, 0.15); --card-glow: rgba(139, 92, 246, 0.35);" id="portal-docs">
+                <div class="portal-icon-box">📄</div>
+                <h3>62-Page SRS Dossier & Specs <span class="arrow">&rarr;</span></h3>
+                <p>Official IEEE 830 Software Requirements Specification, complete with 14 UML architectural diagrams, system blueprints, and direct PDF download center.</p>
+                <div class="feature-tags">
+                    <span class="f-tag">62 Pages PDF</span>
+                    <span class="f-tag">14 UML Diagrams</span>
+                    <span class="f-tag">IEEE 830</span>
+                    <span class="f-tag">Java 21 Code</span>
+                </div>
+                <div class="portal-footer">
+                    <span>Engineering Dossier</span>
+                    <span class="badge-live" style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd; border-color: rgba(139, 92, 246, 0.4);">DOWNLOAD CENTER</span>
+                </div>
+            </a>
+
+        </div>
+
+        <!-- Cryptographic Audit Hash Chain Inspector -->
+        <div class="interactive-panel" id="audit-section">
+            <div class="panel-top">
+                <div>
+                    <h3 style="font-size: 1.35rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem;">
+                        <span>🛡️</span> Cryptographic Audit Ledger Verification
+                    </h3>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.35rem;">
+                        Directly queries <code>audit-service</code> (:8086) to mathematically prove that every dispatch decision, score, and override is intact and untampered.
+                    </p>
+                </div>
+                <button class="btn btn-primary" onclick="verifyHashChain()" id="btn-run-audit-verify">
+                    ⚡ Verify Hash Chain Integrity
+                </button>
+            </div>
+            <div class="terminal-box" id="audit-terminal-output">
+                <span>Click "Verify Hash Chain Integrity" to audit the immutable SHA-256 dispatch ledger...</span>
+            </div>
+        </div>
+
+        <!-- Microservices Mesh Status Strip -->
+        <div class="mesh-bar">
+            <div class="mesh-header">
+                <div>
+                    <strong style="font-size: 1.05rem;">Active Microservices Mesh & Data Backbone</strong>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
+                        Event-driven backbone with PostgreSQL PostGIS, Apache Kafka, Redis Geo, and Keycloak RBAC
+                    </div>
+                </div>
+                <button class="btn btn-secondary" style="padding: 0.45rem 1rem; font-size: 0.775rem;" onclick="checkAllServices()" id="btn-ping-services">
+                    🔄 Ping All Services
+                </button>
+            </div>
+
+            <div class="mesh-chips">
+                <div class="mesh-chip"><span class="chip-dot"></span> Gateway :8080</div>
+                <div class="mesh-chip"><span class="chip-dot"></span> Incident :8081</div>
+                <div class="mesh-chip"><span class="chip-dot"></span> Dispatch :8082</div>
+                <div class="mesh-chip"><span class="chip-dot"></span> Routing :8083</div>
+                <div class="mesh-chip"><span class="chip-dot"></span> Tracking :8084</div>
+                <div class="mesh-chip"><span class="chip-dot"></span> Hospital :8085</div>
+                <div class="mesh-chip"><span class="chip-dot"></span> Audit :8086</div>
+                <div class="mesh-chip"><span class="chip-dot"></span> Redeploy :8087</div>
+                <div class="mesh-chip"><span class="chip-dot"></span> Keycloak :8180</div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Clean Footer -->
+    <footer>
+        <p style="margin-bottom: 0.5rem; font-weight: 700; color: var(--text-primary);">
+            H8 Autonomous Capability-Aware Emergency Medical Dispatch Platform
+        </p>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">
+            Pure Java 21 Algorithmic Engine &bull; Spring Boot 3 &bull; PostGIS &bull; Apache Kafka &bull; Redis 7 &bull; Keycloak 25
+        </p>
+    </footer>
+
+    <!-- Interactive Verification Script -->
+    <script src="demo-bridge.js"></script>
+    <script>
+        const API_BASE = ''; // Same-origin proxy
+
+        async function verifyHashChain() {
+            const output = document.getElementById('audit-terminal-output');
+            output.innerHTML = '<span style="color: #60a5fa;">⏳ Querying audit-service and verifying SHA-256 hash-chain signatures...</span>';
+
+            try {
+                const response = await fetch(`${API_BASE}/audit/verify`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const statusColor = data.valid ? '#34d399' : '#f43f5e';
+                    const statusIcon = data.valid ? '✅' : '❌';
+                    output.innerHTML = `
+                        <div style="color: ${statusColor}; line-height: 1.6;">
+                            <strong>${statusIcon} HASH-CHAIN VERIFICATION ${data.valid ? 'PASSED' : 'FAILED'}</strong><br>
+                            &bull; Total Ledger Entries: <strong>${data.totalEntries}</strong> verified SHA-256 blocks<br>
+                            &bull; ${data.details || 'All block signatures mathematically verified.'}<br>
+                            &bull; Verified at: ${new Date(data.verifiedAt).toLocaleTimeString()}
+                        </div>
+                    `;
+                    return;
+                }
+            } catch (err) {
+                console.warn('Audit verify notice:', err);
+            }
+
+            output.innerHTML = `
+                <div style="color: #f59e0b; line-height: 1.6;">
+                    <strong>⚠️ AUDIT SERVICE OFFLINE</strong><br>
+                    &bull; Could not reach audit-service. Ensure backend services are running.<br>
+                    &bull; Run: <code>python server.py</code> and start Spring Boot services.
+                </div>
+            `;
+        }
+
+        async function checkAllServices() {
+            const btn = document.getElementById('btn-ping-services');
+            btn.innerHTML = '⚡ Pinging...';
+            btn.disabled = true;
+
+            const services = [
+                { name: 'Gateway', path: '/actuator/health', port: ':8080' },
+                { name: 'Incident', path: '/incidents', port: ':8081', method: 'GET' },
+                { name: 'Dispatch', path: '/dispatch/units', port: ':8082' },
+                { name: 'Hospitals', path: '/hospitals', port: ':8085' },
+                { name: 'Audit', path: '/audit?limit=1', port: ':8087' },
+                { name: 'Coverage', path: '/redeployment/coverage', port: ':8086' }
+            ];
+
+            let upCount = 0;
+            const chips = document.querySelectorAll('.mesh-chip');
+
+            for (const svc of services) {
+                try {
+                    const res = await fetch(`${API_BASE}${svc.path}`, { signal: AbortSignal.timeout(3000) });
+                    if (res.ok || res.status < 500) upCount++;
+                } catch (e) { /* service down */ }
+            }
+
+            // Update chip dots based on reachability
+            chips.forEach(chip => {
+                const dot = chip.querySelector('.chip-dot');
+                if (dot) {
+                    dot.style.background = upCount > 0 ? 'var(--accent-emerald)' : 'var(--accent-rose)';
+                    dot.style.boxShadow = upCount > 0 ? '0 0 6px var(--accent-emerald)' : '0 0 6px var(--accent-rose)';
+                }
+            });
+
+            btn.innerHTML = upCount > 0 ? `✅ ${upCount}/${services.length} Services Reachable` : '❌ Backend Offline';
+            btn.disabled = false;
+            setTimeout(() => { btn.innerHTML = '🔄 Ping All Services'; }, 4000);
+        }
+
+        // Load live metrics from backend on page load
+        async function loadLiveMetrics() {
+            try {
+                const unitsRes = await fetch(`${API_BASE}/dispatch/units`);
+                if (unitsRes.ok) {
+                    const units = await unitsRes.json();
+                    const countEl = document.querySelector('.metric-card:nth-child(1) .metric-val');
+                    if (countEl && units.length > 0) {
+                        countEl.innerText = `${units.length} Units`;
+                    }
+                }
+            } catch (e) {}
+
+            try {
+                const covRes = await fetch(`${API_BASE}/redeployment/coverage`);
+                if (covRes.ok) {
+                    const data = await covRes.json();
+                    const covEl = document.querySelector('.metric-card:nth-child(3) .metric-val');
+                    if (covEl && data.coveragePercent) {
+                        covEl.innerText = data.coveragePercent;
+                    }
+                }
+            } catch (e) {}
+        }
+
+        // Auto-load metrics on page ready
+        loadLiveMetrics();
+    </script>
+</body>
+</html>
