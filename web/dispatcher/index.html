@@ -1281,6 +1281,7 @@
             </button>
 
             <button class="nav-btn" id="btn-toggle-map">🌙 Dark</button>
+            <button class="nav-btn" id="btn-fit-fleet" onclick="fitFleetBounds()" title="Fit all active fleet on map" style="color: var(--accent-cyan); border-color: rgba(6, 182, 212, 0.4);">🎯 Fit Fleet</button>
 
             <a href="../crew/" class="nav-btn" style="color: var(--accent-cyan); border-color: rgba(6, 182, 212, 0.3);">🚑
                 Crew PWA</a>
@@ -1454,7 +1455,7 @@
 
     <div id="toast-banner" class="toast toast-success"></div>
 
-    <script src="../demo-bridge.js?v=20261006_fleet_sync_v2"></script>
+    <script src="../demo-bridge.js?v=20261006_fleet_sync_v3"></script>
     <script>
         const API_HOST = window.location.hostname || 'localhost';
         const GATEWAY_URL = ''; // Same-origin proxy through unified server
@@ -1806,25 +1807,36 @@
             }
         }
 
+        let knownOnlineUnits = new Set(['AMB-01']);
+
         // Render Ambulances with Ambulance Symbol (🚑) on Map
         function renderUnitsOnMap(units) {
             let availCount = 0;
             let busyCount = 0;
             let offlineCount = 0;
+            let newlyOnlineUnit = null;
 
             if (Array.isArray(units) && units.length > 0) {
                 units.forEach(live => {
                     const uid = live.id || live.unitId;
                     const found = defaultFleet.find(f => f.unitId === uid || f.callSign.toUpperCase() === (live.callSign || '').toUpperCase());
                     if (found) {
+                        const wasOffline = (found.status || 'OFFLINE').toUpperCase() === 'OFFLINE';
                         if (live.lat != null && live.lon != null) {
                             found.lat = live.lat;
                             found.lon = live.lon;
                         }
                         if (live.status) found.status = live.status;
                         if (live.type) found.type = live.type;
+
+                        const isNowOnline = (found.status || 'OFFLINE').toUpperCase() !== 'OFFLINE';
+                        if (wasOffline && isNowOnline && !knownOnlineUnits.has(found.callSign)) {
+                            knownOnlineUnits.add(found.callSign);
+                            newlyOnlineUnit = found;
+                        }
                     } else if (live.callSign) {
                         // Dynamically registered unit from Crew PWA
+                        const isNowOnline = (live.status || 'OFFLINE').toUpperCase() !== 'OFFLINE';
                         defaultFleet.push({
                             unitId: uid,
                             callSign: live.callSign,
@@ -1833,8 +1845,17 @@
                             type: live.type || 'ALS',
                             status: live.status || 'OFFLINE'
                         });
+                        if (isNowOnline && !knownOnlineUnits.has(live.callSign)) {
+                            knownOnlineUnits.add(live.callSign);
+                            newlyOnlineUnit = live;
+                        }
                     }
                 });
+            }
+
+            if (newlyOnlineUnit) {
+                showToast(`🚨 ${newlyOnlineUnit.callSign} (${newlyOnlineUnit.type || 'Ambulance'}) connected LIVE! Tracking position.`, true);
+                fitFleetBounds();
             }
 
             defaultFleet.forEach(u => {
@@ -1965,6 +1986,21 @@
             map.flyTo([lat, lon], 15, { duration: 1.0 });
             if (unitMarkers[unitId]) {
                 unitMarkers[unitId].openPopup();
+            }
+        }
+
+        function fitFleetBounds() {
+            const active = defaultFleet.filter(u => (u.status || 'OFFLINE').toUpperCase() !== 'OFFLINE');
+            if (active.length === 0) {
+                map.flyTo([26.8950, 75.7950], 12);
+                return;
+            }
+            const points = active.map(u => [u.lat, u.lon]);
+            if (points.length === 1) {
+                map.flyTo(points[0], 14, { duration: 1.0 });
+            } else {
+                const bounds = L.latLngBounds(points);
+                map.fitBounds(bounds, { padding: [60, 60], maxZoom: 14 });
             }
         }
 
