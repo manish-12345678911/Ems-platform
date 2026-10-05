@@ -3,6 +3,7 @@
   "enabled": true,
   "roles": {
     "realm": [
+      { "name": "ADMIN", "description": "Tactical system administrator with full dispatch & platform access" },
       { "name": "DISPATCHER", "description": "Dispatchers managing incidents and assignments" },
       { "name": "CREW", "description": "Ambulance crew members with GPS and status updates" },
       { "name": "ED_STAFF", "description": "Emergency department staff managing capacity and alerts" },
@@ -11,6 +12,14 @@
     ]
   },
   "users": [
+    {
+      "username": "admin",
+      "enabled": true,
+      "emailVerified": true,
+      "requiredActions": [],
+      "credentials": [{ "type": "password", "value": "admin123", "temporary": false }],
+      "realmRoles": ["ADMIN", "DISPATCHER", "SUPERVISOR"]
+    },
     {
       "username": "dispatcher1",
       "enabled": true,

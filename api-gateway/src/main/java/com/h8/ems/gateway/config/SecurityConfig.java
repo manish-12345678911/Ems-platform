@@ -30,7 +30,7 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeExchange(exchanges -> exchanges
                 .pathMatchers(HttpMethod.OPTIONS).permitAll()
-                .pathMatchers("/actuator/**", "/error").permitAll()
+                .pathMatchers("/actuator/**", "/error", "/auth/**").permitAll()
                 .anyExchange().permitAll()
             )
             .oauth2ResourceServer(oauth2 -> oauth2

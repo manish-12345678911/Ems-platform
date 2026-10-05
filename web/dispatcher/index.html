@@ -868,10 +868,439 @@
                 padding: 0.65rem 0.75rem;
             }
         }
+
+        /* Tactical Admin Authentication Gate Overlay */
+        .admin-auth-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: radial-gradient(circle at center, rgba(14, 21, 38, 0.94) 0%, rgba(6, 10, 20, 0.98) 100%);
+            backdrop-filter: blur(24px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s ease;
+        }
+
+        .admin-auth-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .workspace.locked {
+            filter: blur(10px) brightness(0.7);
+            pointer-events: none;
+            user-select: none;
+            transition: filter 0.3s ease;
+        }
+
+        .admin-auth-card {
+            width: 100%;
+            max-width: 480px;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(10, 16, 31, 0.98) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            border-radius: 20px;
+            padding: 2.25rem;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.85), 0 0 45px rgba(59, 130, 246, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            animation: authModalAppear 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes authModalAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.92) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .auth-header {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .auth-emblem {
+            position: relative;
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(99, 102, 241, 0.3) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.35);
+            margin-bottom: 0.35rem;
+        }
+
+        .auth-shield {
+            font-size: 2rem;
+            filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.8));
+        }
+
+        .auth-clearance-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            background: rgba(244, 63, 94, 0.15);
+            border: 1px solid rgba(244, 63, 94, 0.35);
+            color: #fb7185;
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .auth-lock-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #f43f5e;
+            box-shadow: 0 0 6px #f43f5e;
+            animation: pulse 1.8s infinite;
+        }
+
+        .auth-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+            margin-top: 0.15rem;
+        }
+
+        .auth-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            max-width: 380px;
+            line-height: 1.45;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .auth-error-banner {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #fca5a5;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            line-height: 1.4;
+        }
+
+        .auth-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .auth-input-group label {
+            font-size: 0.775rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.02em;
+        }
+
+        .input-with-icon {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-with-icon .input-icon {
+            position: absolute;
+            left: 0.85rem;
+            font-size: 1rem;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .input-with-icon input {
+            width: 100%;
+            background: rgba(14, 21, 38, 0.8);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0.75rem 2.5rem 0.75rem 2.6rem;
+            font-size: 0.9rem;
+            color: #ffffff;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .input-with-icon input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+            background: rgba(22, 32, 53, 0.95);
+        }
+
+        .btn-toggle-pwd {
+            position: absolute;
+            right: 0.65rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.25rem;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .btn-toggle-pwd:hover {
+            opacity: 1;
+        }
+
+        .auth-quick-fill {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px dashed rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 0.75rem 0.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+        }
+
+        .quick-fill-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .quick-fill-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .quick-chip {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            font-size: 0.725rem;
+            font-weight: 600;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-chip:hover {
+            background: rgba(59, 130, 246, 0.2);
+            color: #ffffff;
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+
+        .quick-chip.chip-denied:hover {
+            background: rgba(244, 63, 94, 0.2);
+            color: #fca5a5;
+            border-color: rgba(244, 63, 94, 0.4);
+        }
+
+        .btn-auth-submit {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            border: 1px solid rgba(59, 130, 246, 0.5);
+            color: #ffffff;
+            padding: 0.85rem 1.25rem;
+            border-radius: 10px;
+            font-size: 0.925rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            margin-top: 0.25rem;
+        }
+
+        .btn-auth-submit:hover {
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            box-shadow: 0 6px 25px rgba(59, 130, 246, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .btn-auth-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .auth-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .auth-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 0.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 0.725rem;
+        }
+
+        .auth-engine-badge {
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .auth-back-link {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .auth-back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Header Admin Identity & Sign Out */
+        .admin-session-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.3rem 0.75rem;
+            border-radius: 8px;
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .admin-session-badge .admin-icon {
+            font-size: 0.95rem;
+        }
+
+        .admin-session-badge .admin-info {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.15;
+        }
+
+        .admin-session-badge .admin-name {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .admin-session-badge .admin-role {
+            font-size: 0.625rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: #60a5fa;
+            text-transform: uppercase;
+        }
+
+        .nav-btn-signout {
+            background: rgba(244, 63, 94, 0.12) !important;
+            border-color: rgba(244, 63, 94, 0.35) !important;
+            color: #fb7185 !important;
+        }
+
+        .nav-btn-signout:hover {
+            background: rgba(244, 63, 94, 0.25) !important;
+            color: #ffffff !important;
+            border-color: rgba(244, 63, 94, 0.5) !important;
+        }
     </style>
 </head>
 
 <body>
+
+    <!-- Tactical Admin Authentication Gate Overlay -->
+    <div id="admin-auth-overlay" class="admin-auth-overlay">
+        <div class="admin-auth-card">
+            <div class="auth-header">
+                <div class="auth-emblem">
+                    <span class="auth-shield">🛡️</span>
+                </div>
+                <div class="auth-clearance-pill">
+                    <span class="auth-lock-dot"></span> RESTRICTED &bull; LEVEL 4 CLEARANCE REQUIRED
+                </div>
+                <h2 class="auth-title">H8 EMS Command Center</h2>
+                <p class="auth-subtitle">Restricted to Authorized Tactical Administrators &amp; Chief Dispatchers</p>
+            </div>
+
+            <form id="admin-login-form" onsubmit="handleAdminLogin(event)" class="auth-form">
+                <div id="auth-error-banner" class="auth-error-banner" style="display: none;">
+                    <span class="err-icon">⚠️</span>
+                    <span id="auth-error-text">Invalid credentials or insufficient clearance.</span>
+                </div>
+
+                <div class="auth-input-group">
+                    <label for="auth-username">Tactical Call ID / Username</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="auth-username" required placeholder="e.g. admin" autocomplete="username" value="admin">
+                    </div>
+                </div>
+
+                <div class="auth-input-group">
+                    <label for="auth-password">Security Passcode / Secret</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">🔑</span>
+                        <input type="password" id="auth-password" required placeholder="Enter passcode" autocomplete="current-password" value="admin123">
+                        <button type="button" class="btn-toggle-pwd" onclick="togglePasswordVisibility()" title="Show/Hide Password">👁️</button>
+                    </div>
+                </div>
+
+                <div class="auth-quick-fill">
+                    <span class="quick-fill-label">Authorized Demo Credentials:</span>
+                    <div class="quick-fill-chips">
+                        <button type="button" class="quick-chip" onclick="fillCredentials('admin', 'admin123')">
+                            🛡️ Chief Admin (admin)
+                        </button>
+                        <button type="button" class="quick-chip" onclick="fillCredentials('dispatcher1', 'test123')">
+                            🚨 Lead Dispatcher (dispatcher1)
+                        </button>
+                        <button type="button" class="quick-chip chip-denied" onclick="fillCredentials('crew1', 'test123')" title="Test role-based rejection">
+                            🚫 Non-Admin (crew1)
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" id="btn-auth-submit" class="btn-auth-submit">
+                    <span id="auth-btn-spinner" class="auth-spinner" style="display: none;"></span>
+                    <span id="auth-btn-text">Authenticate &amp; Unlock Command Center</span>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <span class="auth-engine-badge">⚡ Java Spring Boot 3 Security &bull; Gateway :8080</span>
+                <a href="../" class="auth-back-link">&larr; Return to Public Portal</a>
+            </div>
+        </div>
+    </div>
 
     <!-- Header Navigation (Cleaned - Removed Fleet Telemetry Navbar) -->
     <header>
@@ -885,6 +1314,21 @@
 
         <div class="header-actions">
             <div class="live-chip"><span class="live-dot"></span> Live Scorer Active</div>
+
+            <!-- Admin Session Badge -->
+            <div id="admin-session-badge" class="admin-session-badge" style="display: none;">
+                <span class="admin-icon">🛡️</span>
+                <div class="admin-info">
+                    <span id="admin-user-display" class="admin-name">admin</span>
+                    <span id="admin-role-display" class="admin-role">TACTICAL ADMIN</span>
+                </div>
+            </div>
+
+            <!-- Sign Out Button -->
+            <button class="nav-btn nav-btn-signout" id="btn-admin-signout" onclick="handleAdminSignOut()" style="display: none;" title="Sign out of tactical console">
+                🔒 Sign Out
+            </button>
+
             <button class="nav-btn" id="btn-toggle-map">🌙 Dark</button>
 
             <a href="../crew/" class="nav-btn" style="color: var(--accent-cyan); border-color: rgba(6, 182, 212, 0.3);">🚑
@@ -894,7 +1338,7 @@
         </div>
     </header>
 
-    <div class="workspace">
+    <div class="workspace locked" id="tactical-workspace">
 
         <!-- Left Sidebar Controls -->
         <div class="sidebar">
@@ -1064,6 +1508,180 @@
         const API_HOST = window.location.hostname || 'localhost';
         const GATEWAY_URL = ''; // Same-origin proxy through unified server
 
+        // Admin Security & Authentication State
+        let currentAuthToken = sessionStorage.getItem('h8_admin_token') || localStorage.getItem('h8_admin_token') || null;
+        let currentAdminUser = null;
+        try {
+            currentAdminUser = JSON.parse(sessionStorage.getItem('h8_admin_profile') || localStorage.getItem('h8_admin_profile') || 'null');
+        } catch (e) { }
+
+        function getAuthHeaders(extraHeaders = {}) {
+            const headers = { 'Content-Type': 'application/json', ...extraHeaders };
+            if (currentAuthToken) {
+                headers['Authorization'] = currentAuthToken.startsWith('Bearer ') ? currentAuthToken : `Bearer ${currentAuthToken}`;
+            }
+            return headers;
+        }
+
+        function togglePasswordVisibility() {
+            const pwdInput = document.getElementById('auth-password');
+            if (pwdInput) {
+                pwdInput.type = pwdInput.type === 'password' ? 'text' : 'password';
+            }
+        }
+
+        function fillCredentials(username, password) {
+            const u = document.getElementById('auth-username');
+            const p = document.getElementById('auth-password');
+            if (u) u.value = username;
+            if (p) p.value = password;
+        }
+
+        function unlockDispatcherConsole(userData) {
+            const overlay = document.getElementById('admin-auth-overlay');
+            const workspace = document.getElementById('tactical-workspace');
+            const badge = document.getElementById('admin-session-badge');
+            const signoutBtn = document.getElementById('btn-admin-signout');
+
+            if (overlay) overlay.classList.add('hidden');
+            if (workspace) workspace.classList.remove('locked');
+            if (badge) badge.style.display = 'flex';
+            if (signoutBtn) signoutBtn.style.display = 'inline-flex';
+
+            const userDisplay = document.getElementById('admin-user-display');
+            const roleDisplay = document.getElementById('admin-role-display');
+            if (userDisplay && userData) {
+                userDisplay.innerText = userData.displayName || userData.username || 'Commander';
+            }
+            if (roleDisplay && userData) {
+                roleDisplay.innerText = (userData.primaryRole || 'ADMIN').toUpperCase();
+            }
+
+            setTimeout(() => {
+                if (typeof map !== 'undefined' && map) map.invalidateSize();
+            }, 300);
+        }
+
+        function lockDispatcherConsole() {
+            const overlay = document.getElementById('admin-auth-overlay');
+            const workspace = document.getElementById('tactical-workspace');
+            const badge = document.getElementById('admin-session-badge');
+            const signoutBtn = document.getElementById('btn-admin-signout');
+
+            if (overlay) overlay.classList.remove('hidden');
+            if (workspace) workspace.classList.add('locked');
+            if (badge) badge.style.display = 'none';
+            if (signoutBtn) signoutBtn.style.display = 'none';
+        }
+
+        async function handleAdminLogin(event) {
+            event.preventDefault();
+            const usernameInput = document.getElementById('auth-username');
+            const passwordInput = document.getElementById('auth-password');
+            const errorBanner = document.getElementById('auth-error-banner');
+            const errorText = document.getElementById('auth-error-text');
+            const submitBtn = document.getElementById('btn-auth-submit');
+            const spinner = document.getElementById('auth-btn-spinner');
+            const btnText = document.getElementById('auth-btn-text');
+
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+
+            if (errorBanner) errorBanner.style.display = 'none';
+            if (submitBtn) submitBtn.disabled = true;
+            if (spinner) spinner.style.display = 'inline-block';
+            if (btnText) btnText.innerText = 'Verifying Clearance...';
+
+            try {
+                const res = await fetch(`${GATEWAY_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await res.json().catch(() => ({}));
+
+                if (res.ok && data.success) {
+                    currentAuthToken = data.token;
+                    currentAdminUser = data;
+                    sessionStorage.setItem('h8_admin_token', data.token);
+                    sessionStorage.setItem('h8_admin_profile', JSON.stringify(data));
+                    localStorage.setItem('h8_admin_token', data.token);
+                    localStorage.setItem('h8_admin_profile', JSON.stringify(data));
+
+                    unlockDispatcherConsole(data);
+                    showToast(`🛡️ Clearance Confirmed: Welcome, Commander ${data.displayName || data.username}!`);
+                    fetchLiveUnits();
+                    fetchCoverage();
+                    updateCandidateRanks();
+                } else {
+                    const msg = data.message || (res.status === 403 ? 'Access Denied: Only administrators have clearance for this command center.' : 'Invalid credentials.');
+                    if (errorText) errorText.innerText = msg;
+                    if (errorBanner) errorBanner.style.display = 'flex';
+                }
+            } catch (err) {
+                if (errorText) errorText.innerText = `Network or gateway authentication notice: ${err.message}`;
+                if (errorBanner) errorBanner.style.display = 'flex';
+            } finally {
+                if (submitBtn) submitBtn.disabled = false;
+                if (spinner) spinner.style.display = 'none';
+                if (btnText) btnText.innerText = 'Authenticate & Unlock Command Center';
+            }
+        }
+
+        async function handleAdminSignOut() {
+            if (currentAuthToken) {
+                try {
+                    await fetch(`${GATEWAY_URL}/auth/logout`, {
+                        method: 'POST',
+                        headers: getAuthHeaders()
+                    });
+                } catch (e) { }
+            }
+            currentAuthToken = null;
+            currentAdminUser = null;
+            sessionStorage.removeItem('h8_admin_token');
+            sessionStorage.removeItem('h8_admin_profile');
+            localStorage.removeItem('h8_admin_token');
+            localStorage.removeItem('h8_admin_profile');
+
+            lockDispatcherConsole();
+            showToast('🔒 Administrator signed out. Command center is locked.', false);
+        }
+
+        async function verifyAdminSession() {
+            if (!currentAuthToken) {
+                lockDispatcherConsole();
+                return;
+            }
+            try {
+                const res = await fetch(`${GATEWAY_URL}/auth/verify`, {
+                    headers: getAuthHeaders()
+                });
+                if (res.ok) {
+                    const data = await res.json().catch(() => ({}));
+                    if (data.success) {
+                        currentAdminUser = data;
+                        unlockDispatcherConsole(data);
+                        return;
+                    }
+                }
+            } catch (e) {
+                // If demo-bridge or offline, allow verified session
+                if (currentAdminUser && (currentAdminUser.roles || []).includes('ADMIN')) {
+                    unlockDispatcherConsole(currentAdminUser);
+                    return;
+                }
+            }
+            currentAuthToken = null;
+            currentAdminUser = null;
+            sessionStorage.removeItem('h8_admin_token');
+            sessionStorage.removeItem('h8_admin_profile');
+            localStorage.removeItem('h8_admin_token');
+            localStorage.removeItem('h8_admin_profile');
+            lockDispatcherConsole();
+        }
+
         // Switch Sidebar Mode Tabs
         function switchSidebarTab(tabName) {
             document.querySelectorAll('.s-tab').forEach(t => t.classList.remove('active'));
@@ -1221,11 +1839,16 @@
 
         // Fetch Live Units from Backend
         async function fetchLiveUnits() {
+            if (!currentAuthToken) return;
             try {
-                const res = await fetch(`${GATEWAY_URL}/dispatch/units`);
+                const res = await fetch(`${GATEWAY_URL}/dispatch/units`, {
+                    headers: getAuthHeaders()
+                });
                 if (res.ok) {
                     const units = await res.json();
                     renderUnitsOnMap(units);
+                } else if (res.status === 401 || res.status === 403) {
+                    lockDispatcherConsole();
                 }
             } catch (err) {
                 renderDefaultUnits();
@@ -1366,6 +1989,7 @@
 
         // Candidate Ranking Query
         async function updateCandidateRanks() {
+            if (!currentAuthToken) return;
             const lat = parseFloat(document.getElementById('input-lat').value);
             const lon = parseFloat(document.getElementById('input-lon').value);
             const severity = document.getElementById('select-severity').value;
@@ -1373,10 +1997,14 @@
             const requiresAls = document.getElementById('check-als').checked;
 
             try {
-                const candRes = await fetch(`${GATEWAY_URL}/dispatch/candidates?lat=${lat}&lon=${lon}&severity=${severity}&need=${need}&requiresAls=${requiresAls}`);
+                const candRes = await fetch(`${GATEWAY_URL}/dispatch/candidates?lat=${lat}&lon=${lon}&severity=${severity}&need=${need}&requiresAls=${requiresAls}`, {
+                    headers: getAuthHeaders()
+                });
                 if (candRes.ok) {
                     const candidates = await candRes.json();
                     renderCandidates(candidates);
+                } else if (candRes.status === 401 || candRes.status === 403) {
+                    lockDispatcherConsole();
                 }
             } catch (err) {
                 console.warn('Auto candidate rank notice:', err);
@@ -1390,6 +2018,12 @@
 
         // Register Incident Action
         document.getElementById('btn-create-and-rank').addEventListener('click', async () => {
+            if (!currentAuthToken) {
+                lockDispatcherConsole();
+                showToast('⚠️ Admin clearance required to register incidents', false);
+                return;
+            }
+
             const lat = parseFloat(document.getElementById('input-lat').value);
             const lon = parseFloat(document.getElementById('input-lon').value);
             const severity = document.getElementById('select-severity').value;
@@ -1403,7 +2037,7 @@
             try {
                 const incRes = await fetch(`${GATEWAY_URL}/incidents`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: getAuthHeaders(),
                     body: JSON.stringify({
                         lat, lon, severity, need, requiresAls,
                         callerHash: 'hash_' + Date.now()
@@ -1414,6 +2048,10 @@
                     const incData = await incRes.json();
                     currentIncidentId = incData.incidentId;
                     showToast(`Incident #${currentIncidentId.substring(0, 8)} created. DispatchScorer executed.`);
+                } else if (incRes.status === 401 || incRes.status === 403) {
+                    lockDispatcherConsole();
+                    showToast('⚠️ Admin session expired', false);
+                    return;
                 }
                 await updateCandidateRanks();
             } catch (err) {
@@ -1489,6 +2127,12 @@
             const need = document.getElementById('select-need').value || 'TRAUMA';
             const requiresAls = document.getElementById('check-als').checked;
 
+            if (!currentAuthToken) {
+                lockDispatcherConsole();
+                showToast('⚠️ Admin clearance required to dispatch units', false);
+                return;
+            }
+
             if (!currentIncidentId) {
                 currentIncidentId = '00000000-0000-0000-0000-' + Math.floor(Math.random() * 1000000000000).toString().padStart(12, '0');
             }
@@ -1496,7 +2140,7 @@
             try {
                 const res = await fetch(`${GATEWAY_URL}/dispatch`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: getAuthHeaders(),
                     body: JSON.stringify({
                         incidentId: currentIncidentId,
                         unitId: unitId,
@@ -1520,6 +2164,9 @@
 
                     currentIncidentId = null;
                     await updateCandidateRanks();
+                } else if (res.status === 401 || res.status === 403) {
+                    lockDispatcherConsole();
+                    showToast('⚠️ Admin clearance expired or unauthorized', false);
                 } else {
                     const errData = await res.json().catch(() => ({ message: res.statusText }));
                     showToast(`⚠️ Conflict: ${errData.message || 'Ambulance is already committed'}`, false);
@@ -1534,7 +2181,7 @@
         try {
             const syncChannel = new BroadcastChannel('h8_demo_sync');
             syncChannel.onmessage = function (e) {
-                if (e.data && (e.data.type === 'state_changed' || e.data.type === 'unit_dispatched')) {
+                if (currentAuthToken && e.data && (e.data.type === 'state_changed' || e.data.type === 'unit_dispatched')) {
                     fetchLiveUnits();
                     updateCandidateRanks();
                     fetchCoverage();
@@ -1543,8 +2190,11 @@
         } catch (e) { }
 
         async function fetchCoverage() {
+            if (!currentAuthToken) return;
             try {
-                const res = await fetch(`${GATEWAY_URL}/redeployment/coverage`);
+                const res = await fetch(`${GATEWAY_URL}/redeployment/coverage`, {
+                    headers: getAuthHeaders()
+                });
                 if (res.ok) {
                     const data = await res.json();
                     const cov = data.coveragePercent || '100.0%';
@@ -1554,11 +2204,20 @@
         }
 
         async function triggerRedeploymentRun() {
+            if (!currentAuthToken) {
+                lockDispatcherConsole();
+                showToast('⚠️ Admin clearance required to trigger MEXCLP redeployment', false);
+                return;
+            }
+
             const btn = document.getElementById('btn-run-redeploy');
             btn.disabled = true;
             btn.innerText = 'Evaluating under Redis lock...';
             try {
-                const res = await fetch(`${GATEWAY_URL}/redeployment/plan`, { method: 'POST' });
+                const res = await fetch(`${GATEWAY_URL}/redeployment/plan`, {
+                    method: 'POST',
+                    headers: getAuthHeaders()
+                });
                 if (res.ok) {
                     const data = await res.json();
                     showToast(`🌐 MEXCLP Plan: ${data.message || 'Coverage rebalanced'}`);
@@ -1573,11 +2232,21 @@
             }, 2000);
         }
 
+        // Periodic polling only when authenticated
+        setInterval(() => {
+            if (currentAuthToken) {
+                fetchLiveUnits();
+            }
+        }, 1200);
 
-        // Startup initialization
-        fetchLiveUnits();
-        fetchCoverage();
-        updateCandidateRanks();
+        // Startup verification: Gated behind Admin sign-in
+        verifyAdminSession().then(() => {
+            if (currentAuthToken) {
+                fetchLiveUnits();
+                fetchCoverage();
+                updateCandidateRanks();
+            }
+        });
     </script>
 
 

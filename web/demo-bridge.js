@@ -322,9 +322,50 @@
             return jsonResponse({ status: 'UP' });
         }
 
-        // GET /audit (with limit)
-        if (method === 'GET' && pathname === '/audit') {
-            return jsonResponse([]);
+        // POST /auth/login
+        if (method === 'POST' && pathname === '/auth/login') {
+            var username = (body.username || '').trim().toLowerCase();
+            var password = body.password || '';
+
+            if ((username === 'admin' && password === 'admin123') ||
+                (username === 'dispatcher1' && password === 'test123') ||
+                (username === 'supervisor1' && password === 'test123')) {
+                var dispName = username === 'admin' ? 'Tactical Chief Administrator' : (username === 'dispatcher1' ? 'Senior Dispatch Controller' : 'Tactical Operations Supervisor');
+                var role = username === 'admin' ? 'ADMIN' : (username === 'dispatcher1' ? 'DISPATCHER' : 'SUPERVISOR');
+                return jsonResponse({
+                    success: true,
+                    token: 'h8-tactical-admin-token-' + btoa(username + ':' + Date.now()),
+                    username: username,
+                    displayName: dispName,
+                    roles: [role, 'ADMIN'],
+                    primaryRole: 'ADMIN',
+                    expiresIn: 86400,
+                    message: 'Authentication successful'
+                });
+            } else if ((username === 'crew1' || username === 'ednurse1' || username === 'auditor1') && password === 'test123') {
+                return new Response(JSON.stringify({
+                    success: false,
+                    message: "Access Denied: Account '" + username + "' does not possess administrator clearance. The Dispatcher Command Center requires Administrator clearance."
+                }), { status: 403, headers: { 'Content-Type': 'application/json' } });
+            } else {
+                return new Response(JSON.stringify({
+                    success: false,
+                    message: "Invalid username or password."
+                }), { status: 401, headers: { 'Content-Type': 'application/json' } });
+            }
+        }
+
+        // GET /auth/verify
+        if (method === 'GET' && pathname === '/auth/verify') {
+            return jsonResponse({
+                success: true,
+                username: 'admin',
+                displayName: 'Tactical Chief Administrator',
+                roles: ['ADMIN', 'DISPATCHER'],
+                primaryRole: 'ADMIN',
+                expiresIn: 86400,
+                message: 'Token verified'
+            });
         }
 
         return null; // Not matched
