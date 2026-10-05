@@ -1069,54 +1069,6 @@
             opacity: 1;
         }
 
-        .auth-quick-fill {
-            background: rgba(0, 0, 0, 0.25);
-            border: 1px dashed rgba(255, 255, 255, 0.12);
-            border-radius: 10px;
-            padding: 0.75rem 0.9rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.45rem;
-        }
-
-        .quick-fill-label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-        }
-
-        .quick-fill-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-        }
-
-        .quick-chip {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-secondary);
-            font-size: 0.725rem;
-            font-weight: 600;
-            padding: 0.3rem 0.6rem;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .quick-chip:hover {
-            background: rgba(59, 130, 246, 0.2);
-            color: #ffffff;
-            border-color: rgba(59, 130, 246, 0.4);
-        }
-
-        .quick-chip.chip-denied:hover {
-            background: rgba(244, 63, 94, 0.2);
-            color: #fca5a5;
-            border-color: rgba(244, 63, 94, 0.4);
-        }
-
         .btn-auth-submit {
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             border: 1px solid rgba(59, 130, 246, 0.5);
@@ -1251,7 +1203,7 @@
                 <p class="auth-subtitle">Restricted to Authorized Tactical Administrators &amp; Chief Dispatchers</p>
             </div>
 
-            <form id="admin-login-form" onsubmit="handleAdminLogin(event)" class="auth-form">
+            <form id="admin-login-form" onsubmit="handleAdminLogin(event)" class="auth-form" autocomplete="off">
                 <div id="auth-error-banner" class="auth-error-banner" style="display: none;">
                     <span class="err-icon">⚠️</span>
                     <span id="auth-error-text">Invalid credentials or insufficient clearance.</span>
@@ -1261,7 +1213,7 @@
                     <label for="auth-username">Tactical Call ID / Username</label>
                     <div class="input-with-icon">
                         <span class="input-icon">👤</span>
-                        <input type="text" id="auth-username" required placeholder="e.g. admin" autocomplete="username" value="admin">
+                        <input type="text" id="auth-username" required placeholder="Enter admin username" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
                     </div>
                 </div>
 
@@ -1269,23 +1221,8 @@
                     <label for="auth-password">Security Passcode / Secret</label>
                     <div class="input-with-icon">
                         <span class="input-icon">🔑</span>
-                        <input type="password" id="auth-password" required placeholder="Enter passcode" autocomplete="current-password" value="admin123">
+                        <input type="password" id="auth-password" required placeholder="Enter passcode" autocomplete="new-password" spellcheck="false">
                         <button type="button" class="btn-toggle-pwd" onclick="togglePasswordVisibility()" title="Show/Hide Password">👁️</button>
-                    </div>
-                </div>
-
-                <div class="auth-quick-fill">
-                    <span class="quick-fill-label">Authorized Demo Credentials:</span>
-                    <div class="quick-fill-chips">
-                        <button type="button" class="quick-chip" onclick="fillCredentials('admin', 'admin123')">
-                            🛡️ Chief Admin (admin)
-                        </button>
-                        <button type="button" class="quick-chip" onclick="fillCredentials('dispatcher1', 'test123')">
-                            🚨 Lead Dispatcher (dispatcher1)
-                        </button>
-                        <button type="button" class="quick-chip chip-denied" onclick="fillCredentials('crew1', 'test123')" title="Test role-based rejection">
-                            🚫 Non-Admin (crew1)
-                        </button>
                     </div>
                 </div>
 
