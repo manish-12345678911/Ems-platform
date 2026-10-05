@@ -9,13 +9,139 @@
 
     var STORAGE_KEY = 'h8_demo_state';
     var CHANNEL_NAME = 'h8_demo_sync';
+    var CLOUD_TOPIC = 'h8_ems_fleet_sync_manish_2026';
+    var CLOUD_URL = 'https://ntfy.sh/' + CLOUD_TOPIC;
 
     // BroadcastChannel for cross-tab sync
     var channel;
     try { channel = new BroadcastChannel(CHANNEL_NAME); } catch (e) { channel = { postMessage: function () { }, close: function () { }, addEventListener: function () { }, removeEventListener: function () { } }; }
 
+    // Broadcast ambulance updates across all devices globally & locally
+    function broadcastUnitChange(unit) {
+        if (!unit || !unit.callSign) return;
+        var payload = {
+            type: 'unit_update',
+            unitId: unit.unitId || unit.id,
+            callSign: unit.callSign,
+            lat: unit.lat,
+            lon: unit.lon,
+            type: unit.type,
+            status: unit.status,
+            loggedIn: unit.loggedIn,
+            timestamp: Date.now()
+        };
+
+        // 1. Cross-tab sync on same machine
+        try { channel.postMessage({ type: 'state_changed', unit: payload }); } catch (e) { }
+
+        // 2. Local Python server sync (if server.py running)
+        try {
+            originalFetch('/api/fleet/sync', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).catch(function () { });
+        } catch (e) { }
+
+        // 3. Global Cloud Relay (works across phone & desktop anywhere in the world on any network)
+        try {
+            originalFetch(CLOUD_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).catch(function () { });
+        } catch (e) { }
+    }
+
+    // Apply unit update received from remote phone / desktop
+    function applyRemoteUnit(msg) {
+        if (!msg || !msg.callSign) return;
+        var state = getState();
+        var cs = msg.callSign.toUpperCase();
+        var local = state.fleet.find(function (f) {
+            return f.callSign.toUpperCase() === cs || f.unitId === msg.unitId || f.id === msg.unitId;
+        });
+
+        if (local) {
+            var hasChange = false;
+            if (msg.lat != null && !isNaN(msg.lat) && local.lat !== msg.lat) { local.lat = parseFloat(msg.lat); hasChange = true; }
+            if (msg.lon != null && !isNaN(msg.lon) && local.lon !== msg.lon) { local.lon = parseFloat(msg.lon); hasChange = true; }
+            if (msg.status && local.status !== msg.status) { local.status = msg.status; hasChange = true; }
+            if (msg.loggedIn != null && local.loggedIn !== msg.loggedIn) { local.loggedIn = msg.loggedIn; hasChange = true; }
+            if (msg.type && local.type !== msg.type) { local.type = msg.type; hasChange = true; }
+            if (hasChange) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                try { channel.postMessage({ type: 'state_changed', unit: local }); } catch (e) { }
+            }
+        } else {
+            state.fleet.push({
+                id: msg.unitId || makeId(),
+                unitId: msg.unitId || makeId(),
+                callSign: msg.callSign,
+                lat: msg.lat || 26.9150,
+                lon: msg.lon || 75.8100,
+                type: msg.type || 'ALS',
+                status: msg.status || 'AVAILABLE',
+                loggedIn: msg.loggedIn !== false
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            try { channel.postMessage({ type: 'state_changed' }); } catch (e) { }
+        }
+    }
+
+    // Initialize Global SSE Cloud Listener + Server.py Poller
+    function initGlobalSync() {
+        try {
+            var sse = new EventSource(CLOUD_URL + '/sse?since=1h');
+            sse.onmessage = function (ev) {
+                try {
+                    var data = JSON.parse(ev.data);
+                    var msg = data.message ? JSON.parse(data.message) : data;
+                    if (msg && msg.type === 'unit_update') {
+                        applyRemoteUnit(msg);
+                    }
+                } catch (e) { }
+            };
+        } catch (err) { }
+
+        setInterval(function () {
+            try {
+                originalFetch('/api/fleet/sync')
+                    .then(function (res) { return res.ok ? res.json() : null; })
+                    .then(function (remoteFleet) {
+                        if (Array.isArray(remoteFleet) && remoteFleet.length > 0) {
+                            var state = getState();
+                            var changed = false;
+                            remoteFleet.forEach(function (ru) {
+                                if (!ru.callSign) return;
+                                var local = state.fleet.find(function (f) {
+                                    return f.callSign.toUpperCase() === ru.callSign.toUpperCase();
+                                });
+                                if (local) {
+                                    if (ru.loggedIn && local.status !== ru.status) {
+                                        local.status = ru.status;
+                                        local.loggedIn = ru.loggedIn;
+                                        changed = true;
+                                    }
+                                    if (ru.lat != null && ru.lon != null && (local.lat !== ru.lat || local.lon !== ru.lon)) {
+                                        local.lat = ru.lat;
+                                        local.lon = ru.lon;
+                                        changed = true;
+                                    }
+                                }
+                            });
+                            if (changed) {
+                                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                                try { channel.postMessage({ type: 'state_changed' }); } catch (e) { }
+                            }
+                        }
+                    })
+                    .catch(function () { });
+            } catch (e) { }
+        }, 1500);
+    }
+
     function makeId() {
-        // Fallback UUID for insecure contexts where crypto.randomUUID is unavailable
         try { return crypto.randomUUID(); } catch (e) {
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
                 var r = Math.random() * 16 | 0;
@@ -181,6 +307,7 @@
                     }
                 }
                 setState(state);
+                broadcastUnitChange(unit);
                 try { channel.postMessage({ type: 'state_changed' }); } catch (e) { }
             }
             return jsonResponse({ ok: true });
@@ -423,6 +550,7 @@
             unit.loggedIn = true;
             unit.loggedInAt = new Date().toISOString();
             setState(state);
+            broadcastUnitChange(unit);
 
             try {
                 channel.postMessage({ type: 'state_changed' });
@@ -502,6 +630,7 @@
             };
             state.fleet.push(newUnit);
             setState(state);
+            broadcastUnitChange(newUnit);
 
             try {
                 channel.postMessage({ type: 'state_changed' });
@@ -540,6 +669,7 @@
                 unit.loggedIn = false;
                 delete unit.assignedIncident;
                 setState(state);
+                broadcastUnitChange({ unitId: unit.unitId, callSign: unit.callSign, status: 'OFFLINE', loggedIn: false });
                 try {
                     channel.postMessage({ type: 'state_changed' });
                     channel.postMessage({ type: 'unit_offline', unitId: unit.unitId || unit.id, callSign: unit.callSign });
@@ -586,6 +716,7 @@
                         if (body.lat != null && !isNaN(body.lat)) unit.lat = parseFloat(body.lat);
                         if (body.lon != null && !isNaN(body.lon)) unit.lon = parseFloat(body.lon);
                         setState(state);
+                        broadcastUnitChange(unit);
                         try {
                             channel.postMessage({ type: 'state_changed' });
                         } catch(e) {}
@@ -715,8 +846,8 @@
 
     window.EventSource = MockEventSource;
 
-    // Clear stale state on load so fresh default fleet is used
-    localStorage.removeItem(STORAGE_KEY);
+    // Start real-time global cloud relay and local server sync
+    initGlobalSync();
 
-    console.log('%c[H8 Demo Bridge] Active — all API calls mocked locally', 'color: #10b981; font-weight: bold;');
+    console.log('%c[H8 Demo Bridge] Active — real-time global fleet sync running', 'color: #10b981; font-weight: bold;');
 })();
