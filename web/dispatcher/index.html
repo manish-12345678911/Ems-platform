@@ -1454,7 +1454,7 @@
 
     <div id="toast-banner" class="toast toast-success"></div>
 
-    <script src="../demo-bridge.js"></script>
+    <script src="../demo-bridge.js?v=20261006_fleet_sync_v2"></script>
     <script>
         const API_HOST = window.location.hostname || 'localhost';
         const GATEWAY_URL = ''; // Same-origin proxy through unified server
@@ -2176,7 +2176,7 @@
             }
         };
 
-        // Instant cross-tab sync via BroadcastChannel
+        // Instant cross-tab sync via BroadcastChannel & Global Cloud Relay window events
         try {
             const syncChannel = new BroadcastChannel('h8_demo_sync');
             syncChannel.onmessage = function (e) {
@@ -2187,6 +2187,14 @@
                 }
             };
         } catch (e) { }
+
+        window.addEventListener('h8_state_changed', function () {
+            if (currentAuthToken) {
+                fetchLiveUnits();
+                updateCandidateRanks();
+                fetchCoverage();
+            }
+        });
 
         async function fetchCoverage() {
             if (!currentAuthToken) return;

@@ -20,12 +20,14 @@
     function broadcastUnitChange(unit) {
         if (!unit || !unit.callSign) return;
         var payload = {
+            action: 'unit_update',
             type: 'unit_update',
             unitId: unit.unitId || unit.id,
             callSign: unit.callSign,
             lat: unit.lat,
             lon: unit.lon,
-            type: unit.type,
+            capability: unit.type || 'ALS',
+            unitType: unit.type || 'ALS',
             status: unit.status,
             loggedIn: unit.loggedIn,
             timestamp: Date.now()
@@ -59,33 +61,38 @@
         var state = getState();
         var cs = msg.callSign.toUpperCase();
         var local = state.fleet.find(function (f) {
-            return f.callSign.toUpperCase() === cs || f.unitId === msg.unitId || f.id === msg.unitId;
+            return (f.callSign && f.callSign.toUpperCase() === cs) || f.unitId === msg.unitId || f.id === msg.unitId;
         });
+
+        var cap = msg.capability || msg.unitType || (msg.type !== 'unit_update' ? msg.type : null);
 
         if (local) {
             var hasChange = false;
-            if (msg.lat != null && !isNaN(msg.lat) && local.lat !== msg.lat) { local.lat = parseFloat(msg.lat); hasChange = true; }
-            if (msg.lon != null && !isNaN(msg.lon) && local.lon !== msg.lon) { local.lon = parseFloat(msg.lon); hasChange = true; }
+            if (msg.lat != null && !isNaN(msg.lat) && local.lat !== parseFloat(msg.lat)) { local.lat = parseFloat(msg.lat); hasChange = true; }
+            if (msg.lon != null && !isNaN(msg.lon) && local.lon !== parseFloat(msg.lon)) { local.lon = parseFloat(msg.lon); hasChange = true; }
             if (msg.status && local.status !== msg.status) { local.status = msg.status; hasChange = true; }
             if (msg.loggedIn != null && local.loggedIn !== msg.loggedIn) { local.loggedIn = msg.loggedIn; hasChange = true; }
-            if (msg.type && local.type !== msg.type) { local.type = msg.type; hasChange = true; }
+            if (cap && local.type !== cap) { local.type = cap; hasChange = true; }
             if (hasChange) {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
                 try { channel.postMessage({ type: 'state_changed', unit: local }); } catch (e) { }
+                try { window.dispatchEvent(new CustomEvent('h8_state_changed', { detail: local })); } catch (e) { }
             }
         } else {
-            state.fleet.push({
+            var newUnit = {
                 id: msg.unitId || makeId(),
                 unitId: msg.unitId || makeId(),
                 callSign: msg.callSign,
-                lat: msg.lat || 26.9150,
-                lon: msg.lon || 75.8100,
-                type: msg.type || 'ALS',
+                lat: msg.lat != null ? parseFloat(msg.lat) : 26.9150,
+                lon: msg.lon != null ? parseFloat(msg.lon) : 75.8100,
+                type: cap || 'ALS',
                 status: msg.status || 'AVAILABLE',
                 loggedIn: msg.loggedIn !== false
-            });
+            };
+            state.fleet.push(newUnit);
             localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-            try { channel.postMessage({ type: 'state_changed' }); } catch (e) { }
+            try { channel.postMessage({ type: 'state_changed', unit: newUnit }); } catch (e) { }
+            try { window.dispatchEvent(new CustomEvent('h8_state_changed', { detail: newUnit })); } catch (e) { }
         }
     }
 
@@ -96,8 +103,8 @@
             sse.onmessage = function (ev) {
                 try {
                     var data = JSON.parse(ev.data);
-                    var msg = data.message ? JSON.parse(data.message) : data;
-                    if (msg && msg.type === 'unit_update') {
+                    var msg = data.message ? (typeof data.message === 'string' ? JSON.parse(data.message) : data.message) : data;
+                    if (msg && (msg.callSign || msg.type === 'unit_update' || msg.action === 'unit_update')) {
                         applyRemoteUnit(msg);
                     }
                 } catch (e) { }
@@ -325,6 +332,7 @@
                     delete unit.assignedIncident;
                 }
                 setState(state);
+                broadcastUnitChange(unit);
                 try { channel.postMessage({ type: 'state_changed' }); } catch (e) { }
             }
             return jsonResponse({ ok: true });
