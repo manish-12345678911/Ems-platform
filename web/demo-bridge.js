@@ -11,6 +11,7 @@
     var CHANNEL_NAME = 'h8_demo_sync';
     var CLOUD_TOPIC = 'h8_ems_fleet_sync_manish_2026';
     var CLOUD_URL = 'https://ntfy.sh/' + CLOUD_TOPIC;
+    var TUNNEL_SYNC_URL = 'https://breakdown-scenario-promote-suburban.trycloudflare.com/api/fleet/sync';
 
     // BroadcastChannel for cross-tab sync
     var channel;
@@ -45,7 +46,16 @@
             }).catch(function () { });
         } catch (e) { }
 
-        // 3. Global Cloud Relay (works across phone & desktop anywhere in the world on any network)
+        // 3. Live Tunnel Hub (works globally across GitHub Pages and all networks)
+        try {
+            originalFetch(TUNNEL_SYNC_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).catch(function () { });
+        } catch (e) { }
+
+        // 4. Global Cloud Pub/Sub Relay (ntfy.sh)
         try {
             originalFetch(CLOUD_URL, {
                 method: 'POST',
@@ -138,42 +148,48 @@
             } catch (e) { }
         }, 1500);
 
-        // 3. Local server.py poller
+        // 3. Local server.py & Cloudflare Tunnel poller
         setInterval(function () {
-            try {
-                originalFetch('/api/fleet/sync')
-                    .then(function (res) { return res.ok ? res.json() : null; })
-                    .then(function (remoteFleet) {
-                        if (Array.isArray(remoteFleet) && remoteFleet.length > 0) {
-                            var state = getState();
-                            var changed = false;
-                            remoteFleet.forEach(function (ru) {
-                                if (!ru.callSign) return;
-                                var local = state.fleet.find(function (f) {
-                                    return f.callSign.toUpperCase() === ru.callSign.toUpperCase();
+            var syncUrls = ['/api/fleet/sync'];
+            if (window.location.hostname.indexOf('github.io') !== -1 || window.location.protocol === 'https:') {
+                syncUrls.push(TUNNEL_SYNC_URL);
+            }
+            syncUrls.forEach(function (syncUrl) {
+                try {
+                    originalFetch(syncUrl)
+                        .then(function (res) { return res.ok ? res.json() : null; })
+                        .then(function (remoteFleet) {
+                            if (Array.isArray(remoteFleet) && remoteFleet.length > 0) {
+                                var state = getState();
+                                var changed = false;
+                                remoteFleet.forEach(function (ru) {
+                                    if (!ru.callSign) return;
+                                    var local = state.fleet.find(function (f) {
+                                        return f.callSign.toUpperCase() === ru.callSign.toUpperCase();
+                                    });
+                                    if (local) {
+                                        if (ru.loggedIn && local.status !== ru.status) {
+                                            local.status = ru.status;
+                                            local.loggedIn = ru.loggedIn;
+                                            changed = true;
+                                        }
+                                        if (ru.lat != null && ru.lon != null && (local.lat !== ru.lat || local.lon !== ru.lon)) {
+                                            local.lat = ru.lat;
+                                            local.lon = ru.lon;
+                                            changed = true;
+                                        }
+                                    }
                                 });
-                                if (local) {
-                                    if (ru.loggedIn && local.status !== ru.status) {
-                                        local.status = ru.status;
-                                        local.loggedIn = ru.loggedIn;
-                                        changed = true;
-                                    }
-                                    if (ru.lat != null && ru.lon != null && (local.lat !== ru.lat || local.lon !== ru.lon)) {
-                                        local.lat = ru.lat;
-                                        local.lon = ru.lon;
-                                        changed = true;
-                                    }
+                                if (changed) {
+                                    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                                    try { channel.postMessage({ type: 'state_changed' }); } catch (e) { }
+                                    try { window.dispatchEvent(new CustomEvent('h8_state_changed')); } catch (e) { }
                                 }
-                            });
-                            if (changed) {
-                                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-                                try { channel.postMessage({ type: 'state_changed' }); } catch (e) { }
-                                try { window.dispatchEvent(new CustomEvent('h8_state_changed')); } catch (e) { }
                             }
-                        }
-                    })
-                    .catch(function () { });
-            } catch (e) { }
+                        })
+                        .catch(function () { });
+                } catch (e) { }
+            });
         }, 1500);
     }
 

@@ -133,12 +133,31 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(msg)
 
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, HEAD")
+        self.send_header("Access-Control-Allow-Headers", "*")
+        self.end_headers()
+
+    def do_HEAD(self):
+        if self.path.startswith('/api/fleet/sync'):
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            return
+        super().do_HEAD()
+
     def do_GET(self):
         if self.path.startswith('/api/fleet/sync'):
             with SHARED_FLEET_LOCK:
                 data = json.dumps(list(SHARED_FLEET.values())).encode('utf-8')
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, HEAD")
+            self.send_header("Access-Control-Allow-Headers", "*")
             self.send_header("Content-Length", str(len(data)))
             self.end_headers()
             self.wfile.write(data)
@@ -180,6 +199,9 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
                 resp_data = json.dumps({"error": str(e)}).encode('utf-8')
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, HEAD")
+            self.send_header("Access-Control-Allow-Headers", "*")
             self.send_header("Content-Length", str(len(resp_data)))
             self.end_headers()
             self.wfile.write(resp_data)
