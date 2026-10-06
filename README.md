@@ -10,6 +10,25 @@
 
 ---
 
+## 🎓 Academic Project Information & Student Team
+
+> **Project Developed Under**: Rajasthan Technical University (RTU), Kota  
+> **Degree / Branch**: Bachelor of Technology (B.Tech) — Computer Science & Engineering (CSE)  
+> **Project Category**: Major Capstone Engineering Project  
+> **Project Title**: H8 Emergency Medical Services (EMS) Cloud Orchestration Platform
+
+### 👥 Student Team Details & RTU Roll Numbers
+
+| S.No. | Student Name | RTU Roll No. | Academic & Engineering Role | Primary Module Ownership |
+| :---: | :--- | :---: | :--- | :--- |
+| **1** | **Manish** | `[RTU Roll No.]` | **Full-Stack Lead & Project Lead** | Central Tactical Dispatcher Console & GraphHopper Routing |
+| **2** | **Pushkar** | `[RTU Roll No.]` | **Security & Authentication Lead** | Tactical Auth Gate, 4-Tier RBAC & HIPAA Phone Hasher |
+| **3** | **Rahul** | `[RTU Roll No.]` | **Mobile Front-End & Telemetry Lead** | Paramedic Crew Mobile PWA & Java Fleet Telemetry Simulator |
+| **4** | **Niraj** | `[RTU Roll No.]` | **Database & Hospital Systems Lead** | PostGIS Spatial Database & Hospital ED Trauma Hub |
+| **5** | **Ashutosh (Ashu)** | `[RTU Roll No.]` | **System Architect & Integration QA Lead** | 6-Diagram UML Architecture Suite & E2E Integration QA |
+
+---
+
 ## 1. Project Overview & Problem Statement
 
 In metropolitan emergency healthcare, every second delay increases patient mortality by up to 7%. Traditional emergency management systems suffer from three critical bottlenecks:
