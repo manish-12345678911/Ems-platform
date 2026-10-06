@@ -12,20 +12,22 @@
 
 ## 🎓 Academic Project Information & Student Team
 
-> **Project Developed Under**: Rajasthan Technical University (RTU), Kota  
-> **Degree / Branch**: Bachelor of Technology (B.Tech) — Computer Science & Engineering (CSE)  
+> **College / Institute**: Arya College of Engineering and Information Technology (ACEIT), Jaipur  
+> **Affiliation**: Rajasthan Technical University (RTU), Kota  
+> **Degree / Branch**: Bachelor of Technology (B.Tech) — Information Technology / Computer Science & Engineering  
 > **Project Category**: Major Capstone Engineering Project  
+> **Project Guide / Supervised Under**: [Faculty / Project Guide / Teacher Name, Department of CSE / IT]  
 > **Project Title**: H8 Emergency Medical Services (EMS) Cloud Orchestration Platform
 
-### 👥 Student Team Details & RTU Roll Numbers
+### 👥 Project Made Under & Student Roll Numbers
 
-| S.No. | Student Name | RTU Roll No. | Academic & Engineering Role | Primary Module Ownership |
-| :---: | :--- | :---: | :--- | :--- |
-| **1** | **Manish** | `[RTU Roll No.]` | **Full-Stack Lead & Project Lead** | Central Tactical Dispatcher Console & GraphHopper Routing |
-| **2** | **Pushkar** | `[RTU Roll No.]` | **Security & Authentication Lead** | Tactical Auth Gate, 4-Tier RBAC & HIPAA Phone Hasher |
-| **3** | **Rahul** | `[RTU Roll No.]` | **Mobile Front-End & Telemetry Lead** | Paramedic Crew Mobile PWA & Java Fleet Telemetry Simulator |
-| **4** | **Niraj** | `[RTU Roll No.]` | **Database & Hospital Systems Lead** | PostGIS Spatial Database & Hospital ED Trauma Hub |
-| **5** | **Ashutosh (Ashu)** | `[RTU Roll No.]` | **System Architect & Integration QA Lead** | 6-Diagram UML Architecture Suite & E2E Integration QA |
+| Name | Roll No. |
+| :---: | :---: |
+| **[Aman Raj]** | **[24EARIT008]** |
+| **[Suman Raj]** | **[24EARIT058]** |
+| **[Mayank Kumar]** | **[24EARIT032]** |
+| **[Manish Kumar Sah]** | **[24EARIT030]** |
+| **[Niraj Kumar Mandal]** | **[24EARIT036]** |
 
 ---
 
@@ -54,19 +56,19 @@ The **H8 EMS Platform** is a unified, high-speed cloud platform engineered to so
 
 To achieve enterprise-grade scalability, security, and clinical compliance, the engineering work was structured into **5 specialized modular subsystems**, each designed and owned by a dedicated team member:
 
-| # | Student Name | Core Role & Specialization | Key Modules & Code Ownership | Independent Module Folder |
-| :-: | :--- | :--- | :--- | :--- |
-| **1** | **Manish** | **Full-Stack Lead & Core Dispatch Architect** | • Tactical Dispatcher Web Console (Leaflet GIS)<br>• Autonomous Candidate Ranking Algorithm<br>• GraphHopper OSM Road Routing Service | `team-distribution/01_Manish_FullStack_CoreDispatch/` |
-| **2** | **Pushkar** | **Security, Authentication & Authorization Engineer** | • Tactical Admin & Crew Authentication Gate<br>• Role-Based Access Control (RBAC) Matrix<br>• HIPAA/GDPR Salted Telephone Hasher (`SHA-256`)<br>• Spring Cloud API Gateway Security Filters | `team-distribution/02_Pushkar_Security_Auth/` |
-| **3** | **Rahul** | **Mobile Front-End & Telemetry Engineer** | • Frontline Paramedic Mobile Cockpit (PWA)<br>• 5-Stage Sequential Mission Stepper Workflow<br>• High-Frequency Satellite GPS Telemetry Client<br>• Java Multithreaded Fleet Simulator | `team-distribution/03_Rahul_Crew_Mobile_Telemetry/` |
-| **4** | **Niraj** | **Database Architect & Hospital ED Systems Engineer** | • PostgreSQL PostGIS Spatial Database Schema<br>• GiST Spatial Proximity Engine (`ST_DWithin`)<br>• Hospital ED Trauma Hub & Resuscitation Bays<br>• Dynamic Hospital Diversion Engine | `team-distribution/04_Niraj_Database_Hospital_ED/` |
-| **5** | **Ashutosh (Ashu)** | **Systems Design Architect & Integration QA Lead** | • Complete 6-Diagram UML Architecture Suite<br>• Shared Microservice API Contracts (`contracts/`)<br>• Automated End-to-End Integration Test Suite<br>• 25-Case Quality Assurance Matrix Report | `team-distribution/05_Ashutosh_UML_Architecture_QA/` |
+| # | Student Name | RTU Roll No. | Core Role & Specialization | Key Modules & Code Ownership | Independent Module Folder |
+| :-: | :--- | :---: | :--- | :--- | :--- |
+| **1** | **Manish Kumar Sah** | `24EARIT030` | **Full-Stack Lead & Core Dispatch Architect** | • Tactical Dispatcher Web Console (Leaflet GIS)<br>• Autonomous Candidate Ranking Algorithm<br>• GraphHopper OSM Road Routing Service | `team-distribution/01_Manish_FullStack_CoreDispatch/` |
+| **2** | **Aman Raj** | `24EARIT008` | **Security, Authentication & Authorization Engineer** | • Tactical Admin & Crew Authentication Gate<br>• Role-Based Access Control (RBAC) Matrix<br>• HIPAA/GDPR Salted Telephone Hasher (`SHA-256`)<br>• Spring Cloud API Gateway Security Filters | `team-distribution/02_Pushkar_Security_Auth/` |
+| **3** | **Suman Raj** | `24EARIT058` | **Mobile Front-End & Telemetry Engineer** | • Frontline Paramedic Mobile Cockpit (PWA)<br>• 5-Stage Sequential Mission Stepper Workflow<br>• High-Frequency Satellite GPS Telemetry Client<br>• Java Multithreaded Fleet Simulator | `team-distribution/03_Rahul_Crew_Mobile_Telemetry/` |
+| **4** | **Niraj Kumar Mandal** | `24EARIT036` | **Database Architect & Hospital ED Systems Engineer** | • PostgreSQL PostGIS Spatial Database Schema<br>• GiST Spatial Proximity Engine (`ST_DWithin`)<br>• Hospital ED Trauma Hub & Resuscitation Bays<br>• Dynamic Hospital Diversion Engine | `team-distribution/04_Niraj_Database_Hospital_ED/` |
+| **5** | **Mayank Kumar** | `24EARIT032` | **Systems Design Architect & Integration QA Lead** | • Complete 6-Diagram UML Architecture Suite<br>• Shared Microservice API Contracts (`contracts/`)<br>• Automated End-to-End Integration Test Suite<br>• 25-Case Quality Assurance Matrix Report | `team-distribution/05_Ashutosh_UML_Architecture_QA/` |
 
 ---
 
 ## 4. Detailed Technical Contributions by Student
 
-### 👤 1. Manish — Full-Stack Lead & Core Dispatch Engine
+### 👤 1. Manish Kumar Sah (24EARIT030) — Full-Stack Lead & Core Dispatch Engine
 - **Tactical Dispatcher Web Console (`web/dispatcher/`)**:
   - Developed the central command console using Leaflet.js with custom vehicle markers for 14 Jaipur metropolitan ambulances.
   - Implemented the **Emergency Incident Intake Modal** capturing emergency address, caller telephone, and MPDS triage classification (Alpha, Bravo, Charlie, Delta, Echo).
@@ -80,7 +82,7 @@ To achieve enterprise-grade scalability, security, and clinical compliance, the 
 
 ---
 
-### 👤 2. Pushkar — Security, Authentication & Role-Based Access Control (RBAC)
+### 👤 2. Aman Raj (24EARIT008) — Security, Authentication & Role-Based Access Control (RBAC)
 - **Tactical Authentication Gate (`02_Pushkar_Security_Auth/src/security/auth-manager.js`)**:
   - Engineered the credential validation gate issuing signed cryptographic Bearer session tokens (`h8-auth-token-...`).
 - **Role-Based Access Control (`02_Pushkar_Security_Auth/src/security/rbac-policy.json`)**:
@@ -96,7 +98,7 @@ To achieve enterprise-grade scalability, security, and clinical compliance, the 
 
 ---
 
-### 👤 3. Rahul — Frontline Paramedic Mobile PWA & Telemetry Simulator
+### 👤 3. Suman Raj (24EARIT058) — Frontline Paramedic Mobile PWA & Telemetry Simulator
 - **Paramedic Crew Mobile PWA (`web/crew/`)**:
   - Built a touch-optimized mobile web app designed for smartphone viewports mounted on ambulance dashboards.
   - Added audio siren dispatches and device vibration feedback when a new mission is assigned.
@@ -111,7 +113,7 @@ To achieve enterprise-grade scalability, security, and clinical compliance, the 
 
 ---
 
-### 👤 4. Niraj — PostGIS Spatial Database & Hospital ED Trauma Hub
+### 👤 4. Niraj Kumar Mandal (24EARIT036) — PostGIS Spatial Database & Hospital ED Trauma Hub
 - **PostgreSQL & PostGIS Database Schema (`supabase-schema.sql`)**:
   - Designed relational tables: `units`, `incidents`, `dispatches`, `hospitals`, and `audit_logs`.
   - Added **PostGIS GiST Spatial Indexing** on geographical coordinate points (`GEOMETRY(Point, 4326)`).
@@ -126,7 +128,7 @@ To achieve enterprise-grade scalability, security, and clinical compliance, the 
 
 ---
 
-### 👤 5. Ashutosh (Ashu) — UML Design Architecture & Integration QA
+### 👤 5. Mayank Kumar (24EARIT032) — UML Design Architecture & Integration QA
 - **6-Diagram UML Architecture Suite (`05_Ashutosh_UML_Architecture_QA/diagrams/`)**:
   1. *Use Case Diagram*: Models interactions across 5 actors (Caller, Dispatcher, Paramedic, Hospital Staff, Admin).
   2. *Domain Class Diagram*: Object-oriented domain model with entities, attributes, and relationships.
@@ -267,58 +269,58 @@ Each student's folder inside `team-distribution/` is **100% self-contained**, wi
 
 Each student can initialize git inside their assigned folder and push it to their personal GitHub account:
 
-### 1. Manish:
+### 1. Manish Kumar Sah (24EARIT030):
 ```bash
 cd team-distribution/01_Manish_FullStack_CoreDispatch
 git init
 git add .
-git commit -m "Initial commit: Manish - Core Dispatch & Routing Engine"
+git commit -m "Initial commit: Manish Kumar Sah - Core Dispatch & Routing Engine"
 git branch -M main
 git remote add origin https://github.com/<manish-username>/ems-core-dispatch.git
 git push -u origin main
 ```
 
-### 2. Pushkar:
+### 2. Aman Raj (24EARIT008):
 ```bash
 cd team-distribution/02_Pushkar_Security_Auth
 git init
 git add .
-git commit -m "Initial commit: Pushkar - Security, RBAC & HIPAA Anonymizer"
+git commit -m "Initial commit: Aman Raj - Security, RBAC & HIPAA Anonymizer"
 git branch -M main
-git remote add origin https://github.com/<pushkar-username>/ems-security-auth.git
+git remote add origin https://github.com/<aman-username>/ems-security-auth.git
 git push -u origin main
 ```
 
-### 3. Rahul:
+### 3. Suman Raj (24EARIT058):
 ```bash
 cd team-distribution/03_Rahul_Crew_Mobile_Telemetry
 git init
 git add .
-git commit -m "Initial commit: Rahul - Paramedic Crew Mobile PWA & Telemetry Simulator"
+git commit -m "Initial commit: Suman Raj - Paramedic Crew Mobile PWA & Telemetry Simulator"
 git branch -M main
-git remote add origin https://github.com/<rahul-username>/ems-crew-telemetry.git
+git remote add origin https://github.com/<suman-username>/ems-crew-telemetry.git
 git push -u origin main
 ```
 
-### 4. Niraj:
+### 4. Niraj Kumar Mandal (24EARIT036):
 ```bash
 cd team-distribution/04_Niraj_Database_Hospital_ED
 git init
 git add .
-git commit -m "Initial commit: Niraj - PostGIS Database & Hospital ED Trauma Hub"
+git commit -m "Initial commit: Niraj Kumar Mandal - PostGIS Database & Hospital ED Trauma Hub"
 git branch -M main
 git remote add origin https://github.com/<niraj-username>/ems-database-hospital.git
 git push -u origin main
 ```
 
-### 5. Ashutosh:
+### 5. Mayank Kumar (24EARIT032):
 ```bash
 cd team-distribution/05_Ashutosh_UML_Architecture_QA
 git init
 git add .
-git commit -m "Initial commit: Ashutosh - UML Architecture Specification & QA Test Suite"
+git commit -m "Initial commit: Mayank Kumar - UML Architecture Specification & QA Test Suite"
 git branch -M main
-git remote add origin https://github.com/<ashutosh-username>/ems-uml-architecture-qa.git
+git remote add origin https://github.com/<mayank-username>/ems-uml-architecture-qa.git
 git push -u origin main
 ```
 
