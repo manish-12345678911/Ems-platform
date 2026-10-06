@@ -1,21 +1,22 @@
+import os
 import http.server
 import socketserver
 import urllib.request
 import urllib.error
 import sys
-
 import json
 import threading
 
-PORT = 8088
-DIRECTORY = r"C:\ambulance\web"
-BACKEND_HOST = "http://localhost:8080"
+PORT = int(os.environ.get("PORT", 8088))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DIRECTORY = os.path.join(BASE_DIR, "web") if os.path.exists(os.path.join(BASE_DIR, "web")) else r"C:\ambulance\web"
+BACKEND_HOST = os.environ.get("BACKEND_HOST", "http://localhost:8080")
 
 # All API path prefixes that should be proxied to the Spring Cloud Gateway
 API_PREFIXES = (
     "/dispatch", "/incidents", "/hospitals", "/redeployment",
     "/audit", "/coverage", "/redeploy", "/metrics/summary",
-    "/tracking", "/units", "/eta", "/actuator", "/api/fleet"
+    "/tracking", "/units", "/eta", "/actuator", "/api/fleet", "/api/accounts"
 )
 
 SHARED_FLEET_LOCK = threading.Lock()
@@ -36,6 +37,13 @@ DEFAULT_FLEET = [
     {"id": "eeeeeeee-0014-0014-0014-000000000014", "unitId": "eeeeeeee-0014-0014-0014-000000000014", "callSign": "AMB-14", "lat": 26.7788, "lon": 75.8277, "type": "ALS", "status": "OFFLINE", "label": "Paramedic ALS", "loggedIn": False}
 ]
 SHARED_FLEET = {u["callSign"].upper(): dict(u) for u in DEFAULT_FLEET}
+
+SHARED_ACCOUNTS_LOCK = threading.Lock()
+DEFAULT_CREW_ACCOUNTS = [
+    {"username": f"amb-{i:02d}", "callSign": f"AMB-{i:02d}", "password": "crew123", "unitId": u["unitId"], "type": u["type"], "label": u["label"], "lat": u["lat"], "lon": u["lon"]}
+    for i, u in enumerate(DEFAULT_FLEET, 1)
+]
+SHARED_ACCOUNTS = {a["callSign"].upper(): dict(a) for a in DEFAULT_CREW_ACCOUNTS}
 
 class ProxyHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
@@ -141,7 +149,7 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
 
     def do_HEAD(self):
-        if self.path.startswith('/api/fleet/sync'):
+        if self.path.startswith('/api/fleet/sync') or self.path.startswith('/api/accounts/sync'):
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
             self.send_header("Access-Control-Allow-Origin", "*")
@@ -163,6 +171,19 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(data)
             return
 
+        if self.path.startswith('/api/accounts/sync'):
+            with SHARED_ACCOUNTS_LOCK:
+                data = json.dumps(list(SHARED_ACCOUNTS.values())).encode('utf-8')
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, HEAD")
+            self.send_header("Access-Control-Allow-Headers", "*")
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+            return
+
         if self._is_api_path():
             # SSE endpoints need special handling (streaming)
             if '/alerts' in self.path and 'text/event-stream' in self.headers.get('Accept', ''):
@@ -173,6 +194,40 @@ class ProxyHandler(http.server.SimpleHTTPRequestHandler):
             super().do_GET()
 
     def do_POST(self):
+        if self.path.startswith('/api/accounts/sync'):
+            length = int(self.headers.get('Content-Length', 0))
+            body = self.rfile.read(length) if length > 0 else b'{}'
+            try:
+                acc = json.loads(body.decode('utf-8'))
+                cs = (acc.get('callSign') or '').upper()
+                if cs:
+                    with SHARED_ACCOUNTS_LOCK:
+                        SHARED_ACCOUNTS[cs] = acc
+                    with SHARED_FLEET_LOCK:
+                        SHARED_FLEET[cs] = {
+                            "id": acc.get("unitId") or acc.get("id"),
+                            "unitId": acc.get("unitId") or acc.get("id"),
+                            "callSign": cs,
+                            "lat": float(acc.get("lat", 26.9150)),
+                            "lon": float(acc.get("lon", 75.8100)),
+                            "type": acc.get("type", "ALS"),
+                            "status": "AVAILABLE",
+                            "label": acc.get("label", "Tactical Unit"),
+                            "loggedIn": True
+                        }
+                resp_data = json.dumps({"ok": True, "callSign": cs}).encode('utf-8')
+            except Exception as e:
+                resp_data = json.dumps({"error": str(e)}).encode('utf-8')
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, HEAD")
+            self.send_header("Access-Control-Allow-Headers", "*")
+            self.send_header("Content-Length", str(len(resp_data)))
+            self.end_headers()
+            self.wfile.write(resp_data)
+            return
+
         if self.path.startswith('/api/fleet/sync'):
             length = int(self.headers.get('Content-Length', 0))
             body = self.rfile.read(length) if length > 0 else b'{}'

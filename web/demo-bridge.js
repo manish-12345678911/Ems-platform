@@ -12,10 +12,56 @@
     var CLOUD_TOPIC = 'h8_ems_fleet_sync_manish_2026';
     var CLOUD_URL = 'https://ntfy.sh/' + CLOUD_TOPIC;
     var TUNNEL_SYNC_URL = 'https://breakdown-scenario-promote-suburban.trycloudflare.com/api/fleet/sync';
+    var TUNNEL_ACCOUNTS_URL = 'https://breakdown-scenario-promote-suburban.trycloudflare.com/api/accounts/sync';
 
     // BroadcastChannel for cross-tab sync
     var channel;
     try { channel = new BroadcastChannel(CHANNEL_NAME); } catch (e) { channel = { postMessage: function () { }, close: function () { }, addEventListener: function () { }, removeEventListener: function () { } }; }
+
+    // Broadcast new user/ambulance registration across all devices globally & locally
+    function broadcastNewAccount(account, unit) {
+        if (!account || !account.callSign) return;
+        var payload = {
+            action: 'account_registered',
+            type: 'account_registered',
+            account: account,
+            unit: unit,
+            callSign: account.callSign,
+            timestamp: Date.now()
+        };
+
+        try { channel.postMessage({ type: 'account_registered', payload: payload }); } catch (e) { }
+
+        // Local & Cloudflare Tunnel accounts sync
+        try {
+            originalFetch('/api/accounts/sync', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(account)
+            }).catch(function () { });
+        } catch (e) { }
+
+        try {
+            originalFetch(TUNNEL_ACCOUNTS_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(account)
+            }).catch(function () { });
+        } catch (e) { }
+
+        // Global Cloud Pub/Sub relay
+        try {
+            originalFetch(CLOUD_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).catch(function () { });
+        } catch (e) { }
+
+        if (unit) {
+            broadcastUnitChange(unit);
+        }
+    }
 
     // Broadcast ambulance updates across all devices globally & locally
     function broadcastUnitChange(unit) {
@@ -66,6 +112,19 @@
     }
 
     // Apply unit update received from remote phone / desktop
+    function applyRemoteAccount(acc) {
+        if (!acc || !acc.callSign) return;
+        var state = getState();
+        var cs = acc.callSign.toUpperCase();
+        if (!state.crewAccounts) state.crewAccounts = JSON.parse(JSON.stringify(DEFAULT_CREW_ACCOUNTS));
+        var exists = state.crewAccounts.find(function (a) { return a.callSign.toUpperCase() === cs; });
+        if (!exists) {
+            state.crewAccounts.push(acc);
+            setState(state);
+            try { channel.postMessage({ type: 'state_changed' }); } catch (e) { }
+        }
+    }
+
     function applyRemoteUnit(msg) {
         if (!msg || !msg.callSign) return;
         var state = getState();
@@ -115,7 +174,11 @@
                 if (!raw) return;
                 var data = typeof raw === 'string' ? JSON.parse(raw) : raw;
                 var msg = data.message ? (typeof data.message === 'string' ? JSON.parse(data.message) : data.message) : data;
-                if (msg && (msg.callSign || msg.type === 'unit_update' || msg.action === 'unit_update')) {
+                if (!msg) return;
+                if (msg.action === 'account_registered' || msg.account) {
+                    if (msg.account) applyRemoteAccount(msg.account);
+                    if (msg.unit) applyRemoteUnit(msg.unit);
+                } else if (msg.callSign || msg.type === 'unit_update' || msg.action === 'unit_update') {
                     applyRemoteUnit(msg);
                 }
             } catch (e) { }
@@ -148,11 +211,13 @@
             } catch (e) { }
         }, 1500);
 
-        // 3. Local server.py & Cloudflare Tunnel poller
+        // 3. Local server.py & Cloudflare Tunnel poller (Fleet + Accounts)
         setInterval(function () {
             var syncUrls = ['/api/fleet/sync'];
+            var accUrls = ['/api/accounts/sync'];
             if (window.location.hostname.indexOf('github.io') !== -1 || window.location.protocol === 'https:') {
                 syncUrls.push(TUNNEL_SYNC_URL);
+                accUrls.push(TUNNEL_ACCOUNTS_URL);
             }
             syncUrls.forEach(function (syncUrl) {
                 try {
@@ -178,12 +243,41 @@
                                             local.lon = ru.lon;
                                             changed = true;
                                         }
+                                    } else {
+                                        state.fleet.push(ru);
+                                        changed = true;
                                     }
                                 });
                                 if (changed) {
                                     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
                                     try { channel.postMessage({ type: 'state_changed' }); } catch (e) { }
                                     try { window.dispatchEvent(new CustomEvent('h8_state_changed')); } catch (e) { }
+                                }
+                            }
+                        })
+                        .catch(function () { });
+                } catch (e) { }
+            });
+
+            accUrls.forEach(function (accUrl) {
+                try {
+                    originalFetch(accUrl)
+                        .then(function (res) { return res.ok ? res.json() : null; })
+                        .then(function (remoteAccounts) {
+                            if (Array.isArray(remoteAccounts) && remoteAccounts.length > 0) {
+                                var state = getState();
+                                if (!state.crewAccounts) state.crewAccounts = JSON.parse(JSON.stringify(DEFAULT_CREW_ACCOUNTS));
+                                var changed = false;
+                                remoteAccounts.forEach(function (ra) {
+                                    if (!ra.callSign) return;
+                                    var found = state.crewAccounts.find(function (a) { return a.callSign.toUpperCase() === ra.callSign.toUpperCase(); });
+                                    if (!found) {
+                                        state.crewAccounts.push(ra);
+                                        changed = true;
+                                    }
+                                });
+                                if (changed) {
+                                    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
                                 }
                             }
                         })
@@ -683,7 +777,7 @@
             };
             state.fleet.push(newUnit);
             setState(state);
-            broadcastUnitChange(newUnit);
+            broadcastNewAccount(newAccount, newUnit);
 
             try {
                 channel.postMessage({ type: 'state_changed' });
