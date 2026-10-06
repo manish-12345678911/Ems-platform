@@ -1,4 +1,4 @@
-# H8 Emergency Medical Services (EMS) Platform
+# Emergency Medical Services (EMS) Platform
 > **Next-Generation Autonomous Citywide Triage, Real-Time Satellite GIS Fleet Tracking & Hospital Emergency Capacity Management**
 
 ---
