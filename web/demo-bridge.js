@@ -11,8 +11,8 @@
     var CHANNEL_NAME = 'h8_demo_sync';
     var CLOUD_TOPIC = 'h8_ems_fleet_sync_manish_2026';
     var CLOUD_URL = 'https://ntfy.sh/' + CLOUD_TOPIC;
-    var TUNNEL_SYNC_URL = 'https://breakdown-scenario-promote-suburban.trycloudflare.com/api/fleet/sync';
-    var TUNNEL_ACCOUNTS_URL = 'https://breakdown-scenario-promote-suburban.trycloudflare.com/api/accounts/sync';
+    var TUNNEL_SYNC_URL = 'https://stable-apparatus-catalog-virtue.trycloudflare.com/api/fleet/sync';
+    var TUNNEL_ACCOUNTS_URL = 'https://stable-apparatus-catalog-virtue.trycloudflare.com/api/accounts/sync';
 
     // BroadcastChannel for cross-tab sync
     var channel;
