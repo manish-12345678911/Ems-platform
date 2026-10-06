@@ -1,4 +1,0 @@
-# Redirect bare subdirectories to trailing slashes
-/dispatcher  /dispatcher/  301!
-/crew        /crew/        301!
-/ed          /ed/          301!
