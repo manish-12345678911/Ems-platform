@@ -35,8 +35,8 @@ The **H8 EMS Platform** is a unified, high-speed cloud orchestration system engi
 > **Branch**: Information Technology (IT)  
 > **Batch**: 2024–2028  
 > **Project Category**: Major Capstone Engineering Project  
-> **Project Guide / Mentor**: [Project Guide / Faculty Mentor Name, Department of Information Technology]  
-> **Project Title**: H8 Emergency Medical Services (EMS) Cloud Orchestration Platform
+> **Project Guide / Mentor**: [Er Ram Babu Buri Associate Professor]  
+> **Project Title**: H8 Emergency Medical Services (EMS) Platform
 > 
 ## 👥 5-Person Engineering Team & Work Distribution
 
@@ -157,7 +157,7 @@ graph TB
 
 | Resource | Description | Live Link |
 | :--- | :--- | :--- |
-| **🌐 Platform Landing Page** | Public product showcase & overview | [Open Landing Page](https://manish-12345678911.github.io/Ems-platform/web/) |
+| **🌐 Platform Landing Page** | Public product showcase & overview | [Open Landing Page](https://manish-12345678911.github.io/Ems-platform/) |
 | **🗺️ Tactical Dispatcher Center** | Central command console for 911 dispatchers | [Launch Dispatcher Console](https://manish-12345678911.github.io/Ems-platform/web/dispatcher/) |
 | **🚑 Paramedic Crew Mobile Cockpit** | Mobile cockpit for frontline ambulance teams | [Open Paramedic Cockpit](https://manish-12345678911.github.io/Ems-platform/web/crew/) |
 | **🏥 Hospital ED Trauma Hub** | Receiving hospital resuscitation bay board | [Open Hospital Trauma Hub](https://manish-12345678911.github.io/Ems-platform/web/ed/) |
