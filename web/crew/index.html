@@ -2419,7 +2419,7 @@
 
     <div id="toast-banner" class="toast toast-success"></div>
 
-    <script src="../demo-bridge.js?v=20261006_supabase_live_v1"></script>
+    <script src="../demo-bridge.js?v=20261006_supabase_live_v2"></script>
     <script>
         const API_HOST = window.location.hostname || 'localhost';
         const GATEWAY_URL = ''; // Same-origin proxy through unified server
@@ -2886,7 +2886,7 @@
                 await fetch(`${GATEWAY_URL}/auth/crew/logout`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ unitId: currentUnit.unitId })
+                    body: JSON.stringify({ unitId: currentUnit.unitId, callSign: currentUnit.callSign })
                 });
             } catch (e) {}
 
@@ -3906,11 +3906,15 @@
             </div>
             <span style="font-size: 0.7rem; color: var(--accent-cyan);" id="mobile-bar-subtext">Standby Pool • GPS
                 Ready</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <button type="button" class="btn-off-duty" onclick="handleCrewSignOut()" title="Sign out and go off-duty" style="padding: 9px 10px; font-size: 0.76rem;">
+                🚪 Off-Duty
+            </button>
+            <button class="btn btn-primary" id="mobile-bar-btn" onclick="advanceMissionStatus()"
+                style="padding: 9px 14px; font-size: 0.78rem; font-weight: 800; min-width: 125px; box-shadow: 0 4px 14px rgba(56, 189, 248, 0.4);">
+                ⚡ Accept Mission
+            </button>
         </div>
-        <button class="btn btn-primary" id="mobile-bar-btn" onclick="advanceMissionStatus()"
-            style="padding: 9px 14px; font-size: 0.78rem; font-weight: 800; min-width: 140px; box-shadow: 0 4px 14px rgba(56, 189, 248, 0.4);">
-            ⚡ Accept Mission
-        </button>
     </div>
 </body>
 

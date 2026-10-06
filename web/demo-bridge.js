@@ -1009,13 +1009,16 @@
         if (method === 'POST' && (pathname === '/auth/crew/logout' || (pathname.indexOf('/dispatch/units/') === 0 && pathname.indexOf('/logout') > 0))) {
             state = getState();
             unitId = (body && body.unitId) || pathname.split('/')[3];
-            unit = state.fleet.find(function(u) { return u.id === unitId || u.unitId === unitId; });
+            unit = state.fleet.find(function(u) {
+                return (unitId && (u.id === unitId || u.unitId === unitId)) ||
+                       (body && body.callSign && u.callSign && u.callSign.toUpperCase() === body.callSign.toUpperCase());
+            });
             if (unit) {
                 unit.status = 'OFFLINE';
                 unit.loggedIn = false;
                 delete unit.assignedIncident;
                 setState(state);
-                broadcastUnitChange({ unitId: unit.unitId, callSign: unit.callSign, status: 'OFFLINE', loggedIn: false });
+                broadcastUnitChange(unit);
                 try {
                     channel.postMessage({ type: 'state_changed' });
                     channel.postMessage({ type: 'unit_offline', unitId: unit.unitId || unit.id, callSign: unit.callSign });
