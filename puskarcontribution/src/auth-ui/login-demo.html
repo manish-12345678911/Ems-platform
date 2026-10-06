@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H8 EMS — Security & Authentication Gate Testbed</title>
+    <style>
+        :root {
+            --bg-dark: #070d18;
+            --card-bg: rgba(14, 23, 42, 0.85);
+            --border: rgba(56, 189, 248, 0.2);
+            --cyan: #38bdf8;
+            --green: #34d399;
+            --coral: #ff4757;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-main);
+            padding: 2.5rem;
+            min-height: 100vh;
+        }
+        .header {
+            max-width: 900px;
+            margin: 0 auto 2.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1.5rem;
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--cyan);
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(16px);
+        }
+        h2 { font-size: 1.25rem; margin-bottom: 1rem; color: #fff; }
+        p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem; }
+        label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.35rem; font-weight: 600; }
+        input {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            background: rgba(3, 7, 18, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            color: #fff;
+            margin-bottom: 1.25rem;
+            font-size: 0.95rem;
+        }
+        button {
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(135deg, var(--coral), #ee5253);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        button:hover { transform: translateY(-2px); }
+        .result-box {
+            margin-top: 1.25rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 0.78rem;
+            word-break: break-all;
+            min-height: 80px;
+        }
+        .badge-success { color: var(--green); font-weight: bold; }
+        .badge-fail { color: var(--coral); font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <span class="tag">MODULE 02: SECURITY &amp; AUTHORIZATION TESTBED</span>
+        <h1>H8 EMS — Cryptographic Access &amp; Privacy Gate</h1>
+        <p>Engineered by: <strong>Pushkar</strong> (Security &amp; Authorization Engineer)</p>
+    </div>
+
+    <div class="grid">
+        <!-- Test 1: Tactical Auth Gate -->
+        <div class="card">
+            <h2>1. Tactical Role Authentication</h2>
+            <p>Verify username and passcode against RBAC policy and issue cryptographic Bearer token.</p>
+            
+            <label for="username">Tactical Call ID / Username</label>
+            <input type="text" id="username" value="admin">
+
+            <label for="password">Passcode</label>
+            <input type="password" id="password" value="admin123">
+
+            <button onclick="handleLoginTest()">Authenticate Credentials &rarr;</button>
+
+            <div class="result-box" id="authResult">Awaiting authentication request...</div>
+        </div>
+
+        <!-- Test 2: HIPAA Salted Phone Anonymizer -->
+        <div class="card">
+            <h2>2. HIPAA Salted Phone Hasher</h2>
+            <p>Converts raw 911 caller telephone into a tamper-evident, deterministic SHA-256 privacy hash.</p>
+            
+            <label for="rawPhone">Raw Caller Phone Number</label>
+            <input type="text" id="rawPhone" value="+91 98290 12345">
+
+            <button onclick="handleHashTest()" style="background: linear-gradient(135deg, #10b981, #059669);">Generate Privacy Hash &rarr;</button>
+
+            <div class="result-box" id="hashResult">Awaiting telephone input...</div>
+        </div>
+    </div>
+
+    <script src="../security/auth-manager.js"></script>
+    <script src="../security/salted-phone-hasher.js"></script>
+    <script>
+        const authMgr = new TacticalAuthManager();
+        const hasher = new SaltedPhoneHasher();
+
+        function handleLoginTest() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            const res = authMgr.authenticate(u, p);
+            const box = document.getElementById('authResult');
+
+            if (res.success) {
+                box.innerHTML = `<span class="badge-success">✔ AUTH_GRANTED: 200 OK</span><br>Role: ${res.role} (${res.displayName})<br>Token: ${res.token}<br>Permissions: ${res.permissions.join(', ')}`;
+            } else {
+                box.innerHTML = `<span class="badge-fail">✖ AUTH_DENIED: 401 UNAUTHORIZED</span><br>${res.error}`;
+            }
+        }
+
+        async function handleHashTest() {
+            const phone = document.getElementById('rawPhone').value;
+            const hash = await hasher.hashPhoneNumber(phone);
+            const alias = await hasher.getMaskedCallerAlias(phone);
+            const box = document.getElementById('hashResult');
+
+            box.innerHTML = `<span class="badge-success">✔ HIPAA COMPLIANT HASH:</span><br>Masked Alias: <strong>${alias}</strong><br>SHA-256 Salted Digest:<br>${hash}`;
+        }
+    </script>
+</body>
+</html>

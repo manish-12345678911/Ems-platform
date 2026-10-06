@@ -1,0 +1,47 @@
+{
+  "policyVersion": "2026.1.0",
+  "author": "Pushkar (Security & Authorization Lead)",
+  "roles": {
+    "ADMIN": {
+      "description": "Tactical Chief Administrator & IT Security Controller",
+      "inherits": ["DISPATCHER"],
+      "allowedRoutes": ["/dispatcher/*", "/admin/*", "/audit/*"],
+      "permissions": [
+        "AUTH_ADMIN_CONSOLE",
+        "OVERRIDE_DISPATCH_DECISION",
+        "PURGE_AUDIT_LEDGER",
+        "RESET_CREW_CREDENTIALS",
+        "ACTIVATE_GREEN_WAVE"
+      ]
+    },
+    "DISPATCHER": {
+      "description": "Senior Emergency 911 Call Dispatcher",
+      "allowedRoutes": ["/dispatcher/*"],
+      "permissions": [
+        "INTAKE_EMERGENCY_CALL",
+        "TRIGGER_CANDIDATE_RANKING",
+        "ASSIGN_AMBULANCE_UNIT",
+        "CANCEL_MISSION"
+      ]
+    },
+    "CREW": {
+      "description": "Frontline Paramedic Ambulance Crew",
+      "allowedRoutes": ["/crew/*"],
+      "permissions": [
+        "AUTHENTICATE_VEHICLE_UNIT",
+        "STREAM_GPS_TELEMETRY",
+        "ADVANCE_5_STEP_STEPPER",
+        "SEND_TRAUMA_PRE_ALERT"
+      ]
+    },
+    "HOSPITAL_STAFF": {
+      "description": "Hospital Emergency Department Triage Nurse / Doctor",
+      "allowedRoutes": ["/ed/*"],
+      "permissions": [
+        "VIEW_INCOMING_TRAUMA_BAYS",
+        "UPDATE_RESUS_BAY_STATUS",
+        "TOGGLE_HOSPITAL_DIVERSION"
+      ]
+    }
+  }
+}

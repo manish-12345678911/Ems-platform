@@ -1,0 +1,38 @@
+server:
+  port: 8087
+
+spring:
+  application:
+    name: audit-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/h8?currentSchema=audit,public
+    username: h8
+    password: ${PG_PASSWORD:changeme_pg}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    schemas: audit
+    locations: classpath:db/migration/audit
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: audit-service
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.h8.ems.contracts.*
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8180/realms/h8
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus

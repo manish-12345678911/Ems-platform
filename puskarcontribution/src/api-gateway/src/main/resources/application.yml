@@ -1,0 +1,48 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: dispatch-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/dispatch,/dispatch/**,/incidents/*/candidates,/incidents/*/dispatch,/incidents/*/override,/units/*/status,/units/*/reject
+        - id: incident-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/incidents,/incidents/**
+        - id: tracking-service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/tracking,/tracking/**,/units/*/location,/units/nearby
+        - id: routing-service
+          uri: http://localhost:8084
+          predicates:
+            - Path=/eta,/eta/matrix
+        - id: hospital-service
+          uri: http://localhost:8085
+          predicates:
+            - Path=/hospitals,/hospitals/**
+        - id: redeployment-service
+          uri: http://localhost:8086
+          predicates:
+            - Path=/coverage,/redeploy/**,/redeployment,/redeployment/**
+        - id: audit-service
+          uri: http://localhost:8087
+          predicates:
+            - Path=/metrics/summary,/audit,/audit/**
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8180/realms/h8
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
