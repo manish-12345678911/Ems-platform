@@ -159,21 +159,6 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .brand-badge-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 3px 10px;
-            border-radius: 9999px;
-            font-size: 0.68rem;
-            font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.35);
-            color: #34d399;
-            margin-left: 0.5rem;
-        }
-
         .pulse-dot-green {
             width: 6px;
             height: 6px;
@@ -237,19 +222,29 @@
         section.hero-wrapper {
             position: relative;
             z-index: 10;
-            padding: 5.5rem 3.5rem 6.5rem;
+            padding: 6.5rem 3.5rem 6.5rem;
             max-width: 1420px;
             margin: 0 auto;
         }
 
         .hero-layout {
-            display: grid;
-            grid-template-columns: 1.05fr 0.95fr;
-            gap: 4.5rem;
+            max-width: 920px;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
             align-items: center;
         }
 
-        /* Hero Content Left */
+        .hero-left-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* Hero Content */
         .pill-announcement {
             display: inline-flex;
             align-items: center;
@@ -263,7 +258,7 @@
             letter-spacing: 0.08em;
             text-transform: uppercase;
             color: #e2e8f0;
-            margin-bottom: 2rem;
+            margin: 0 auto 2rem;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
         }
 
@@ -278,11 +273,12 @@
 
         .hero-main-title {
             font-family: 'Outfit', sans-serif;
-            font-size: 4.25rem;
+            font-size: 4.6rem;
             font-weight: 900;
-            line-height: 1.06;
+            line-height: 1.08;
             letter-spacing: -0.04em;
             margin-bottom: 1.75rem;
+            text-align: center;
         }
 
         .gradient-headline {
@@ -298,16 +294,18 @@
         }
 
         .hero-description {
-            font-size: 1.18rem;
+            font-size: 1.25rem;
             line-height: 1.75;
             color: var(--text-sub);
-            max-width: 580px;
-            margin-bottom: 2.75rem;
+            max-width: 740px;
+            margin: 0 auto 2.75rem;
+            text-align: center;
         }
 
         .hero-button-row {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 1.25rem;
             flex-wrap: wrap;
             margin-bottom: 3.5rem;
@@ -319,9 +317,9 @@
             gap: 0.65rem;
             background: linear-gradient(135deg, var(--brand-coral) 0%, #ee5253 100%);
             color: #ffffff;
-            padding: 1.05rem 2.25rem;
+            padding: 1.1rem 2.35rem;
             border-radius: 9999px;
-            font-size: 1rem;
+            font-size: 1.02rem;
             font-weight: 700;
             text-decoration: none;
             box-shadow: 0 8px 32px var(--brand-coral-glow);
@@ -340,9 +338,9 @@
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-glass-bright);
             color: #ffffff;
-            padding: 1.05rem 2.15rem;
+            padding: 1.1rem 2.25rem;
             border-radius: 9999px;
-            font-size: 1rem;
+            font-size: 1.02rem;
             font-weight: 700;
             text-decoration: none;
             backdrop-filter: blur(12px);
@@ -358,8 +356,10 @@
         .hero-trust-row {
             display: flex;
             align-items: center;
-            gap: 2rem;
-            font-size: 0.78rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2.25rem;
+            font-size: 0.82rem;
             color: var(--text-muted);
             font-family: 'JetBrains Mono', monospace;
         }
@@ -368,187 +368,6 @@
             display: flex;
             align-items: center;
             gap: 6px;
-        }
-
-        /* Hero Right: Tactical HUD Radar Preview */
-        .tactical-hud-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-glass-bright);
-            border-radius: 28px;
-            padding: 1.75rem;
-            position: relative;
-            backdrop-filter: blur(28px);
-            -webkit-backdrop-filter: blur(28px);
-            box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.8), 0 0 40px rgba(56, 189, 248, 0.08);
-            overflow: hidden;
-        }
-
-        .hud-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1.25rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border-glass);
-        }
-
-        .hud-title-zone {
-            display: flex;
-            align-items: center;
-            gap: 0.65rem;
-            font-size: 0.85rem;
-            font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--text-sub);
-        }
-
-        .hud-live-tag {
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid rgba(16, 185, 129, 0.35);
-            color: #34d399;
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-size: 0.68rem;
-            font-weight: 800;
-        }
-
-        /* Tactical Canvas / Radar Display */
-        .radar-canvas {
-            position: relative;
-            width: 100%;
-            height: 340px;
-            background: radial-gradient(circle at center, #0a1324 0%, #050b16 100%);
-            border: 1px solid var(--border-glass);
-            border-radius: 20px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Concentric Radar Rings */
-        .radar-ring {
-            position: absolute;
-            border-radius: 50%;
-            border: 1px solid rgba(56, 189, 248, 0.12);
-            pointer-events: none;
-        }
-
-        .ring-1 { width: 100px; height: 100px; }
-        .ring-2 { width: 200px; height: 200px; }
-        .ring-3 { width: 300px; height: 300px; border-style: dashed; }
-
-        .radar-axis-x {
-            position: absolute;
-            width: 100%;
-            height: 1px;
-            background: rgba(56, 189, 248, 0.09);
-        }
-
-        .radar-axis-y {
-            position: absolute;
-            width: 1px;
-            height: 100%;
-            background: rgba(56, 189, 248, 0.09);
-        }
-
-        /* Rotating Sweep Line */
-        .radar-sweep {
-            position: absolute;
-            width: 320px;
-            height: 320px;
-            border-radius: 50%;
-            background: conic-gradient(from 0deg, transparent 0deg, rgba(0, 210, 211, 0.18) 45deg, transparent 46deg);
-            animation: radarRotate 5s linear infinite;
-            pointer-events: none;
-        }
-
-        @keyframes radarRotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        /* Live Blip Markers on Canvas */
-        .radar-blip {
-            position: absolute;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(13, 22, 40, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 4px 8px;
-            border-radius: 8px;
-            font-size: 0.72rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 700;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
-            z-index: 10;
-        }
-
-        .blip-amb-1 {
-            top: 25%;
-            left: 20%;
-            border-color: rgba(16, 185, 129, 0.4);
-            color: #34d399;
-        }
-
-        .blip-amb-2 {
-            bottom: 28%;
-            right: 22%;
-            border-color: rgba(56, 189, 248, 0.4);
-            color: #38bdf8;
-        }
-
-        .blip-hospital {
-            top: 30%;
-            right: 18%;
-            border-color: rgba(245, 158, 11, 0.4);
-            color: #fbbf24;
-        }
-
-        /* Floating Overlay Cards on Bottom of HUD */
-        .hud-bottom-overlay {
-            position: absolute;
-            bottom: 12px;
-            left: 12px;
-            right: 12px;
-            display: grid;
-            grid-template-columns: 1.3fr 1fr;
-            gap: 10px;
-            z-index: 20;
-        }
-
-        .hud-card-glass {
-            background: rgba(10, 16, 30, 0.94);
-            border: 1px solid var(--border-glass-bright);
-            border-radius: 14px;
-            padding: 0.85rem 1rem;
-            backdrop-filter: blur(16px);
-        }
-
-        .hud-sub-label {
-            font-size: 0.65rem;
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            margin-bottom: 2px;
-        }
-
-        .hud-main-text {
-            font-size: 0.92rem;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .hud-eta-timer {
-            font-size: 1.35rem;
-            font-weight: 800;
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--brand-coral);
-            letter-spacing: -0.02em;
         }
 
         /* City Impact Live Metrics Strip */
@@ -780,113 +599,6 @@
             transform: translateX(5px);
         }
 
-        /* Interactive Live Simulation Benchmark Deck */
-        section.live-sim-section {
-            position: relative;
-            z-index: 10;
-            max-width: 1420px;
-            margin: 0 auto 6rem;
-            padding: 0 3.5rem;
-        }
-
-        .sim-console-card {
-            background: linear-gradient(145deg, rgba(13, 20, 36, 0.9), rgba(8, 12, 22, 0.95));
-            border: 1px solid var(--border-glass-bright);
-            border-radius: 28px;
-            padding: 2.75rem;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
-            display: grid;
-            grid-template-columns: 1fr 1.25fr;
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .sim-info-col h3 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 2.15rem;
-            font-weight: 800;
-            letter-spacing: -0.03em;
-            margin-bottom: 1rem;
-        }
-
-        .sim-info-col p {
-            color: var(--text-sub);
-            font-size: 0.98rem;
-            line-height: 1.7;
-            margin-bottom: 2rem;
-        }
-
-        .sim-buttons-group {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .btn-sim-action {
-            background: rgba(56, 189, 248, 0.15);
-            border: 1px solid rgba(56, 189, 248, 0.4);
-            color: #38bdf8;
-            padding: 0.75rem 1.4rem;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-sim-action:hover {
-            background: rgba(56, 189, 248, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .sim-terminal-screen {
-            background: #03060c;
-            border: 1px solid var(--border-glass);
-            border-radius: 18px;
-            padding: 1.5rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.82rem;
-            color: #cbd5e1;
-            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.7);
-        }
-
-        .sim-terminal-bar {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            color: var(--text-muted);
-            font-size: 0.75rem;
-        }
-
-        .terminal-dot {
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-        }
-
-        .terminal-log-output {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            min-height: 140px;
-        }
-
-        .log-line {
-            display: flex;
-            gap: 10px;
-        }
-
-        .log-ts {
-            color: var(--text-muted);
-        }
-
-        .log-success { color: #34d399; }
-        .log-info { color: #38bdf8; }
-        .log-coral { color: #ff6b81; }
-
         /* End-to-End Operational Pipeline */
         section.pipeline-section {
             position: relative;
@@ -1042,13 +754,11 @@
         /* Responsive Design */
         @media (max-width: 1100px) {
             header.site-nav { padding: 1rem 1.75rem; }
-            section.hero-wrapper { padding: 3.5rem 1.75rem; }
-            .hero-layout { grid-template-columns: 1fr; gap: 3rem; }
-            .hero-main-title { font-size: 3.25rem; }
+            section.hero-wrapper { padding: 4.5rem 1.75rem; }
+            .hero-main-title { font-size: 3.5rem; }
             .metrics-grid { grid-template-columns: repeat(2, 1fr); }
             .portals-card-grid { grid-template-columns: 1fr; }
             .pipeline-steps-grid { grid-template-columns: repeat(2, 1fr); }
-            .sim-console-card { grid-template-columns: 1fr; }
             .footer-cols { grid-template-columns: 1fr 1fr; gap: 2rem; }
         }
 
@@ -1060,7 +770,7 @@
             .pipeline-steps-grid { grid-template-columns: 1fr; }
             .footer-cols { grid-template-columns: 1fr; }
             .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
-            .hud-bottom-overlay { grid-template-columns: 1fr; }
+            .hero-trust-row { gap: 1.25rem; }
         }
     </style>
 </head>
@@ -1078,17 +788,12 @@
         <a href="#" class="brand-logo-cluster">
             <div class="brand-icon-emblem">🚑</div>
             <div class="brand-name">H8 EMS</div>
-            <span class="brand-badge-status">
-                <span class="pulse-dot-green"></span>
-                SUPABASE 24/7 LIVE
-            </span>
         </a>
 
         <ul class="nav-menu">
             <li><a href="#metrics">City Impact</a></li>
             <li><a href="#portals">Operating Hubs</a></li>
             <li><a href="#pipeline">Workflow</a></li>
-            <li><a href="#simulation">Live Test</a></li>
         </ul>
 
         <div class="nav-actions">
@@ -1103,7 +808,6 @@
         <!-- Hero Section -->
         <section class="hero-wrapper">
             <div class="hero-layout">
-                <!-- Left Hero Text -->
                 <div class="hero-left-content">
                     <div class="pill-announcement">
                         <span class="pill-badge-tag">ENTERPRISE CLOUD</span>
@@ -1135,53 +839,6 @@
                         <div class="trust-item"><span>⚡</span> &lt;40ms Cloud Latency</div>
                         <div class="trust-item"><span>🛰️</span> GPS Satellite Tracking</div>
                         <div class="trust-item"><span>🛡️</span> SHA-256 Ledger Verified</div>
-                    </div>
-                </div>
-
-                <!-- Right Hero Tactical Radar HUD -->
-                <div class="tactical-hud-card">
-                    <div class="hud-header">
-                        <div class="hud-title-zone">
-                            <span>🛰️ TACTICAL RADAR HUD</span>
-                            <span style="color: var(--text-muted);">&bull;</span>
-                            <span>JAIPUR METROPOLITAN</span>
-                        </div>
-                        <span class="hud-live-tag">&bull; 100% ONLINE</span>
-                    </div>
-
-                    <div class="radar-canvas">
-                        <div class="radar-axis-x"></div>
-                        <div class="radar-axis-y"></div>
-                        <div class="radar-ring ring-1"></div>
-                        <div class="radar-ring ring-2"></div>
-                        <div class="radar-ring ring-3"></div>
-                        <div class="radar-sweep"></div>
-
-                        <!-- Live Blip Units -->
-                        <div class="radar-blip blip-amb-1">
-                            <span>🚑 AMB-02 (BLS)</span>
-                        </div>
-                        <div class="radar-blip blip-amb-2">
-                            <span>🚑 AMB-01 (ALS)</span>
-                        </div>
-                        <div class="radar-blip blip-hospital">
-                            <span>🏥 SMS Hospital</span>
-                        </div>
-
-                        <!-- Overlay Cards on HUD Canvas -->
-                        <div class="hud-bottom-overlay">
-                            <div class="hud-card-glass">
-                                <div class="hud-sub-label">ACTIVE SECTOR UNIT</div>
-                                <div class="hud-main-text">
-                                    <span style="color:#38bdf8;">🚑 AMB-02</span>
-                                    <span style="font-size:0.75rem; color:#94a3b8;">&bull; On-Duty Available</span>
-                                </div>
-                            </div>
-                            <div class="hud-card-glass" style="border-color: rgba(255, 71, 87, 0.4);">
-                                <div class="hud-sub-label">ESTIMATED DISPATCH ETA</div>
-                                <div class="hud-eta-timer" id="eta-countdown-clock">04:18</div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -1318,44 +975,6 @@
             </div>
         </section>
 
-        <!-- Interactive Live Simulation Benchmark Deck (#simulation) -->
-        <section class="live-sim-section" id="simulation">
-            <div class="sim-console-card">
-                <div class="sim-info-col">
-                    <span class="section-tag">LIVE TEST SIMULATOR</span>
-                    <h3>Test the Real-Time Dispatch Engine</h3>
-                    <p>
-                        Trigger simulated emergency calls and satellite telemetry packets to inspect how the autonomous scoring engine ranks units in under 50 milliseconds.
-                    </p>
-                    <div class="sim-buttons-group">
-                        <button class="btn-sim-action" onclick="runSimDispatch()">🚨 Trigger Emergency Call</button>
-                        <button class="btn-sim-action" onclick="runSimGpsPing()" style="background:rgba(16,185,129,0.15); color:#34d399; border-color:rgba(16,185,129,0.4);">🛰️ Broadcast Satellite GPS</button>
-                    </div>
-                </div>
-
-                <div class="sim-terminal-screen">
-                    <div class="sim-terminal-bar">
-                        <span class="terminal-dot" style="background: #ff5f56;"></span>
-                        <span class="terminal-dot" style="background: #ffbd2e;"></span>
-                        <span class="terminal-dot" style="background: #27c93f;"></span>
-                        <span style="margin-left: 8px;">h8-ems-cloud-telemetry://terminal</span>
-                    </div>
-                    <div class="terminal-log-output" id="terminal-log">
-                        <div class="log-line">
-                            <span class="log-ts">[11:00:00]</span>
-                            <span class="log-success">SYS_READY:</span>
-                            <span>Supabase PostgreSQL PostGIS spatial cluster active.</span>
-                        </div>
-                        <div class="log-line">
-                            <span class="log-ts">[11:00:01]</span>
-                            <span class="log-info">TELEMETRY:</span>
-                            <span>14 Fleet ambulance units registered. Awaiting crew satellite pings.</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- End-to-End Operational Pipeline (#pipeline) -->
         <section class="pipeline-section" id="pipeline">
             <div class="section-header-center">
@@ -1436,7 +1055,6 @@
                     <ul>
                         <li><a href="#metrics">Cloud Telemetry Specs</a></li>
                         <li><a href="#pipeline">4-Stage Triage Pipeline</a></li>
-                        <li><a href="#simulation">Live Interactive Test</a></li>
                     </ul>
                 </div>
 
@@ -1457,54 +1075,7 @@
         </div>
     </footer>
 
-    <!-- Demo Bridge Engine & Live Script -->
+    <!-- Demo Bridge Engine -->
     <script src="demo-bridge.js?v=20261006_supabase_live_v2"></script>
-    <script>
-        // Real-Time Arrival Countdown Clock
-        let totalSeconds = 4 * 60 + 18; // 04:18
-        const timerEl = document.getElementById('eta-countdown-clock');
-
-        function updateCountdown() {
-            if (totalSeconds > 0) {
-                totalSeconds--;
-                const mins = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
-                const secs = String(totalSeconds % 60).padStart(2, '0');
-                if (timerEl) timerEl.innerText = `${mins}:${secs}`;
-            } else {
-                totalSeconds = 6 * 60 + 20;
-            }
-        }
-        setInterval(updateCountdown, 1000);
-
-        // Interactive Live Simulation Terminal Scripts
-        function runSimDispatch() {
-            const terminal = document.getElementById('terminal-log');
-            if (!terminal) return;
-            const now = new Date().toLocaleTimeString();
-            const log1 = document.createElement('div');
-            log1.className = 'log-line';
-            log1.innerHTML = `<span class="log-ts">[${now}]</span> <span class="log-coral">INCIDENT_ALERT:</span> <span>Cardiac Arrest (Delta) reported at JLN Marg.</span>`;
-            terminal.appendChild(log1);
-
-            setTimeout(() => {
-                const log2 = document.createElement('div');
-                log2.className = 'log-line';
-                log2.innerHTML = `<span class="log-ts">[${new Date().toLocaleTimeString()}]</span> <span class="log-success">RANK_MATCH:</span> <span>AMB-01 (ALS) selected (Score: 98.4, ETA: 3.2 min). Dispatched!</span>`;
-                terminal.appendChild(log2);
-                terminal.scrollTop = terminal.scrollHeight;
-            }, 600);
-        }
-
-        function runSimGpsPing() {
-            const terminal = document.getElementById('terminal-log');
-            if (!terminal) return;
-            const now = new Date().toLocaleTimeString();
-            const log = document.createElement('div');
-            log.className = 'log-line';
-            log.innerHTML = `<span class="log-ts">[${now}]</span> <span class="log-info">GPS_SATELLITE_PING:</span> <span>AMB-02 coordinates (26.9239, 75.8267) synced to Supabase (Accuracy: ±4m).</span>`;
-            terminal.appendChild(log);
-            terminal.scrollTop = terminal.scrollHeight;
-        }
-    </script>
 </body>
 </html>
