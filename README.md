@@ -1,4 +1,4 @@
-# H8 Emergency Medical Services (EMS) Cloud Orchestration Platform
+# H8 Emergency Medical Services (EMS) Platform
 > **Next-Generation Autonomous Citywide Triage, Real-Time Satellite GIS Fleet Tracking & Hospital Emergency Capacity Management**
 
 ---
@@ -37,28 +37,16 @@ The **H8 EMS Platform** is a unified, high-speed cloud orchestration system engi
 > **Project Category**: Major Capstone Engineering Project  
 > **Project Guide / Mentor**: [Project Guide / Faculty Mentor Name, Department of Information Technology]  
 > **Project Title**: H8 Emergency Medical Services (EMS) Cloud Orchestration Platform
-
-### 👥 Student Team Details & RTU Roll Numbers
-
-| Name | Roll No. |
-| :---: | :---: |
-| **[Aman Raj]** | **[24EARIT008]** |
-| **[Suman Raj]** | **[24EARIT058]** |
-| **[Mayank Kumar]** | **[24EARIT032]** |
-| **[Manish Kumar Sah]** | **[24EARIT030]** |
-| **[Niraj Kumar Mandal]** | **[24EARIT036]** |
-
----
-
+> 
 ## 👥 5-Person Engineering Team & Work Distribution
 
 | # | Student Name | RTU Roll No. | Core Role & Specialization | Key Modules & Code Ownership | GitHub Project Link |
 | :-: | :--- | :---: | :--- | :--- | :--- |
 | **1** | **Manish Kumar Sah** | `24EARIT030` | **Full-Stack Lead & Core Dispatch Architect** | • Tactical Dispatcher Web Console (Leaflet GIS)<br>• Autonomous Candidate Ranking Algorithm<br>• GraphHopper OSM Road Routing Service | [🔗 Manish's Repo](https://github.com/manish-12345678911/Ems-platform) |
-| **2** | **Aman Raj** | `24EARIT008` | **Security, Authentication & Authorization Engineer** | • Tactical Admin & Crew Authentication Gate<br>• 4-Tier Role-Based Access Control (RBAC) Matrix<br>• HIPAA/GDPR Salted Telephone Hasher (`SHA-256`)<br>• Spring Cloud API Gateway Security Filters | [🔗 Aman's Repo](https://github.com/aman-raj/ems-security-auth) |
-| **3** | **Suman Raj** | `24EARIT058` | **Mobile Front-End & Telemetry Engineer** | • Frontline Paramedic Mobile Cockpit (PWA)<br>• 5-Stage Sequential Mission Stepper Workflow<br>• High-Frequency Satellite GPS Telemetry Client<br>• Java Multithreaded Fleet Simulator | [🔗 Suman's Repo](https://github.com/suman-raj/ems-crew-telemetry) |
-| **4** | **Niraj Kumar Mandal** | `24EARIT036` | **Database Architect & Hospital ED Systems Engineer** | • PostgreSQL PostGIS Spatial Database Schema<br>• GiST Spatial Proximity Engine (`ST_DWithin`)<br>• Hospital ED Trauma Hub & Resuscitation Bays<br>• Dynamic Hospital Diversion Engine | [🔗 Niraj's Repo](https://github.com/niraj-mandal/ems-database-hospital) |
-| **5** | **Mayank Kumar** | `24EARIT032` | **Systems Design Architect & Integration QA Lead** | • Complete 6-Diagram UML Architecture Suite<br>• Shared Microservice API Contracts (`contracts/`)<br>• Automated End-to-End Integration Test Suite<br>• 25-Case Quality Assurance Matrix Report | [🔗 Mayank's Repo](https://github.com/mayank-kumar/ems-uml-architecture-qa) |
+| **2** | **Rahul Mandal** | `24EARIT042` | **Security, Authentication & Authorization Engineer** | • Tactical Admin & Crew Authentication Gate<br>• 4-Tier Role-Based Access Control (RBAC) Matrix<br>• HIPAA/GDPR Salted Telephone Hasher (`SHA-256`)<br>• Spring Cloud API Gateway Security Filters | [🔗 Aman's Repo](https://github.com/aman-raj/ems-security-auth) |
+| **3** | **Niraj Mandal** | `24EARIT036` | **Mobile Front-End & Telemetry Engineer** | • Frontline Paramedic Mobile Cockpit (PWA)<br>• 5-Stage Sequential Mission Stepper Workflow<br>• High-Frequency Satellite GPS Telemetry Client<br>• Java Multithreaded Fleet Simulator | [🔗 Suman's Repo](https://github.com/suman-raj/ems-crew-telemetry) |
+| **4** | **Pushkar Priyadarshi** | `24EARIT040` | **Database Architect & Hospital ED Systems Engineer** | • PostgreSQL PostGIS Spatial Database Schema<br>• GiST Spatial Proximity Engine (`ST_DWithin`)<br>• Hospital ED Trauma Hub & Resuscitation Bays<br>• Dynamic Hospital Diversion Engine | [🔗 Niraj's Repo](https://github.com/niraj-mandal/ems-database-hospital) |
+| **5** | **Ashutosh Kumar** | `24EARIT012` | **Systems Design Architect & Integration QA Lead** | • Complete 6-Diagram UML Architecture Suite<br>• Shared Microservice API Contracts (`contracts/`)<br>• Automated End-to-End Integration Test Suite<br>• 25-Case Quality Assurance Matrix Report | [🔗 Mayank's Repo](https://github.com/mayank-kumar/ems-uml-architecture-qa) |
 
 ---
 
