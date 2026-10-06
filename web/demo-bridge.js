@@ -866,7 +866,7 @@
             if (!account || account.password !== password) {
                 return new Response(JSON.stringify({
                     success: false,
-                    message: "Invalid Call Sign or Passcode. Default accounts are AMB-01 to AMB-14 with passcode 'crew123'."
+                    message: "Invalid Call Sign or Passcode."
                 }), { status: 401, headers: { 'Content-Type': 'application/json' } });
             }
 

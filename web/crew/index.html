@@ -1901,24 +1901,24 @@
                     </div>
                 </div>
 
-                <!-- Quick Pick Buttons for the 14 Default Units -->
-                <div class="quick-unit-selector">
-                    <div class="quick-label">⚡ Quick Select (Passcode: <code>crew123</code>):</div>
+                <!-- Quick Pick Buttons for the 14 Default Units (Hidden per security policy) -->
+                <div class="quick-unit-selector" style="display: none;">
+                    <div class="quick-label">⚡ Quick Select Unit:</div>
                     <div class="quick-unit-grid">
-                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-01', 'crew123')">AMB-01 (ALS)</button>
-                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-02', 'crew123')">AMB-02 (BLS)</button>
-                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-03', 'crew123')">AMB-03 (ALS)</button>
-                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-04', 'crew123')">AMB-04 (BLS)</button>
-                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-05', 'crew123')">AMB-05 (ALS)</button>
-                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-06', 'crew123')">AMB-06 (BLS)</button>
-                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-07', 'crew123')">AMB-07 (ALS)</button>
-                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-08', 'crew123')">AMB-08 (BLS)</button>
-                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-09', 'crew123')">AMB-09 (ALS)</button>
-                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-10', 'crew123')">AMB-10 (BLS)</button>
-                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-11', 'crew123')">AMB-11 (ALS)</button>
-                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-12', 'crew123')">AMB-12 (BLS)</button>
-                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-13', 'crew123')">AMB-13 (ALS)</button>
-                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-14', 'crew123')">AMB-14 (ALS)</button>
+                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-01')">AMB-01 (ALS)</button>
+                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-02')">AMB-02 (BLS)</button>
+                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-03')">AMB-03 (ALS)</button>
+                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-04')">AMB-04 (BLS)</button>
+                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-05')">AMB-05 (ALS)</button>
+                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-06')">AMB-06 (BLS)</button>
+                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-07')">AMB-07 (ALS)</button>
+                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-08')">AMB-08 (BLS)</button>
+                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-09')">AMB-09 (ALS)</button>
+                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-10')">AMB-10 (BLS)</button>
+                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-11')">AMB-11 (ALS)</button>
+                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-12')">AMB-12 (BLS)</button>
+                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-13')">AMB-13 (ALS)</button>
+                        <button type="button" class="qu-btn" onclick="quickFillCrew('AMB-14')">AMB-14 (ALS)</button>
                     </div>
                 </div>
 
@@ -1926,7 +1926,7 @@
                     <label for="crew-signin-password">Security Passcode</label>
                     <div class="input-with-icon">
                         <span class="input-icon">🔑</span>
-                        <input type="password" id="crew-signin-password" name="crew_auth_key" required placeholder="Enter passcode (default: crew123)" autocomplete="off" spellcheck="false" data-lpignore="true" readonly onfocus="this.removeAttribute('readonly');">
+                        <input type="password" id="crew-signin-password" name="crew_auth_key" required placeholder="Enter passcode" autocomplete="one-time-code" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" readonly onfocus="this.removeAttribute('readonly');">
                         <button type="button" class="btn-toggle-pwd" onclick="toggleCrewPwdVisibility('crew-signin-password')" title="Show/Hide">👁️</button>
                     </div>
                 </div>
@@ -1982,7 +1982,7 @@
                     <label for="crew-reg-password">Create Security Passcode</label>
                     <div class="input-with-icon">
                         <span class="input-icon">🔑</span>
-                        <input type="password" id="crew-reg-password" required placeholder="Minimum 4 characters" autocomplete="off" spellcheck="false" data-lpignore="true" readonly onfocus="this.removeAttribute('readonly');">
+                        <input type="password" id="crew-reg-password" required placeholder="Minimum 4 characters" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other" readonly onfocus="this.removeAttribute('readonly');">
                         <button type="button" class="btn-toggle-pwd" onclick="toggleCrewPwdVisibility('crew-reg-password')" title="Show/Hide">👁️</button>
                     </div>
                 </div>
@@ -2572,12 +2572,12 @@
             }
         }
 
-        function quickFillCrew(callSign, password) {
+        function quickFillCrew(callSign) {
             const cs = document.getElementById('crew-signin-callsign');
             const pwd = document.getElementById('crew-signin-password');
             if (cs) cs.value = callSign;
             if (pwd) {
-                pwd.value = password;
+                pwd.value = '';
                 pwd.removeAttribute('readonly');
             }
             const err = document.getElementById('crew-auth-error');
