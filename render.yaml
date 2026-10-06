@@ -1,9 +1,0 @@
-services:
-  - type: web
-    name: h8-ems-backend
-    runtime: python
-    buildCommand: ""
-    startCommand: "python server.py"
-    envVars:
-      - key: PORT
-        value: 10000
