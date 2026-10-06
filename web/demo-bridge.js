@@ -13,6 +13,8 @@
     var CLOUD_URL = 'https://ntfy.sh/' + CLOUD_TOPIC;
     var TUNNEL_SYNC_URL = 'https://stable-apparatus-catalog-virtue.trycloudflare.com/api/fleet/sync';
     var TUNNEL_ACCOUNTS_URL = 'https://stable-apparatus-catalog-virtue.trycloudflare.com/api/accounts/sync';
+    var SUPABASE_URL = 'https://yvfonejqdqbronpdlkhy.supabase.co';
+    var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl2Zm9uZWpxZHFicm9ucGRsa2h5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNTgzOTgsImV4cCI6MjEwNjgzNDM5OH0.8JqKbgXE8Vbms3ye0_TnNSVLpRqpJHPW_GYF2HnCQ2A';
 
     // BroadcastChannel for cross-tab sync
     var channel;
@@ -32,7 +34,31 @@
 
         try { channel.postMessage({ type: 'account_registered', payload: payload }); } catch (e) { }
 
-        // Local & Cloudflare Tunnel accounts sync
+        // 1. Supabase Cloud Database Sync (Global Multi-Device Auth)
+        if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+            try {
+                originalFetch(SUPABASE_URL + '/rest/v1/crew_accounts?on_conflict=call_sign', {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'resolution=merge-duplicates'
+                    },
+                    body: JSON.stringify({
+                        call_sign: account.callSign,
+                        username: account.username || account.callSign.toLowerCase(),
+                        password: account.password || 'crew123',
+                        type: account.type || 'ALS',
+                        label: account.label || 'Tactical Unit',
+                        lat: account.lat != null ? parseFloat(account.lat) : (unit && unit.lat != null ? parseFloat(unit.lat) : 26.9150),
+                        lon: account.lon != null ? parseFloat(account.lon) : (unit && unit.lon != null ? parseFloat(unit.lon) : 75.8100)
+                    })
+                }).catch(function () { });
+            } catch (e) { }
+        }
+
+        // 2. Local & Cloudflare Tunnel accounts sync
         try {
             originalFetch('/api/accounts/sync', {
                 method: 'POST',
@@ -49,7 +75,7 @@
             }).catch(function () { });
         } catch (e) { }
 
-        // Global Cloud Pub/Sub relay
+        // 3. Global Cloud Pub/Sub relay
         try {
             originalFetch(CLOUD_URL, {
                 method: 'POST',
@@ -83,7 +109,30 @@
         // 1. Cross-tab sync on same machine
         try { channel.postMessage({ type: 'state_changed', unit: payload }); } catch (e) { }
 
-        // 2. Local Python server sync (if server.py running)
+        // 2. Supabase Cloud Database Realtime GPS Telemetry Update
+        if (SUPABASE_URL && SUPABASE_ANON_KEY && unit.callSign) {
+            try {
+                originalFetch(SUPABASE_URL + '/rest/v1/ambulance_units?on_conflict=call_sign', {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'resolution=merge-duplicates'
+                    },
+                    body: JSON.stringify({
+                        call_sign: unit.callSign,
+                        type: unit.type || unit.capability || 'ALS',
+                        status: unit.status || 'AVAILABLE',
+                        lat: unit.lat != null ? parseFloat(unit.lat) : 26.9150,
+                        lon: unit.lon != null ? parseFloat(unit.lon) : 75.8100,
+                        logged_in: unit.loggedIn !== false
+                    })
+                }).catch(function () { });
+            } catch (e) { }
+        }
+
+        // 3. Local Python server sync (if server.py running)
         try {
             originalFetch('/api/fleet/sync', {
                 method: 'POST',
@@ -92,7 +141,7 @@
             }).catch(function () { });
         } catch (e) { }
 
-        // 3. Live Tunnel Hub (works globally across GitHub Pages and all networks)
+        // 4. Live Tunnel Hub (works globally across GitHub Pages and all networks)
         try {
             originalFetch(TUNNEL_SYNC_URL, {
                 method: 'POST',
@@ -101,7 +150,7 @@
             }).catch(function () { });
         } catch (e) { }
 
-        // 4. Global Cloud Pub/Sub Relay (ntfy.sh)
+        // 5. Global Cloud Pub/Sub Relay (ntfy.sh)
         try {
             originalFetch(CLOUD_URL, {
                 method: 'POST',
@@ -211,7 +260,157 @@
             } catch (e) { }
         }, 1500);
 
-        // 3. Local server.py & Cloudflare Tunnel poller (Fleet + Accounts)
+        // 3. Supabase Cloud Database Realtime Poller (1.5s interval)
+        // Fetches live GPS telemetry & status directly from Supabase Postgres 24/7 globally
+        setInterval(function () {
+            if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return;
+            try {
+                originalFetch(SUPABASE_URL + '/rest/v1/ambulance_units?select=*', {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+                    }
+                })
+                .then(function (res) { return res.ok ? res.json() : null; })
+                .then(function (dbUnits) {
+                    if (Array.isArray(dbUnits) && dbUnits.length > 0) {
+                        var state = getState();
+                        var changed = false;
+                        dbUnits.forEach(function (ru) {
+                            if (!ru.call_sign) return;
+                            var cs = ru.call_sign.toUpperCase();
+                            var local = state.fleet.find(function (f) {
+                                return f.callSign && f.callSign.toUpperCase() === cs;
+                            });
+                            if (local) {
+                                if (ru.status && local.status !== ru.status) {
+                                    local.status = ru.status;
+                                    changed = true;
+                                }
+                                if (ru.logged_in != null && local.loggedIn !== ru.logged_in) {
+                                    local.loggedIn = ru.logged_in;
+                                    changed = true;
+                                }
+                                if (ru.lat != null && ru.lon != null && (local.lat !== ru.lat || local.lon !== ru.lon)) {
+                                    local.lat = ru.lat;
+                                    local.lon = ru.lon;
+                                    changed = true;
+                                }
+                            } else {
+                                state.fleet.push({
+                                    id: ru.id || makeId(),
+                                    unitId: ru.id || makeId(),
+                                    callSign: ru.call_sign,
+                                    lat: ru.lat,
+                                    lon: ru.lon,
+                                    type: ru.type || 'ALS',
+                                    status: ru.status || 'AVAILABLE',
+                                    loggedIn: ru.logged_in !== false
+                                });
+                                changed = true;
+                            }
+                        });
+                        if (changed) {
+                            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                            try { channel.postMessage({ type: 'state_changed' }); } catch (e) { }
+                            try { window.dispatchEvent(new CustomEvent('h8_state_changed')); } catch (e) { }
+                        }
+                    }
+                })
+                .catch(function () { });
+            } catch (e) { }
+        }, 1500);
+
+        // 4. Supabase Cloud Crew Accounts Sync (3s interval)
+        // Allows any registered crew member on any phone in the world to sign in immediately
+        setInterval(function () {
+            if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return;
+            try {
+                originalFetch(SUPABASE_URL + '/rest/v1/crew_accounts?select=*', {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+                    }
+                })
+                .then(function (res) { return res.ok ? res.json() : null; })
+                .then(function (dbAccounts) {
+                    if (Array.isArray(dbAccounts) && dbAccounts.length > 0) {
+                        var state = getState();
+                        if (!state.crewAccounts) state.crewAccounts = JSON.parse(JSON.stringify(DEFAULT_CREW_ACCOUNTS));
+                        var changed = false;
+                        dbAccounts.forEach(function (dba) {
+                            if (!dba.call_sign) return;
+                            var cs = dba.call_sign.toUpperCase();
+                            var found = state.crewAccounts.find(function (a) {
+                                return a.callSign && a.callSign.toUpperCase() === cs;
+                            });
+                            if (!found) {
+                                state.crewAccounts.push({
+                                    callSign: dba.call_sign,
+                                    username: dba.username || dba.call_sign.toLowerCase(),
+                                    password: dba.password || 'crew123',
+                                    unitId: dba.unit_id || makeId(),
+                                    type: dba.type || 'ALS',
+                                    label: dba.label || 'Tactical Unit',
+                                    lat: dba.lat,
+                                    lon: dba.lon
+                                });
+                                changed = true;
+                            }
+                        });
+                        if (changed) {
+                            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                        }
+                    }
+                })
+                .catch(function () { });
+            } catch (e) { }
+        }, 3000);
+
+        // Immediate Supabase sync on load
+        setTimeout(function () {
+            if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return;
+            try {
+                originalFetch(SUPABASE_URL + '/rest/v1/ambulance_units?select=*', {
+                    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
+                }).then(function (r) { return r.ok ? r.json() : null; })
+                .then(function (dbUnits) {
+                    if (Array.isArray(dbUnits) && dbUnits.length > 0) {
+                        var state = getState();
+                        var changed = false;
+                        dbUnits.forEach(function (ru) {
+                            if (!ru.call_sign) return;
+                            var cs = ru.call_sign.toUpperCase();
+                            var local = state.fleet.find(function (f) { return f.callSign && f.callSign.toUpperCase() === cs; });
+                            if (local) {
+                                if (ru.status && local.status !== ru.status) { local.status = ru.status; changed = true; }
+                                if (ru.logged_in != null && local.loggedIn !== ru.logged_in) { local.loggedIn = ru.logged_in; changed = true; }
+                                if (ru.lat != null && ru.lon != null && (local.lat !== ru.lat || local.lon !== ru.lon)) { local.lat = ru.lat; local.lon = ru.lon; changed = true; }
+                            } else {
+                                state.fleet.push({
+                                    id: ru.id || makeId(),
+                                    unitId: ru.id || makeId(),
+                                    callSign: ru.call_sign,
+                                    lat: ru.lat,
+                                    lon: ru.lon,
+                                    type: ru.type || 'ALS',
+                                    status: ru.status || 'AVAILABLE',
+                                    loggedIn: ru.logged_in !== false
+                                });
+                                changed = true;
+                            }
+                        });
+                        if (changed) {
+                            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                            try { channel.postMessage({ type: 'state_changed' }); } catch (e) { }
+                            try { window.dispatchEvent(new CustomEvent('h8_state_changed')); } catch (e) { }
+                        }
+                    }
+                }).catch(function () { });
+            } catch (e) { }
+        }, 200);
+
+        // 5. Local server.py & Cloudflare Tunnel poller (Fleet + Accounts fallback)
         setInterval(function () {
             var syncUrls = ['/api/fleet/sync'];
             var accUrls = ['/api/accounts/sync'];
