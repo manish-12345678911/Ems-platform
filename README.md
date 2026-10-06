@@ -5,8 +5,8 @@
 ![Architecture](https://img.shields.io/badge/Architecture-Distributed%20Microservices-38bdf8?style=for-the-badge)
 ![Java](https://img.shields.io/badge/Java-17%20LTS-f97316?style=for-the-badge&logo=openjdk)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-65a30d?style=for-the-badge&logo=springboot)
-![Database](https://img.shields.io/badge/PostgreSQL-PostGIS%20Spatial-0284c7?style=for-the-badge&logo=postgresql)
-![Realtime](https://img.shields.io/badge/Cloud-Supabase%20Realtime-10b981?style=for-the-badge&logo=supabase)
+        ![Database](https://img.shields.io/badge/PostgreSQL-PostGIS%20Spatial-0284c7?style=for-the-badge&logo=postgresql)
+        ![Realtime](https://img.shields.io/badge/Cloud-Supabase%20Realtime-10b981?style=for-the-badge&logo=supabase)
 
 ---
 
