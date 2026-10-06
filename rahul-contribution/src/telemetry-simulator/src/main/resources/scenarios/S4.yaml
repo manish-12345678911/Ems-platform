@@ -1,0 +1,111 @@
+name: S4
+durationHours: 24
+fleetSize: 20
+alsFraction: 0.4
+baseDemandPerHour: 5.5
+demandProfiles:
+  - fromHour: 0
+    toHour: 6
+    factor: 0.3
+  - fromHour: 6
+    toHour: 9
+    factor: 1.2
+  - fromHour: 9
+    toHour: 16
+    factor: 1.0
+  - fromHour: 16
+    toHour: 20
+    factor: 1.4
+  - fromHour: 20
+    toHour: 24
+    factor: 0.5
+severityDistribution:
+  CRITICAL: 0.08
+  EMERGENCY: 0.30
+  URGENT: 0.42
+  LOW: 0.20
+alsRequiredFraction: 0.20
+minLat: 51.45
+maxLat: 51.55
+minLon: -0.20
+maxLon: -0.05
+coverageRadiusKm: 8.0
+meanSceneTimeSeconds: 900
+sceneTimeStdDev: 300
+meanHandoverSeconds: 2400
+handoverStdDev: 900
+travelNoiseStdDev: 0.2
+responseTargetSeconds: 480
+stations:
+  - name: Central
+    lat: 51.50
+    lon: -0.12
+    units: 5
+  - name: North
+    lat: 51.54
+    lon: -0.10
+    units: 4
+  - name: South
+    lat: 51.46
+    lon: -0.13
+    units: 4
+  - name: East
+    lat: 51.50
+    lon: -0.06
+    units: 4
+  - name: West
+    lat: 51.50
+    lon: -0.18
+    units: 3
+hospitals:
+  - name: Royal London (Gridlocked)
+    lat: 51.518
+    lon: -0.060
+    edBeds: 8
+    icuBeds: 2
+    ventilators: 2
+    capabilities: [TRAUMA, CARDIAC, STROKE, GENERAL]
+  - name: St Thomas (Overcrowded)
+    lat: 51.498
+    lon: -0.118
+    edBeds: 6
+    icuBeds: 2
+    ventilators: 2
+    capabilities: [CARDIAC, STROKE, GENERAL, PEDIATRIC]
+  - name: Kings College (Capacity Available)
+    lat: 51.468
+    lon: -0.094
+    edBeds: 35
+    icuBeds: 10
+    ventilators: 6
+    capabilities: [TRAUMA, CARDIAC, GENERAL, BURN]
+  - name: UCH (Moderate)
+    lat: 51.525
+    lon: -0.135
+    edBeds: 18
+    icuBeds: 4
+    ventilators: 3
+    capabilities: [STROKE, GENERAL, PEDIATRIC]
+  - name: Whittington (Outer Relief)
+    lat: 51.548
+    lon: -0.138
+    edBeds: 24
+    icuBeds: 6
+    ventilators: 4
+    capabilities: [GENERAL, TRAUMA]
+zones:
+  - lat: 51.50
+    lon: -0.12
+    demandPerHour: 2.2
+  - lat: 51.52
+    lon: -0.08
+    demandPerHour: 1.6
+  - lat: 51.48
+    lon: -0.15
+    demandPerHour: 1.1
+  - lat: 51.54
+    lon: -0.10
+    demandPerHour: 0.9
+  - lat: 51.46
+    lon: -0.10
+    demandPerHour: 0.8
