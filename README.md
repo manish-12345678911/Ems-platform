@@ -1,4 +1,4 @@
-# H8 Emergency Medical Services (EMS) Cloud Orchestration Platform
+# H8 Emergency Medical Services (EMS) Platform
 > **Next-Generation Autonomous Citywide Triage, Real-Time Satellite GIS Fleet Tracking & Hospital Emergency Capacity Management**
 
 ![Project Status](https://img.shields.io/badge/Status-Production%20Ready-34d399?style=for-the-badge)
