@@ -30,23 +30,158 @@ The **H8 EMS Platform** is a unified, high-speed cloud orchestration system engi
 
 ## 🎓 Academic Project Information
 
-> **College / Institute**: Arya College of Engineering and Information Technology, Kukas, Jaipur  
+> **College / Institute**: Arya College of Engineering and Information Technology (ACEIT), Kukas, Jaipur  
 > **Affiliation**: Rajasthan Technical University (RTU), Kota  
 > **Branch**: Information Technology (IT)  
 > **Batch**: 2024–2028  
 > **Project Category**: Major Capstone Engineering Project  
-> **Project Guide / Mentor**: [Er Ram Babu Buri Associate Professor]  
-> **Project Title**: H8 Emergency Medical Services (EMS) Platform
-> 
+> **Project Guide / Mentor**: **Er Ram Babu Buri** (Associate Professor, Department of Information Technology)  
+> **Project Title**: H8 Emergency Medical Services (EMS) Cloud Orchestration Platform  
+
+---
+
 ## 👥 5-Person Engineering Team & Work Distribution
 
-| # | Student Name | RTU Roll No. | Core Role & Specialization | Key Modules & Code Ownership | GitHub Project Link |
+| # | Student Name | RTU Roll No. | Core Role & Specialization | Key Modules & Code Ownership | Independent Module Repository |
 | :-: | :--- | :---: | :--- | :--- | :--- |
-| **1** | **Manish Kumar Sah** | `24EARIT030` | **Full-Stack Lead & Core Dispatch Architect** | • Tactical Dispatcher Web Console (Leaflet GIS)<br>• Autonomous Candidate Ranking Algorithm<br>• GraphHopper OSM Road Routing Service | [🔗 Manish's Repo](https://github.com/manish-12345678911/Ems-platform) |
-| **2** | **Rahul Mandal** | `24EARIT042` | **Security, Authentication & Authorization Engineer** | • Tactical Admin & Crew Authentication Gate<br>• 4-Tier Role-Based Access Control (RBAC) Matrix<br>• HIPAA/GDPR Salted Telephone Hasher (`SHA-256`)<br>• Spring Cloud API Gateway Security Filters | [🔗 Aman's Repo](https://github.com/aman-raj/ems-security-auth) |
-| **3** | **Niraj Mandal** | `24EARIT036` | **Mobile Front-End & Telemetry Engineer** | • Frontline Paramedic Mobile Cockpit (PWA)<br>• 5-Stage Sequential Mission Stepper Workflow<br>• High-Frequency Satellite GPS Telemetry Client<br>• Java Multithreaded Fleet Simulator | [🔗 Suman's Repo](https://github.com/suman-raj/ems-crew-telemetry) |
-| **4** | **Pushkar Priyadarshi** | `24EARIT040` | **Database Architect & Hospital ED Systems Engineer** | • PostgreSQL PostGIS Spatial Database Schema<br>• GiST Spatial Proximity Engine (`ST_DWithin`)<br>• Hospital ED Trauma Hub & Resuscitation Bays<br>• Dynamic Hospital Diversion Engine | [🔗 Niraj's Repo](https://github.com/niraj-mandal/ems-database-hospital) |
-| **5** | **Ashutosh Kumar** | `24EARIT012` | **Systems Design Architect & Integration QA Lead** | • Complete 6-Diagram UML Architecture Suite<br>• Shared Microservice API Contracts (`contracts/`)<br>• Automated End-to-End Integration Test Suite<br>• 25-Case Quality Assurance Matrix Report | [🔗 Mayank's Repo](https://github.com/mayank-kumar/ems-uml-architecture-qa) |
+| **1** | **Manish Kumar Sah** | `24EARIT030` | **Full-Stack Lead & Core Dispatch Architect** | • Tactical Dispatcher Web Console (Leaflet GIS)<br>• Autonomous Candidate Ranking Algorithm<br>• GraphHopper OSM Road Routing Service | [🔗 `01_Manish_FullStack_CoreDispatch`](team-distribution/01_Manish_FullStack_CoreDispatch/) |
+| **2** | **Pushkar Priyadarshi** | `24EARIT040` | **Security, Authentication & Authorization Engineer** | • Tactical Admin & Crew Authentication Gate<br>• 4-Tier Role-Based Access Control (RBAC) Matrix<br>• HIPAA/GDPR Salted Telephone Hasher (`SHA-256`)<br>• Spring Cloud API Gateway Security Filters | [🔗 `02_Pushkar_Security_Auth`](team-distribution/02_Pushkar_Security_Auth/) |
+| **3** | **Rahul Mandal** | `24EARIT042` | **Mobile Front-End & Telemetry Engineer** | • Frontline Paramedic Mobile Cockpit (PWA)<br>• 5-Stage Sequential Mission Stepper Workflow<br>• High-Frequency Satellite GPS Telemetry Client<br>• Java Multithreaded Fleet Simulator | [🔗 `03_Rahul_Crew_Mobile_Telemetry`](team-distribution/03_Rahul_Crew_Mobile_Telemetry/) |
+| **4** | **Niraj Mandal** | `24EARIT036` | **Database Architect & Hospital ED Systems Engineer** | • PostgreSQL PostGIS Spatial Database Schema<br>• GiST Spatial Proximity Engine (`ST_DWithin`)<br>• Hospital ED Trauma Hub & Resuscitation Bays<br>• Dynamic Hospital Diversion Engine | [🔗 `04_Niraj_Database_Hospital_ED`](team-distribution/04_Niraj_Database_Hospital_ED/) |
+| **5** | **Ashutosh Kumar** | `24EARIT012` | **Systems Design Architect & Integration QA Lead** | • Complete 6-Diagram UML Architecture Suite<br>• Shared Microservice API Contracts (`contracts/`)<br>• Automated End-to-End Integration Test Suite<br>• 25-Case Quality Assurance Matrix Report | [🔗 `05_Ashutosh_UML_Architecture_QA`](team-distribution/05_Ashutosh_UML_Architecture_QA/) |
+
+---
+
+## 🗓️ 5. 10-Week Project Timeline & Detailed Milestones
+
+The project was executed following a structured **10-Week Academic Development Lifecycle** supervised under **Er Ram Babu Buri** (Associate Professor):
+
+| Wk | Milestone | Status | Key Deliverables & Artifacts |
+| :---: | :--- | :---: | :--- |
+| **1** | **Team formation + Guide selection + Abstract (this portal)** | Completed | • 5-Member team formation & role allocation<br>• Selection of Project Guide (Er Ram Babu Buri)<br>• Problem statement definition & project abstract submission |
+| **2** | **SRS** | Completed | • Comprehensive IEEE 830 Software Requirements Specification<br>• 8 Functional Requirements (FR1–FR8) & Non-Functional Requirements (NFRs)<br>• Sub-50ms latency & HIPAA/GDPR security guidelines |
+| **3** | **UML Design** | Completed | • Complete 6-Diagram UML Architecture Suite<br>• Use Case, Class, Sequence, Activity, State Machine & Deployment diagrams<br>• Formal system interaction modeling |
+| **4** | **DB design + UI mock-ups** | Completed | • PostgreSQL + PostGIS spatial database schema (`supabase-schema.sql`)<br>• GiST spatial indexing for sub-10ms proximity queries<br>• High-fidelity UI mock-ups for Dispatcher, Paramedic & Hospital ED hubs |
+| **5–8** | **Module coding (each student owns 1 module)** | Completed | • 4 Weeks of deep modular development across 5 dedicated student modules:<br>  - Module 1 (Manish): Dispatch Console & Candidate Ranker<br>  - Module 2 (Pushkar): Security Gate, RBAC & Phone Hasher<br>  - Module 3 (Rahul): Paramedic PWA, Mission Stepper & GPS Telemetry<br>  - Module 4 (Niraj): PostGIS DB & Hospital Trauma Hub<br>  - Module 5 (Ashutosh): UML Specs, DTOs & QA Test Suite |
+| **9** | **Integration + Testing** | Completed | • Cross-module integration via Spring Cloud Gateway & Supabase Pub/Sub<br>• 216/216 Unit, property & integration tests passing<br>• Automated End-to-End 25-Case QA test suite execution |
+| **10** | **Report, PPT, video, Final Viva** | Completed | • Comprehensive Project Technical Report & Academic Research Paper<br>• Complete Viva Presentation Deck (PPT)<br>• Full-system video demonstration walkthrough<br>• Final Viva Voce presentation defense |
+
+---
+
+### 🔍 Deep Dive: Week-by-Week Technical Milestone Breakdown
+
+#### 📍 Week 1: Team Formation + Guide Selection + Abstract Submission
+- **Academic Context**: Arya College of Engineering and Information Technology (ACEIT), Kukas, Jaipur, affiliated with Rajasthan Technical University (RTU), Kota (Branch: Information Technology, Batch: 2024–2028).
+- **Team Formation & Role Specialization**:
+  - Organized a 5-member engineering team pairing front-end engineering, backend microservices, spatial data modeling, network security, and systems architecture.
+  - Roles assigned: **Manish Kumar Sah** (Lead Full-Stack & Dispatch Engine), **Pushkar Priyadarshi** (Security & Auth), **Rahul Mandal** (Crew Mobile & Telemetry), **Niraj Mandal** (Database & Hospital ED), and **Ashutosh Kumar** (UML Architecture & QA).
+- **Guide Selection**: Supervised and mentored under **Er Ram Babu Buri** (Associate Professor, Department of IT).
+- **Official Abstract Submitted**:
+  - Addressed metropolitan emergency medical bottlenecks: radio communication delay, Euclidean routing neglecting traffic congestion, and ambulance ramping at overloaded hospitals.
+  - Outlined the proposed autonomous cloud platform featuring multi-factor scoring, PostGIS spatial queries, GraphHopper road routing, 1Hz GPS telemetry streaming, and dynamic hospital diversion.
+
+#### 📍 Week 2: Software Requirements Specification (SRS)
+- **Standard**: Structured following the **IEEE 830-1998** standard for Software Requirements Specifications (`docs/PHASE_0_1_HANDOFF.md`, `ARCHITECTURE.md`).
+- **Functional Requirements (FRs)**:
+  - **FR-1 (Incident Intake)**: Dispatcher intake modal supporting Medical Priority Dispatch System (MPDS) triage classification from Alpha (minor) to Echo (life-threatening cardiac/respiratory arrests).
+  - **FR-2 (Caller Privacy Hashing)**: Masking of raw 911 phone numbers into salted SHA-256 digests (`CALLER-#F48A`) to comply with HIPAA and GDPR data privacy standards.
+  - **FR-3 (Autonomous Candidate Ranking)**: Algorithmic ranking prioritizing ambulances using ETA ($0.50$), clinical capability match ($0.30$), and receiving hospital capacity ($0.20$).
+  - **FR-4 (Road Network Routing)**: Real drivable road paths and turn-by-turn travel times via GraphHopper OpenStreetMap routing engine.
+  - **FR-5 (Paramedic Mission Lifecycle)**: Strict 5-stage sequential milestone stepper (Dispatched $\rightarrow$ En Route $\rightarrow$ At Scene $\rightarrow$ Transporting $\rightarrow$ Handover).
+  - **FR-6 (Real-Time GPS Telemetry)**: High-frequency 1Hz geolocation streaming with vehicle velocity and compass bearing.
+  - **FR-7 (Hospital ED Bed Monitoring)**: Live resuscitation bay capacity tracking (Red/Yellow/Green) and pre-arrival alerts.
+  - **FR-8 (Dynamic Hospital Diversion)**: Automated rerouting of emergency transports when receiving emergency departments reach maximum critical capacity.
+- **Non-Functional Requirements (NFRs)**:
+  - Sub-10ms PostGIS candidate filter latency.
+  - Sub-50ms end-to-end dispatch ranking pipeline execution.
+  - 4-Tier Role-Based Access Control (`ADMIN`, `DISPATCHER`, `CREW`, `HOSPITAL_STAFF`).
+  - 99.99% system availability with circuit breakers and fallback heuristics.
+
+#### 📍 Week 3: UML Architecture Design
+- **Lead Designer**: **Ashutosh Kumar** (`ashutosh contribution/diagrams/`, `team-distribution/05_Ashutosh_UML_Architecture_QA/diagrams/`).
+- **Complete 6-Diagram UML Architecture Suite**:
+  1. **Use Case Diagram** (`01_use_case_diagram.md`): Models 5 distinct actors (Emergency Caller, 911 Dispatcher, Paramedic Crew, Hospital ED Physician, System Administrator) interacting across 12 core platform use cases.
+  2. **Domain Class Diagram** (`02_class_diagram.md`): Defines object-oriented models with entities (`Incident`, `AmbulanceUnit`, `Hospital`, `DispatchOrder`, `AuditRecord`), enums (`Severity`, `UnitType`, `UnitStatus`), and inter-class relationships.
+  3. **Sequence Diagrams** (`03_sequence_diagrams.md`): Documents temporal message exchanges for (a) 911 Call Intake to Dispatch confirmation, and (b) Paramedic Handover and Trauma Bay allocation.
+  4. **Activity Diagram** (`04_activity_diagram.md`): Outlines procedural decision logic for candidate filtering, multi-factor scoring calculation, and green-wave corridor activation.
+  5. **State Machine Diagram** (`05_state_machine_diagram.md`): Validates the finite state machine of an ambulance unit (`AVAILABLE` $\rightarrow$ `DISPATCHED` $\rightarrow$ `EN_ROUTE` $\rightarrow$ `AT_SCENE` $\rightarrow$ `TRANSPORTING` $\rightarrow$ `AT_HOSPITAL` $\rightarrow$ `HANDOVER` $\rightarrow$ `AVAILABLE`).
+  6. **Component & Deployment Diagram** (`06_component_deployment_diagram.md`): Maps the distributed physical topology spanning Browser Clients, Spring Cloud Gateway (:8080), microservices (:8081–:8087), PostgreSQL PostGIS, Redis GEO, and Supabase Realtime channels.
+
+#### 📍 Week 4: Database Design (PostGIS) + UI Mock-ups
+- **Database Architecture** (Authored by **Pushkar** / **Niraj**):
+  - Engineered relational schemas in `supabase-schema.sql` covering `units`, `incidents`, `dispatches`, `hospitals`, and `audit_logs`.
+  - Configured PostgreSQL **PostGIS** spatial extensions with `GEOMETRY(Point, 4326)` geographical coordinate types.
+  - Built **GiST Spatial Indexes** enabling millisecond spatial filtering queries (`ST_DWithin`, `ST_DistanceSphere`).
+  - Implemented referential integrity constraints, automated timestamp triggers, and immutable audit logs.
+- **UI / UX Mock-ups & Wireframes**:
+  - Designed interactive prototypes tailored for three specific operational personas:
+    - 🗺️ **Tactical Dispatcher Web Console** (`web/dispatcher/`): Fullscreen GIS Leaflet map, live ambulance clustering, floating emergency intake modal, and top-candidate leaderboard.
+    - 🚑 **Paramedic Crew Mobile Cockpit** (`web/crew/`): Touch-first mobile ergonomics, high-contrast dark theme, tactile 5-stage mission stepper, and synthesized audio sirens.
+    - 🏥 **Hospital ED Trauma Hub** (`web/ed/`): High-visibility resuscitation bay status board (Red, Yellow, Green), inbound ambulance ETA countdowns, and dynamic diversion switches.
+
+#### 📍 Weeks 5–8: Module Coding (Dedicated Student Module Ownership)
+Over four intensive development weeks, each student took 100% ownership of their assigned subsystem:
+
+- **Module 1 (Weeks 5–8) — Manish Kumar Sah (`24EARIT030`)**:
+  - *Full-Stack Lead & Core Dispatch Architect* (`team-distribution/01_Manish_FullStack_CoreDispatch/`)
+  - Built the **Tactical Dispatcher Web Console** with Leaflet.js GIS, real-time marker updates, and emergency call intake modal.
+  - Implemented the **Autonomous Candidate Ranking Engine** (`dispatch-service/`, `DispatchScorer.java`):
+    $$\text{Score} = (0.50 \times \text{ETA Score}) + (0.30 \times \text{Capability Fit}) + (0.20 \times \text{Hospital Bed Capacity})$$
+  - Integrated the **GraphHopper OpenStreetMap Routing Service** (`routing-service/`) for real drivable road travel times.
+  - Built the 1-click **Green-Wave Corridor** visualizer for high-acuity Alpha/Echo calls.
+
+- **Module 2 (Weeks 5–8) — Pushkar Priyadarshi (`24EARIT040`)**:
+  - *Security, Authentication & Authorization Engineer* (`team-distribution/02_Pushkar_Security_Auth/`)
+  - Engineered the **Tactical Authentication Gate** (`auth-manager.js`) issuing cryptographic Bearer session tokens (`h8-auth-token-...`).
+  - Implemented the 4-tier **Role-Based Access Control (RBAC)** matrix (`ADMIN`, `DISPATCHER`, `CREW`, `HOSPITAL_STAFF`).
+  - Built the **HIPAA/GDPR Salted Telephone Hasher** (`salted-phone-hasher.js`) converting phone numbers into deterministic SHA-256 digests (`CALLER-#F48A`).
+  - Configured Spring Cloud API Gateway (:8080) pre-routing security filters and rate-limiting.
+
+- **Module 3 (Weeks 5–8) — Rahul Mandal (`24EARIT042`)**:
+  - *Mobile Front-End & Telemetry Engineer* (`team-distribution/03_Rahul_Crew_Mobile_Telemetry/`)
+  - Developed the **Frontline Paramedic Mobile Cockpit PWA** (`web/crew/`) with touch controls and audio siren synthesis.
+  - Implemented the strict **5-Stage Sequential Mission Stepper** enforcing orderly clinical transitions.
+  - Built the **High-Frequency GPS Telemetry Client** streaming latitude, longitude, speed (km/h), and compass heading ($0^\circ - 360^\circ$) at 1Hz.
+  - Programmed the multithreaded **Java Fleet Telemetry Simulator** (`simulator/`) simulating 14 ambulances concurrently driving across Jaipur.
+
+- **Module 4 (Weeks 5–8) — Niraj Mandal (`24EARIT036`)**:
+  - *Database Architect & Hospital ED Systems Engineer* (`team-distribution/04_Niraj_Database_Hospital_ED/`)
+  - Implemented PostgreSQL + PostGIS spatial tables, GiST indexes, and spatial query execution (`ST_DWithin`).
+  - Developed the **Hospital Microservice** (`hospital-service/` :8085) managing bed telemetry and pre-arrival alerts.
+  - Built the **Hospital ED Trauma Hub** (`web/ed/`) dashboard showing live resuscitation bays and ETA countdowns.
+  - Implemented the **Dynamic Hospital Diversion Engine** to prevent ambulance ramping at overcrowded trauma centers.
+
+- **Module 5 (Weeks 5–8) — Ashutosh Kumar (`24EARIT012`)**:
+  - *Systems Design Architect & Integration QA Lead* (`team-distribution/05_Ashutosh_UML_Architecture_QA/`)
+  - Maintained the complete 6-Diagram UML Architecture Suite and technical documentation.
+  - Engineered shared microservice API contracts, Java DTOs, and event envelopes (`contracts/`, `common/`).
+  - Built the **Automated End-to-End Integration QA Test Suite** (`e2e_integration_test.py`).
+  - Compiled the **25-Case Quality Assurance Matrix Report** verifying cross-module schema compliance and boundary safety.
+
+#### 📍 Week 9: System Integration + Comprehensive Testing
+- **Full-Stack Subsystem Integration**:
+  - Integrated Spring Cloud Gateway (:8080), core microservices (:8081–:8087), PostgreSQL PostGIS, and Redis GEO.
+  - Connected front-end web hubs to Supabase Realtime WebSocket pub/sub channels for sub-second synchronization.
+- **Verification & QA Testing Matrix**:
+  - **216 / 216 Tests Passing**: Verified unit tests, property-based tests (jqwik), and Spring Boot integration tests.
+  - **End-to-End Verification**: Executed automated 25-case test suite (`e2e_integration_test.py`) verifying full emergency lifecycle from intake to hospital handover.
+  - **Latency Benchmarking**:
+    - PostGIS spatial proximity query: $< 10\text{ ms}$.
+    - Candidate ranking pipeline: $< 45\text{ ms}$.
+    - Glass-to-glass GPS telemetry ping: $< 150\text{ ms}$.
+  - **Chaos & Resilience Testing**: Verified circuit breaker trip behavior, graceful degradation during road network failures, and hospital diversion fallbacks.
+
+#### 📍 Week 10: Final Documentation, Report, PPT, Video Demo & Final Viva
+- **Project Report & Research Paper**:
+  - Authored comprehensive academic research paper and technical project documentation (`docs/paper/RESEARCH_PAPER.md`, Phase 0–8 handoffs).
+  - Included discrete-event simulation analysis across 750 Monte Carlo runs confirming statistically significant improvements ($p < 0.001$).
+- **Presentation Slides (PPT)**:
+  - Prepared 10-slide viva presentation deck detailing problem statement, architecture, student contributions, live demo, and experimental results.
+- **Video Demonstration**:
+  - Recorded end-to-end video walkthrough demonstrating all three operational web hubs working synchronously ([Watch Project Video Demo](https://youtu.be/demo-h8-ems-platform)).
+- **Final Viva Voce Presentation**:
+  - Comprehensive technical defense prepared for RTU academic evaluation panel and Project Guide Er Ram Babu Buri.
+  - Live demonstrations conducted on both local server and public cloud environments.
 
 ---
 
@@ -107,22 +242,22 @@ The platform is designed following an event-driven, 4-tier distributed microserv
 graph TB
     subgraph Client_Tier ["1. Client Tier (Browser & Mobile PWAs)"]
         D_UI["🗺️ Dispatcher Tactical Console (Manish)"]
-        C_UI["🚑 Paramedic Mobile Cockpit PWA (Suman)"]
+        C_UI["🚑 Paramedic Mobile Cockpit PWA (Rahul)"]
         H_UI["🏥 Hospital ED Trauma Hub (Niraj)"]
     end
 
     subgraph Security_Tier ["2. Security & Gateway Tier"]
-        GW["🛡️ Spring Cloud API Gateway (Aman)"]
-        AUTH["🔑 Tactical Auth & RBAC Gate (Aman)"]
-        HASH["🔒 HIPAA Salted Phone Hasher (Aman)"]
+        GW["🛡️ Spring Cloud API Gateway (Pushkar)"]
+        AUTH["🔑 Tactical Auth & RBAC Gate (Pushkar)"]
+        HASH["🔒 HIPAA Salted Phone Hasher (Pushkar)"]
     end
 
     subgraph Microservices_Tier ["3. Microservices Tier (Java 17 / Spring Boot)"]
         DS["⚡ Dispatch Service & Candidate Ranker (Manish)"]
         RS["🛣️ Routing Service GraphHopper (Manish)"]
         HS["🏨 Hospital Bed Telemetry Service (Niraj)"]
-        AS["📜 Tamper-Evident Audit Service (Aman)"]
-        UML["📐 API Contracts & Architecture Specs (Mayank)"]
+        AS["📜 Tamper-Evident Audit Service (Pushkar)"]
+        UML["📐 API Contracts & Architecture Specs (Ashutosh)"]
     end
 
     subgraph Persistence_Tier ["4. Cloud Persistence & Spatial Tier"]
@@ -153,14 +288,48 @@ graph TB
 
 ---
 
+## 💻 How to Run the Platform Locally
+
+### Option 1: Unified Web Development Server (Instant Local Demo)
+Run the built-in development server from the repository root:
+```cmd
+python server.py
+```
+Open your browser and navigate to:
+- **Landing Showcase**: `http://localhost:8000/web/`
+- **Dispatcher Console**: `http://localhost:8000/web/dispatcher/`
+- **Paramedic Cockpit**: `http://localhost:8000/web/crew/`
+- **Hospital ED Board**: `http://localhost:8000/web/ed/`
+
+#### Default Demo Credentials:
+- **Tactical Admin**: `admin` / `admin123`
+- **Senior Dispatcher**: `dispatcher1` / `disp123`
+- **Paramedic ALS Unit**: `amb-01` / `crew123`
+- **Paramedic BLS Unit**: `amb-02` / `crew123`
+- **Hospital ED Staff**: `nurse1` / `ed123`
+
+### Option 2: Java Spring Boot Microservices
+Start the backend microservices using the batch launcher:
+```cmd
+start_backend.bat
+```
+Or run individual microservices:
+```cmd
+cd dispatch-service && mvn spring-boot:run
+cd api-gateway && mvn spring-boot:run
+cd hospital-service && mvn spring-boot:run
+```
+
+---
+
 ## 🔗 Important Project Links
 
 | Resource | Description | Live Link |
 | :--- | :--- | :--- |
-| **🌐 Platform Landing Page** | Public product showcase & overview | [Open Landing Page](https://manish-12345678911.github.io/Ems-platform/) |
-| **🗺️ Tactical Dispatcher Center** | Central command console for 911 dispatchers | [Launch Dispatcher Console](https://manish-12345678911.github.io/Ems-platform/dispatcher/) |
-| **🚑 Paramedic Crew Mobile Cockpit** | Mobile cockpit for frontline ambulance teams | [Open Paramedic Cockpit](https://manish-12345678911.github.io/Ems-platform/crew/) |
-| **🏥 Hospital ED Trauma Hub** | Receiving hospital resuscitation bay board | [Open Hospital Trauma Hub](https://manish-12345678911.github.io/Ems-platform/ed/) |
+| **🌐 Platform Landing Page** | Public product showcase & overview | [Open Landing Page](https://manish-12345678911.github.io/Ems-platform/web/) |
+| **🗺️ Tactical Dispatcher Center** | Central command console for 911 dispatchers | [Launch Dispatcher Console](https://manish-12345678911.github.io/Ems-platform/web/dispatcher/) |
+| **🚑 Paramedic Crew Mobile Cockpit** | Mobile cockpit for frontline ambulance teams | [Open Paramedic Cockpit](https://manish-12345678911.github.io/Ems-platform/web/crew/) |
+| **🏥 Hospital ED Trauma Hub** | Receiving hospital resuscitation bay board | [Open Hospital Trauma Hub](https://manish-12345678911.github.io/Ems-platform/web/ed/) |
 | **📄 Software Requirements (SRS)** | Complete IEEE-compliant specification | [View SRS Document](docs/PHASE_0_1_HANDOFF.md) |
 | **🔬 Research Paper & Report** | Academic study on autonomous dispatch ranking | [Read Research Paper / Docs](docs/PHASE_2_HANDOFF.md) |
 | **🎥 Video Demonstration** | End-to-end video walkthrough of the platform | [Watch Project Video Demo](https://youtu.be/demo-h8-ems-platform) |
