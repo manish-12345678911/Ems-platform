@@ -684,60 +684,131 @@
             line-height: 1.7;
         }
 
-        /* Footer */
+        /* Modernized Aesthetic Footer */
         footer.site-footer {
             position: relative;
             z-index: 10;
-            border-top: 1px solid var(--border-glass);
-            background: #03060c;
-            padding: 4.5rem 3.5rem 3rem;
+            border-top: 1px solid rgba(56, 189, 248, 0.16);
+            background: radial-gradient(80% 60% at 50% 0%, rgba(14, 165, 233, 0.05) 0%, rgba(3, 6, 12, 0.98) 100%), #03060c;
+            padding: 5rem 3.5rem 2.5rem;
+            overflow: hidden;
+        }
+
+        footer.site-footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 10%;
+            right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.5), rgba(16, 185, 129, 0.4), transparent);
+            pointer-events: none;
         }
 
         .footer-container {
             max-width: 1420px;
             margin: 0 auto;
+            position: relative;
+            z-index: 2;
         }
 
         .footer-cols {
             display: grid;
-            grid-template-columns: 1.5fr 1fr 1fr 1fr;
-            gap: 3.5rem;
-            margin-bottom: 4rem;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 4.5rem;
+            align-items: start;
+            margin-bottom: 3.5rem;
         }
 
         .footer-brand-bio {
             color: var(--text-sub);
-            font-size: 0.92rem;
-            line-height: 1.7;
-            max-width: 360px;
-            margin-top: 1rem;
+            font-size: 0.94rem;
+            line-height: 1.75;
+            max-width: 480px;
+            margin-top: 1.15rem;
         }
 
-        .footer-col h5 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1rem;
-            font-weight: 700;
-            color: #ffffff;
+        .footer-col-header {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
             margin-bottom: 1.25rem;
-            letter-spacing: -0.01em;
         }
 
-        .footer-col ul {
+        .footer-col-header h5 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #94a3b8;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .footer-live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.65rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            padding: 0.15rem 0.5rem;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .footer-live-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 6px #10b981;
+            animation: pulseDot 1.6s infinite;
+        }
+
+        .footer-portal-list {
             list-style: none;
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
         }
 
-        .footer-col a {
-            color: var(--text-sub);
+        .footer-portal-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.85rem 1.15rem;
+            border-radius: 12px;
+            background: rgba(13, 20, 36, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(8px);
+            color: #e2e8f0;
             text-decoration: none;
-            font-size: 0.88rem;
-            transition: color 0.2s;
+            font-size: 0.92rem;
+            font-weight: 500;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .footer-col a:hover {
+        .footer-portal-card:hover {
+            background: rgba(56, 189, 248, 0.09);
+            border-color: rgba(56, 189, 248, 0.35);
             color: #ffffff;
+            transform: translateX(4px);
+            box-shadow: 0 4px 20px rgba(56, 189, 248, 0.1);
+        }
+
+        .footer-portal-card .portal-arrow {
+            font-size: 1rem;
+            color: var(--text-muted);
+            transition: all 0.25s ease;
+        }
+
+        .footer-portal-card:hover .portal-arrow {
+            color: var(--brand-blue);
+            transform: translateX(4px);
         }
 
         .footer-bottom {
@@ -745,10 +816,31 @@
             align-items: center;
             justify-content: space-between;
             padding-top: 2rem;
-            border-top: 1px solid var(--border-glass);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
             font-size: 0.82rem;
             color: var(--text-muted);
             font-family: 'JetBrains Mono', monospace;
+        }
+
+        .footer-back-to-top {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 0.4rem 0.85rem;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .footer-back-to-top:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
         }
 
         /* Responsive Design */
@@ -1036,17 +1128,39 @@
                 </div>
 
                 <div class="footer-col">
-                    <h5>Live Portals</h5>
-                    <ul>
-                        <li><a href="dispatcher/">Dispatcher GIS Map</a></li>
-                        <li><a href="crew/">Paramedic Crew Cockpit</a></li>
-                        <li><a href="ed/">Hospital ED Trauma Hub</a></li>
+                    <div class="footer-col-header">
+                        <h5>Live Portals</h5>
+                        <span class="footer-live-badge"><span class="footer-live-dot"></span> Active</span>
+                    </div>
+                    <ul class="footer-portal-list">
+                        <li>
+                            <a href="dispatcher/" class="footer-portal-card">
+                                <span>Dispatcher GIS Map</span>
+                                <span class="portal-arrow">&rarr;</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="crew/" class="footer-portal-card">
+                                <span>Paramedic Crew Cockpit</span>
+                                <span class="portal-arrow">&rarr;</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="ed/" class="footer-portal-card">
+                                <span>Hospital ED Trauma Hub</span>
+                                <span class="portal-arrow">&rarr;</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
 
             <div class="footer-bottom">
                 <div>&copy; 2026 EMS Platform. Metropolitan Sector Orchestration.</div>
+                <a href="#" class="footer-back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">
+                    <span>Back to Top</span>
+                    <span>&uarr;</span>
+                </a>
             </div>
         </div>
     </footer>
