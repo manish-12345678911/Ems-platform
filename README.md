@@ -44,11 +44,11 @@ The **EMS Platform** is a unified, high-speed cloud orchestration system enginee
 
 | # | Student Name | RTU Roll No. | Core Role & Specialization | Key Modules & Code Ownership | Code Directories |
 | :-: | :--- | :---: | :--- | :--- | :--- |
-| **1** | **Manish Kumar Sah** | `24EARIT030` | **Full-Stack Lead & Core Dispatch Architect** | • End-to-End Dispatcher Console & Backend Integration<br>• Autonomous Candidate Ranking Algorithm (`dispatch-service`)<br>• GraphHopper OSM Road Routing Service (`routing-service`)<br>• System Architecture & Deployment Orchestration | [🔗 `01_Manish_FullStack_CoreDispatch`](team-distribution/01_Manish_FullStack_CoreDispatch/) |
-| **2** | **Pushkar Priyadarshi** | `24EARIT040` | **Front-End Lead & UI/UX Design Architect (All Front-End Work)** | • **All 3 Flagship Front-End Operating Hubs** (`web/`):<br>  1. Tactical Dispatcher Web Console (Leaflet GIS)<br>  2. Frontline Paramedic Mobile Cockpit (PWA)<br>  3. Hospital ED Trauma Hub (Bay Monitors & Diversion)<br>• Platform Landing Showcase Page & Auth Portals (`web/index.html`)<br>• Mobile Ergonomics, Web Audio Siren Synthesizer & Design System | [🔗 `puskarcontribution/`](puskarcontribution/)<br>[🔗 `web/`](web/)<br>[🔗 `02_Pushkar_Security_Auth`](team-distribution/02_Pushkar_Security_Auth/) |
-| **3** | **Rahul Mandal** | `24EARIT042` | **Full-Stack Telemetry & Fleet Simulation Engineer** | • Full-Stack Paramedic Telemetry & Client-to-Backend Sync<br>• High-Frequency 1Hz Satellite GPS Telemetry Client<br>• Java Multithreaded Fleet Simulator (`simulator/`)<br>• Real-Time Vehicle Tracking Microservice (`tracking-service`)<br>• 5-Stage Mission Stepper Lifecycle Enforcement | [🔗 `03_Rahul_Crew_Mobile_Telemetry`](team-distribution/03_Rahul_Crew_Mobile_Telemetry/) |
+| **1** | **Manish Kumar Sah** | `24EARIT030` | **Full-Stack Lead & Core Dispatch Architect** | • End-to-End Dispatcher Console & Backend Integration<br>• Autonomous Candidate Ranking Algorithm (`dispatch-service`)<br>• GraphHopper OSM Road Routing Service (`routing-service`)<br>• System Architecture & Deployment Orchestration | [🔗 `Team-contribution/manish-contribution/`](Team-contribution/manish-contribution/)<br>[🔗 `01_Manish_FullStack_CoreDispatch`](team-distribution/01_Manish_FullStack_CoreDispatch/) |
+| **2** | **Pushkar Priyadarshi** | `24EARIT040` | **Front-End Lead & UI/UX Design Architect (All Front-End Work)** | • **All 3 Flagship Front-End Operating Hubs** (`web/`):<br>  1. Tactical Dispatcher Web Console (Leaflet GIS)<br>  2. Frontline Paramedic Mobile Cockpit (PWA)<br>  3. Hospital ED Trauma Hub (Bay Monitors & Diversion)<br>• Platform Landing Showcase Page & Auth Portals (`web/index.html`)<br>• Mobile Ergonomics, Web Audio Siren Synthesizer & Design System | [🔗 `Team-contribution/pushkarcontribution/`](Team-contribution/pushkarcontribution/)<br>[🔗 `web/`](web/)<br>[🔗 `02_Pushkar_Security_Auth`](team-distribution/02_Pushkar_Security_Auth/) |
+| **3** | **Rahul Mandal** | `24EARIT042` | **Full-Stack Telemetry & Fleet Simulation Engineer** | • Full-Stack Paramedic Telemetry & Client-to-Backend Sync<br>• High-Frequency 1Hz Satellite GPS Telemetry Client<br>• Java Multithreaded Fleet Simulator (`simulator/`)<br>• Real-Time Vehicle Tracking Microservice (`tracking-service`)<br>• 5-Stage Mission Stepper Lifecycle Enforcement | [🔗 `Team-contribution/rahul_contribution/`](Team-contribution/rahul_contribution/)<br>[🔗 `03_Rahul_Crew_Mobile_Telemetry`](team-distribution/03_Rahul_Crew_Mobile_Telemetry/) |
 | **4** | **Niraj Mandal** | `24EARIT036` | **Database Architect & Spatial Data Systems Engineer** | • PostgreSQL PostGIS Spatial Database Schema (`supabase-schema.sql`)<br>• GiST Spatial Proximity Engine (`ST_DWithin`, `ST_DistanceSphere`)<br>• Relational Schema Modeling (`units`, `incidents`, `dispatches`, `hospitals`)<br>• Supabase Realtime Persistence & Database Seeding (`data-seed/`) | [🔗 `04_Niraj_Database_Hospital_ED`](team-distribution/04_Niraj_Database_Hospital_ED/) |
-| **5** | **Ashutosh Kumar** | `24EARIT012` | **Systems Design Architect & Integration QA Lead** | • Complete 6-Diagram UML Architecture Suite (`diagrams/`)<br>• Shared Microservice API Contracts & Java DTOs (`contracts/`, `common/`)<br>• Automated End-to-End Integration Test Suite (`e2e_integration_test.py`)<br>• 25-Case Quality Assurance Matrix Report | [🔗 `05_Ashutosh_UML_Architecture_QA`](team-distribution/05_Ashutosh_UML_Architecture_QA/) |
+| **5** | **Ashutosh Kumar** | `24EARIT012` | **Systems Design Architect & Integration QA Lead** | • Complete 6-Diagram UML Architecture Suite (`diagrams/`)<br>• Shared Microservice API Contracts & Java DTOs (`contracts/`, `common/`)<br>• Automated End-to-End Integration Test Suite (`e2e_integration_test.py`)<br>• 25-Case Quality Assurance Matrix Report | [🔗 `Team-contribution/ashutosh contribution/`](Team-contribution/ashutosh%20contribution/)<br>[🔗 `05_Ashutosh_UML_Architecture_QA`](team-distribution/05_Ashutosh_UML_Architecture_QA/) |
 
 ---
 
@@ -102,7 +102,7 @@ The platform was built and evaluated following the formal **10-Week Academic Dev
   - 99.99% system availability with circuit breakers and fallback heuristics.
 
 #### 📍 Week 3: UML Architecture Design
-- **Lead Designer**: **Ashutosh Kumar** (`ashutosh contribution/diagrams/`, `team-distribution/05_Ashutosh_UML_Architecture_QA/diagrams/`).
+- **Lead Designer**: **Ashutosh Kumar** (`Team-contribution/ashutosh contribution/diagrams/`, `team-distribution/05_Ashutosh_UML_Architecture_QA/diagrams/`).
 - **Complete 6-Diagram UML Architecture Suite**:
   1. **Use Case Diagram** (`01_use_case_diagram.md`): Models 5 distinct actors (Emergency Caller, 911 Dispatcher, Paramedic Crew, Hospital ED Physician, System Administrator) interacting across 12 core platform use cases.
   2. **Domain Class Diagram** (`02_class_diagram.md`): Defines object-oriented models with entities (`Incident`, `AmbulanceUnit`, `Hospital`, `DispatchOrder`, `AuditRecord`), enums (`Severity`, `UnitType`, `UnitStatus`), and inter-class relationships.
@@ -135,13 +135,13 @@ Over four intensive development weeks, each student took 100% ownership of their
   - Built the 1-click **Green-Wave Corridor** visualizer for high-acuity Alpha/Echo calls.
 
 - **Module 2 (Weeks 5–8) — Pushkar Priyadarshi (`24EARIT040`)**:
-  - *Front-End Lead & UI/UX Design Architect (All Front-End Work)* (`web/`, `puskarcontribution/`)
+  - *Front-End Lead & UI/UX Design Architect (All Front-End Work)* (`web/`, `Team-contribution/pushkarcontribution/`)
   - Engineered **All 3 Flagship Front-End Operating Hubs**:
     1. **Tactical Dispatcher Web Console** (`web/dispatcher/`): Leaflet.js GIS map with real-time marker clustering, emergency call intake modal, and candidate leaderboard.
     2. **Frontline Paramedic Mobile Cockpit PWA** (`web/crew/`): Touch-friendly progressive web app with Web Audio siren synthesizer, dark-mode night driving theme, and tactile 5-stage sequential mission stepper UI.
     3. **Hospital ED Trauma Hub** (`web/ed/`): CSS3 Glassmorphism dashboard with Red/Yellow/Green resuscitation bay monitors, inbound ETA countdowns, and 1-click dynamic hospital diversion toggle controls.
   - Built the public **Platform Landing Showcase Page & Demo Portal** (`web/index.html`).
-  - Created standalone authentication and security testbed interfaces (`puskarcontribution/src/auth-ui/login-demo.html`).
+  - Created standalone authentication and security testbed interfaces (`Team-contribution/pushkarcontribution/src/auth-ui/login-demo.html`).
 
 - **Module 3 (Weeks 5–8) — Rahul Mandal (`24EARIT042`)**:
   - *Full-Stack Telemetry & Fleet Simulation Engineer* (`team-distribution/03_Rahul_Crew_Mobile_Telemetry/`)
@@ -324,9 +324,9 @@ Open your browser and navigate to:
 - **Hospital ED Staff**: `nurse1` / `ed123`
 
 ### Option 2: Standalone Front-End & Auth Testbeds (Pushkar's Module)
-1. Double-click `puskarcontribution\run_module.bat` or run:
+1. Double-click `Team-contribution\pushkarcontribution\run_module.bat` or run:
    ```cmd
-   python -m http.server 8082 --directory puskarcontribution/src/auth-ui
+   python -m http.server 8082 --directory Team-contribution/pushkarcontribution/src/auth-ui
    ```
 2. Open your browser at:
    ```
