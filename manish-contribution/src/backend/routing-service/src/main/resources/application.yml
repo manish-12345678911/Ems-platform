@@ -1,0 +1,22 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: routing-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8180/realms/h8
+
+h8:
+  routing:
+    graph-dir: /data/graph
+    eta-cache-ttl-seconds: 60
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus

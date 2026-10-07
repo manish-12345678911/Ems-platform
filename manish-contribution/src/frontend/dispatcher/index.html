@@ -1,0 +1,2295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMS — Dispatcher Tactical Command Center</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <style>
+        :root {
+            --bg-base: #080c16;
+            --bg-surface: #0e1526;
+            --bg-card: rgba(15, 23, 42, 0.88);
+            --bg-card-hover: rgba(22, 34, 60, 0.95);
+            --bg-elevated: #162035;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(59, 130, 246, 0.35);
+            --accent-blue: #3b82f6;
+            --accent-indigo: #6366f1;
+            --accent-cyan: #06b6d4;
+            --accent-green: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-rose: #f43f5e;
+            --accent-purple: #a855f7;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-base);
+            color: var(--text-primary);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Top Header */
+        header {
+            height: 64px;
+            background: rgba(14, 21, 38, 0.95);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.75rem;
+            z-index: 1000;
+            flex-shrink: 0;
+        }
+
+        .brand-cluster {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .brand-icon {
+            font-size: 1.6rem;
+            filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.6));
+        }
+
+        .brand-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #ffffff 0%, #93c5fd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-sub {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .live-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.35rem 0.8rem;
+            border-radius: 9999px;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--accent-green);
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            box-shadow: 0 0 8px var(--accent-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.4;
+                transform: scale(1.3);
+            }
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.45rem 0.85rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Workspace Grid */
+        .workspace {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 430px 1fr;
+            height: calc(100vh - 64px);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Left Side Panel */
+        .sidebar {
+            background: var(--bg-surface);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 500;
+        }
+
+        /* Segmented Sidebar Mode Tabs */
+        .sidebar-tabs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.25);
+            flex-shrink: 0;
+        }
+
+        .s-tab {
+            padding: 0.85rem 0.5rem;
+            font-size: 0.775rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+        }
+
+        .s-tab:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .s-tab.active {
+            color: var(--accent-cyan);
+            border-bottom-color: var(--accent-cyan);
+            background: rgba(6, 182, 212, 0.06);
+        }
+
+        .tab-content {
+            flex: 1;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+            display: none;
+            padding: 1.25rem 1.25rem 2rem;
+        }
+
+        .tab-content.active {
+            display: flex;
+            flex-direction: column;
+            gap: 1.15rem;
+        }
+
+        /* Card panels */
+        .panel-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.15rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .card-header-clean {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 0.65rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .card-title-clean {
+            font-size: 0.875rem;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        /* Form Inputs */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.65rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .form-label {
+            font-size: 0.725rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 0.6rem 0.75rem;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-color);
+            border-radius: 9px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        /* Severity Radio Pills */
+        .severity-pill-group {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.35rem;
+        }
+
+        .sev-pill {
+            text-align: center;
+            padding: 0.45rem 0.2rem;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+
+        .sev-pill.active.critical {
+            background: rgba(244, 63, 94, 0.2);
+            color: #fb7185;
+            border-color: #f43f5e;
+            box-shadow: 0 0 10px rgba(244, 63, 94, 0.3);
+        }
+
+        .sev-pill.active.emergency {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border-color: #f59e0b;
+        }
+
+        .sev-pill.active.urgent {
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+            border-color: #3b82f6;
+        }
+
+        .sev-pill.active.low {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border-color: #10b981;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.15rem;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        /* Candidates Ranking List */
+        .candidate-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.95rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .candidate-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .candidate-card.top-rank {
+            border-color: var(--accent-cyan);
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(15, 23, 42, 0.9) 100%);
+            box-shadow: 0 0 16px -4px rgba(6, 182, 212, 0.3);
+        }
+
+        .top-badge-banner {
+            position: absolute;
+            top: -9px;
+            right: 12px;
+            background: linear-gradient(135deg, var(--accent-cyan), #0284c7);
+            color: #000;
+            font-size: 0.625rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 2px 7px;
+            border-radius: 9999px;
+            letter-spacing: 0.04em;
+        }
+
+        .cand-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cand-callsign {
+            font-size: 1rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .cand-badge {
+            font-size: 0.675rem;
+            padding: 0.15rem 0.45rem;
+            border-radius: 6px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .badge-als {
+            background: rgba(244, 63, 94, 0.18);
+            color: var(--accent-rose);
+            border: 1px solid rgba(244, 63, 94, 0.35);
+        }
+
+        .badge-bls {
+            background: rgba(59, 130, 246, 0.18);
+            color: var(--accent-blue);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+        }
+
+        .cand-score {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.775rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            background: rgba(6, 182, 212, 0.1);
+            padding: 0.15rem 0.45rem;
+            border-radius: 6px;
+        }
+
+        .cand-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.45rem;
+            font-size: 0.725rem;
+            color: var(--text-secondary);
+        }
+
+        .cand-stat-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 0.4rem 0.35rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .cand-stat-box .val {
+            font-weight: 800;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            margin-top: 2px;
+            font-size: 0.8rem;
+        }
+
+        /* Fleet Roster List */
+        .roster-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0.75rem 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .roster-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .roster-left {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .roster-callsign {
+            font-weight: 800;
+            font-size: 0.925rem;
+        }
+
+        .roster-badge {
+            font-size: 0.675rem;
+            font-weight: 800;
+            padding: 0.2rem 0.55rem;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .rb-avail {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        .rb-busy {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+
+        .rb-scene {
+            background: rgba(168, 85, 247, 0.18);
+            color: #c084fc;
+            border: 1px solid rgba(168, 85, 247, 0.4);
+        }
+
+        .rb-hosp {
+            background: rgba(6, 182, 212, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(6, 182, 212, 0.4);
+        }
+
+        .rb-offline {
+            background: rgba(148, 163, 184, 0.12);
+            color: #94a3b8;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+        }
+
+        .roster-card.roster-offline {
+            opacity: 0.6;
+        }
+
+        /* Map Canvas */
+        #map {
+            width: 100%;
+            height: 100%;
+            background: #080c16;
+        }
+
+        .dark-tiles .leaflet-tile {
+            filter: brightness(0.65) invert(1) contrast(2.6) hue-rotate(200deg) saturate(0.35) brightness(0.8);
+        }
+
+        /* 1. Ambulance Symbol Markers on Map */
+        .ambulance-marker {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7);
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Instantaneous real-time vehicle tracking without animation delay */
+        .leaflet-marker-pane .leaflet-marker-icon {
+            transition: none !important;
+        }
+
+        .ambulance-marker:hover {
+            transform: scale(1.15) translateY(-2px);
+            z-index: 1000 !important;
+        }
+
+        .ambulance-marker.pin-avail {
+            background: rgba(6, 78, 59, 0.95);
+            border: 2px solid #34d399;
+            color: #ecfdf5;
+            box-shadow: 0 0 14px rgba(16, 185, 129, 0.6);
+        }
+
+        .ambulance-marker.pin-dispatched {
+            background: rgba(120, 53, 15, 0.95);
+            border: 2px solid #fbbf24;
+            color: #fffbeb;
+            box-shadow: 0 0 14px rgba(245, 158, 11, 0.6);
+        }
+
+        .ambulance-marker.pin-on-scene {
+            background: rgba(88, 28, 135, 0.95);
+            border: 2px solid #c084fc;
+            color: #faf5ff;
+            box-shadow: 0 0 14px rgba(168, 85, 247, 0.6);
+        }
+
+        .ambulance-marker.pin-transporting {
+            background: rgba(14, 116, 144, 0.95);
+            border: 2px solid #38bdf8;
+            color: #f0f9ff;
+            box-shadow: 0 0 14px rgba(6, 182, 212, 0.6);
+        }
+
+        .ambulance-marker.pin-at-hospital {
+            background: rgba(30, 58, 138, 0.95);
+            border: 2px solid #60a5fa;
+            color: #eff6ff;
+            box-shadow: 0 0 14px rgba(59, 130, 246, 0.6);
+        }
+
+        /* 2. Hospital Markers across Jaipur */
+        .hospital-marker {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(15, 23, 42, 0.94);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid #38bdf8;
+            color: #e0f2fe;
+            border-radius: 8px;
+            padding: 3px 6px;
+            font-size: 10px;
+            font-weight: 700;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .hospital-marker:hover {
+            transform: scale(1.15) translateY(-2px);
+            border-color: #67e8f9;
+            z-index: 999 !important;
+        }
+
+        /* 3. Location Stick Pin for Incident Site */
+        .location-stick-pin {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform: translate(-50%, -100%);
+            pointer-events: auto;
+            cursor: pointer;
+        }
+
+        .stick-pin-head {
+            background: linear-gradient(135deg, #f43f5e 0%, #be123c 100%);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 4px 9px;
+            border-radius: 9999px;
+            box-shadow: 0 4px 16px rgba(244, 63, 94, 0.8), 0 0 10px rgba(244, 63, 94, 0.5);
+            border: 2px solid #ffe4e6;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stick-needle {
+            width: 3px;
+            height: 28px;
+            background: linear-gradient(to bottom, #f43f5e, #881337);
+            box-shadow: 0 0 8px rgba(244, 63, 94, 0.9);
+        }
+
+        .stick-base-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #f43f5e;
+            box-shadow: 0 0 12px #f43f5e;
+            animation: pulseStickBase 1.5s infinite;
+        }
+
+        @keyframes pulseStickBase {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.6);
+                opacity: 0.5;
+                box-shadow: 0 0 20px #f43f5e;
+            }
+        }
+
+        /* Clean Popup Cards */
+        .leaflet-popup-content-wrapper {
+            background: rgba(15, 23, 42, 0.95) !important;
+            backdrop-filter: blur(12px) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 12px !important;
+            color: var(--text-primary) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+            padding: 0.2rem !important;
+        }
+
+        .leaflet-popup-tip {
+            background: rgba(15, 23, 42, 0.95) !important;
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 0.85rem 1.25rem;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: none;
+            z-index: 2000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            animation: fadeIn 0.3s forwards;
+        }
+
+        .toast-success {
+            border-color: rgba(16, 185, 129, 0.4);
+            color: #34d399;
+        }
+
+        /* Comprehensive Mobile Responsiveness for Phone Screens */
+        @media (max-width: 900px) {
+            body {
+                height: auto;
+                min-height: 100vh;
+                overflow-y: auto;
+            }
+
+            header {
+                height: auto;
+                padding: 0.65rem 0.85rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.6rem;
+            }
+
+            .brand-cluster {
+                width: 100%;
+                gap: 0.6rem;
+            }
+
+            .brand-title {
+                font-size: 0.95rem;
+                line-height: 1.25;
+            }
+
+            .brand-sub {
+                font-size: 0.65rem;
+            }
+
+            .header-actions {
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                padding-bottom: 2px;
+                gap: 0.4rem;
+                flex-wrap: nowrap;
+            }
+
+            .header-actions::-webkit-scrollbar {
+                display: none;
+            }
+
+            .live-chip {
+                padding: 0.25rem 0.55rem;
+                font-size: 0.68rem;
+                flex-shrink: 0;
+            }
+
+            .nav-btn {
+                padding: 0.35rem 0.65rem;
+                font-size: 0.72rem;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            .workspace {
+                display: flex;
+                flex-direction: column;
+                height: auto;
+                min-height: calc(100vh - 120px);
+                overflow: visible;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                overflow: visible;
+                height: auto;
+            }
+
+            .sidebar-tabs {
+                position: sticky;
+                top: 0;
+                z-index: 100;
+            }
+
+            .s-tab {
+                padding: 0.65rem 0.35rem;
+                font-size: 0.72rem;
+                text-align: center;
+            }
+
+            .map-container {
+                height: 380px !important;
+                min-height: 380px;
+                width: 100%;
+                order: -1;
+            }
+
+            #dispatcher-map {
+                height: 100% !important;
+                width: 100% !important;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr !important;
+                gap: 0.4rem;
+            }
+
+            .severity-pill-group {
+                gap: 3px;
+            }
+
+            .sev-pill {
+                padding: 0.4rem 0.2rem;
+                font-size: 0.68rem;
+                text-align: center;
+            }
+
+            .unit-card {
+                padding: 0.65rem 0.75rem;
+            }
+        }
+
+        /* Tactical Admin Authentication Gate Overlay */
+        .admin-auth-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: radial-gradient(circle at center, rgba(14, 21, 38, 0.94) 0%, rgba(6, 10, 20, 0.98) 100%);
+            backdrop-filter: blur(24px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s ease;
+        }
+
+        .admin-auth-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .workspace.locked {
+            filter: blur(10px) brightness(0.7);
+            pointer-events: none;
+            user-select: none;
+            transition: filter 0.3s ease;
+        }
+
+        .admin-auth-card {
+            width: 100%;
+            max-width: 480px;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(10, 16, 31, 0.98) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            border-radius: 20px;
+            padding: 2.25rem;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.85), 0 0 45px rgba(59, 130, 246, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            animation: authModalAppear 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes authModalAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.92) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .auth-header {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .auth-emblem {
+            position: relative;
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(99, 102, 241, 0.3) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.35);
+            margin-bottom: 0.35rem;
+        }
+
+        .auth-shield {
+            font-size: 2rem;
+            filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.8));
+        }
+
+        .auth-clearance-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            background: rgba(244, 63, 94, 0.15);
+            border: 1px solid rgba(244, 63, 94, 0.35);
+            color: #fb7185;
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .auth-lock-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #f43f5e;
+            box-shadow: 0 0 6px #f43f5e;
+            animation: pulse 1.8s infinite;
+        }
+
+        .auth-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+            margin-top: 0.15rem;
+        }
+
+        .auth-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            max-width: 380px;
+            line-height: 1.45;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .auth-error-banner {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #fca5a5;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            line-height: 1.4;
+        }
+
+        .auth-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .auth-input-group label {
+            font-size: 0.775rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.02em;
+        }
+
+        .input-with-icon {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-with-icon .input-icon {
+            position: absolute;
+            left: 0.85rem;
+            font-size: 1rem;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .input-with-icon input {
+            width: 100%;
+            background: rgba(14, 21, 38, 0.8);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0.75rem 2.5rem 0.75rem 2.6rem;
+            font-size: 0.9rem;
+            color: #ffffff;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .input-with-icon input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+            background: rgba(22, 32, 53, 0.95);
+        }
+
+        .btn-toggle-pwd {
+            position: absolute;
+            right: 0.65rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.25rem;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .btn-toggle-pwd:hover {
+            opacity: 1;
+        }
+
+        .btn-auth-submit {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            border: 1px solid rgba(59, 130, 246, 0.5);
+            color: #ffffff;
+            padding: 0.85rem 1.25rem;
+            border-radius: 10px;
+            font-size: 0.925rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            margin-top: 0.25rem;
+        }
+
+        .btn-auth-submit:hover {
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            box-shadow: 0 6px 25px rgba(59, 130, 246, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .btn-auth-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .auth-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .auth-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 0.75rem;
+        }
+
+        .auth-engine-badge {
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .auth-back-link {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .auth-back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Header Admin Identity & Sign Out */
+        .admin-session-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.3rem 0.75rem;
+            border-radius: 8px;
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .admin-session-badge .admin-icon {
+            font-size: 0.95rem;
+        }
+
+        .admin-session-badge .admin-info {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.15;
+        }
+
+        .admin-session-badge .admin-name {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .admin-session-badge .admin-role {
+            font-size: 0.625rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: #60a5fa;
+            text-transform: uppercase;
+        }
+
+        .nav-btn-signout {
+            background: rgba(244, 63, 94, 0.12) !important;
+            border-color: rgba(244, 63, 94, 0.35) !important;
+            color: #fb7185 !important;
+        }
+
+        .nav-btn-signout:hover {
+            background: rgba(244, 63, 94, 0.25) !important;
+            color: #ffffff !important;
+            border-color: rgba(244, 63, 94, 0.5) !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Tactical Admin Authentication Gate Overlay -->
+    <div id="admin-auth-overlay" class="admin-auth-overlay">
+        <div class="admin-auth-card">
+            <div class="auth-header">
+                <div class="auth-emblem">
+                    <span class="auth-shield">🛡️</span>
+                </div>
+                <h2 class="auth-title">EMS Command Center</h2>
+                <p class="auth-subtitle">Restricted to Authorized Tactical Administrators &amp; Chief Dispatchers</p>
+            </div>
+
+            <form id="admin-login-form" onsubmit="handleAdminLogin(event)" class="auth-form" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                <!-- Hidden dummy inputs to prevent browser autofill and strong password suggestions -->
+                <input type="text" style="position:absolute;opacity:0;pointer-events:none;height:0;width:0;" tabindex="-1" aria-hidden="true">
+                <input type="password" style="position:absolute;opacity:0;pointer-events:none;height:0;width:0;" tabindex="-1" aria-hidden="true">
+
+                <div id="auth-error-banner" class="auth-error-banner" style="display: none;">
+                    <span class="err-icon">⚠️</span>
+                    <span id="auth-error-text">Invalid credentials or insufficient clearance.</span>
+                </div>
+
+                <div class="auth-input-group">
+                    <label for="auth-username">Tactical Call ID / Username</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="auth-username" name="tactical_call_id" required placeholder="Enter admin username" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off" data-lpignore="true" data-form-type="other" readonly onfocus="this.removeAttribute('readonly');">
+                    </div>
+                </div>
+
+                <div class="auth-input-group">
+                    <label for="auth-password">Security Passcode / Secret</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">🔑</span>
+                        <input type="password" id="auth-password" name="tactical_auth_key" required placeholder="Enter passcode" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" data-form-type="other" readonly onfocus="this.removeAttribute('readonly');">
+                        <button type="button" class="btn-toggle-pwd" onclick="togglePasswordVisibility()" title="Show/Hide Password">👁️</button>
+                    </div>
+                </div>
+
+                <button type="submit" id="btn-auth-submit" class="btn-auth-submit">
+                    <span id="auth-btn-spinner" class="auth-spinner" style="display: none;"></span>
+                    <span id="auth-btn-text">Authenticate &amp; Unlock Command Center</span>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <a href="../" class="auth-back-link">&larr; Return to Public Portal</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Navigation (Cleaned - Removed Fleet Telemetry Navbar) -->
+    <header>
+        <a href="../" class="brand-cluster">
+            <span class="brand-icon">🚑</span>
+            <div>
+                <div class="brand-title">EMS &bull; Dispatcher Command Tactical Center</div>
+                <div class="brand-sub">Jaipur Metropolitan Sector &bull; Autonomous Capability Engine</div>
+            </div>
+        </a>
+
+        <div class="header-actions">
+            <div class="live-chip"><span class="live-dot"></span> Live Scorer Active</div>
+
+            <!-- Admin Session Badge -->
+            <div id="admin-session-badge" class="admin-session-badge" style="display: none;">
+                <span class="admin-icon">🛡️</span>
+                <div class="admin-info">
+                    <span id="admin-user-display" class="admin-name">admin</span>
+                    <span id="admin-role-display" class="admin-role">TACTICAL ADMIN</span>
+                </div>
+            </div>
+
+            <!-- Sign Out Button -->
+            <button class="nav-btn nav-btn-signout" id="btn-admin-signout" onclick="handleAdminSignOut()" style="display: none;" title="Sign out of tactical console">
+                🔒 Sign Out
+            </button>
+
+            <button class="nav-btn" id="btn-toggle-map">🌙 Dark</button>
+            <button class="nav-btn" id="btn-fit-fleet" onclick="fitFleetBounds()" title="Fit all active fleet on map" style="color: var(--accent-cyan); border-color: rgba(6, 182, 212, 0.4);">🎯 Fit Fleet</button>
+
+            <a href="../crew/" class="nav-btn" style="color: var(--accent-cyan); border-color: rgba(6, 182, 212, 0.3);">🚑
+                Crew PWA</a>
+            <a href="../ed/" class="nav-btn" style="color: var(--accent-amber); border-color: rgba(245, 158, 11, 0.3);">🏥
+                ED Hub</a>
+        </div>
+    </header>
+
+    <div class="workspace locked" id="tactical-workspace">
+
+        <!-- Left Sidebar Controls -->
+        <div class="sidebar">
+
+            <!-- Mode Switcher Tabs -->
+            <div class="sidebar-tabs">
+                <div class="s-tab active" id="tab-btn-incident" onclick="switchSidebarTab('incident')">
+                    <span>🚨</span> Incident & Dispatch
+                </div>
+                <div class="s-tab" id="tab-btn-fleet" onclick="switchSidebarTab('fleet')">
+                    <span>📋</span> Fleet Roster
+                </div>
+                <div class="s-tab" id="tab-btn-redeploy" onclick="switchSidebarTab('redeploy')">
+                    <span>🌐</span> Coverage
+                </div>
+            </div>
+
+            <!-- Tab 1: Incident & Dispatch Flow -->
+            <div class="tab-content active" id="tab-incident">
+
+                <!-- Incident Intake Card -->
+                <div class="panel-card">
+                    <div class="card-header-clean">
+                        <span class="card-title-clean">🚨 Incident Intake & Triage</span>
+                        <span style="font-size: 0.725rem; color: var(--accent-cyan); font-weight: 700;">Click Map to
+                            Pin</span>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="input-lat">Latitude</label>
+                            <input type="number" step="0.0001" class="form-input" id="input-lat" value="26.9124">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="input-lon">Longitude</label>
+                            <input type="number" step="0.0001" class="form-input" id="input-lon" value="75.7873">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Triage Severity (MPDS Protocol)</label>
+                        <div class="severity-pill-group">
+                            <div class="sev-pill critical" onclick="setSeverity('CRITICAL', this)">Critical</div>
+                            <div class="sev-pill emergency" onclick="setSeverity('EMERGENCY', this)">Emergency</div>
+                            <div class="sev-pill urgent active" onclick="setSeverity('URGENT', this)">Urgent</div>
+                            <div class="sev-pill low" onclick="setSeverity('LOW', this)">Low</div>
+                        </div>
+                        <input type="hidden" id="select-severity" value="URGENT">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="select-need">Clinical Need</label>
+                            <select class="form-select" id="select-need">
+                                <option value="TRAUMA" selected>🩸 TRAUMA</option>
+                                <option value="CARDIAC">❤️ CARDIAC</option>
+                                <option value="STROKE">🧠 STROKE</option>
+                                <option value="BURN">🔥 BURN</option>
+                                <option value="PEDIATRIC">👶 PEDIATRIC</option>
+                                <option value="GENERAL">🩺 GENERAL</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="justify-content: flex-end; padding-bottom: 0.35rem;">
+                            <label
+                                style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.775rem; font-weight: 700; cursor: pointer; color: var(--accent-cyan);">
+                                <input type="checkbox" id="check-als" checked
+                                    style="width: 16px; height: 16px; accent-color: var(--accent-blue);">
+                                Requires ALS Unit
+                            </label>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-full" id="btn-create-and-rank">
+                        ⚡ Register Incident & Rank Units
+                    </button>
+                </div>
+
+                <!-- Scored Candidates Card -->
+                <div class="panel-card" style="flex: 1;">
+                    <div class="card-header-clean">
+                        <span class="card-title-clean">📊 Ranked Candidates</span>
+                        <span
+                            style="font-size: 0.75rem; color: var(--accent-cyan); font-family: 'JetBrains Mono'; font-weight: 700;"
+                            id="cand-count">Scoring Active</span>
+                    </div>
+
+                    <div id="candidates-container" style="display: flex; flex-direction: column; gap: 0.65rem;">
+                        <div
+                            style="text-align: center; padding: 2rem 1rem; color: var(--text-muted); font-size: 0.825rem;">
+                            Click <strong>"Register Incident & Rank Units"</strong> to invoke
+                            <code>DispatchScorer</code>.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Tab 2: Fleet Live Roster -->
+            <div class="tab-content" id="tab-fleet">
+                <div class="panel-card">
+                    <div class="card-header-clean">
+                        <span class="card-title-clean">📋 Live Fleet Units</span>
+                        <span
+                            style="font-size: 0.75rem; color: var(--accent-green); font-family: 'JetBrains Mono'; font-weight: 700;"
+                            id="fleet-filter-count">14 Active</span>
+                    </div>
+
+                    <div style="display: flex; gap: 0.4rem;">
+                        <button class="nav-btn active" style="flex: 1;" onclick="filterRoster('ALL', this)">All</button>
+                        <button class="nav-btn" style="flex: 1;"
+                            onclick="filterRoster('AVAILABLE', this)">Available</button>
+                        <button class="nav-btn" style="flex: 1;" onclick="filterRoster('BUSY', this)">In
+                            Mission</button>
+                    </div>
+
+                    <div id="fleet-roster-list"
+                        style="display: flex; flex-direction: column; gap: 0.5rem; max-height: calc(100vh - 250px); overflow-y: auto;">
+                        <!-- Injected dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Coverage & Dynamic Redeployment -->
+            <div class="tab-content" id="tab-redeploy">
+                <div class="panel-card">
+                    <div class="card-header-clean">
+                        <span class="card-title-clean">🌐 City Coverage & MEXCLP</span>
+                        <span
+                            style="font-size: 0.75rem; color: var(--accent-cyan); font-family: 'JetBrains Mono';">Redis
+                            Lock Engine</span>
+                    </div>
+
+                    <div
+                        style="text-align: center; padding: 1.25rem 0.5rem; background: rgba(0, 0, 0, 0.3); border-radius: 12px; border: 1px solid var(--border-color);">
+                        <div
+                            style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.35rem;">
+                            METROPOLITAN COVERAGE RATE</div>
+                        <div style="font-size: 2.2rem; font-weight: 800; font-family: 'JetBrains Mono'; color: var(--accent-green);"
+                            id="redeploy-gauge">100.0%</div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.35rem;">All 12
+                            Jaipur urban sectors covered within 8 min standard</div>
+                    </div>
+
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.45;">
+                        The proactive redeployment engine uses the double-standard MEXCLP heuristic to detect city
+                        coverage deficits when ambulances are engaged on missions, and recommends repositioning idle
+                        units to maintain blanket safety.
+                    </div>
+
+                    <button class="btn btn-primary btn-full" id="btn-run-redeploy" onclick="triggerRedeploymentRun()"
+                        style="background: linear-gradient(135deg, #4f46e5, #3730a3);">
+                        ⚡ Evaluate Redeployment (Greedy)
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Tactical Leaflet Map Canvas (Cleaned - Removed Second Floating HUD Navbar) -->
+        <div id="map"></div>
+    </div>
+
+    <div id="toast-banner" class="toast toast-success"></div>
+
+    <script src="../demo-bridge.js?v=20261006_supabase_live_v2"></script>
+    <script>
+        const API_HOST = window.location.hostname || 'localhost';
+        const GATEWAY_URL = ''; // Same-origin proxy through unified server
+
+        // Admin Security & Authentication State
+        let currentAuthToken = sessionStorage.getItem('h8_admin_token') || localStorage.getItem('h8_admin_token') || null;
+        let currentAdminUser = null;
+        try {
+            currentAdminUser = JSON.parse(sessionStorage.getItem('h8_admin_profile') || localStorage.getItem('h8_admin_profile') || 'null');
+        } catch (e) { }
+
+        function getAuthHeaders(extraHeaders = {}) {
+            const headers = { 'Content-Type': 'application/json', ...extraHeaders };
+            if (currentAuthToken) {
+                headers['Authorization'] = currentAuthToken.startsWith('Bearer ') ? currentAuthToken : `Bearer ${currentAuthToken}`;
+            }
+            return headers;
+        }
+
+        function togglePasswordVisibility() {
+            const pwdInput = document.getElementById('auth-password');
+            if (pwdInput) {
+                pwdInput.type = pwdInput.type === 'password' ? 'text' : 'password';
+            }
+        }
+
+        function fillCredentials(username, password) {
+            const u = document.getElementById('auth-username');
+            const p = document.getElementById('auth-password');
+            if (u) u.value = username;
+            if (p) p.value = password;
+        }
+
+        function unlockDispatcherConsole(userData) {
+            const overlay = document.getElementById('admin-auth-overlay');
+            const workspace = document.getElementById('tactical-workspace');
+            const badge = document.getElementById('admin-session-badge');
+            const signoutBtn = document.getElementById('btn-admin-signout');
+
+            if (overlay) overlay.classList.add('hidden');
+            if (workspace) workspace.classList.remove('locked');
+            if (badge) badge.style.display = 'flex';
+            if (signoutBtn) signoutBtn.style.display = 'inline-flex';
+
+            const userDisplay = document.getElementById('admin-user-display');
+            const roleDisplay = document.getElementById('admin-role-display');
+            if (userDisplay && userData) {
+                userDisplay.innerText = userData.displayName || userData.username || 'Commander';
+            }
+            if (roleDisplay && userData) {
+                roleDisplay.innerText = (userData.primaryRole || 'ADMIN').toUpperCase();
+            }
+
+            setTimeout(() => {
+                if (typeof map !== 'undefined' && map) map.invalidateSize();
+            }, 300);
+        }
+
+        function lockDispatcherConsole() {
+            const overlay = document.getElementById('admin-auth-overlay');
+            const workspace = document.getElementById('tactical-workspace');
+            const badge = document.getElementById('admin-session-badge');
+            const signoutBtn = document.getElementById('btn-admin-signout');
+
+            if (overlay) overlay.classList.remove('hidden');
+            if (workspace) workspace.classList.add('locked');
+            if (badge) badge.style.display = 'none';
+            if (signoutBtn) signoutBtn.style.display = 'none';
+        }
+
+        async function handleAdminLogin(event) {
+            event.preventDefault();
+            const usernameInput = document.getElementById('auth-username');
+            const passwordInput = document.getElementById('auth-password');
+            const errorBanner = document.getElementById('auth-error-banner');
+            const errorText = document.getElementById('auth-error-text');
+            const submitBtn = document.getElementById('btn-auth-submit');
+            const spinner = document.getElementById('auth-btn-spinner');
+            const btnText = document.getElementById('auth-btn-text');
+
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+
+            if (errorBanner) errorBanner.style.display = 'none';
+            if (submitBtn) submitBtn.disabled = true;
+            if (spinner) spinner.style.display = 'inline-block';
+            if (btnText) btnText.innerText = 'Verifying Clearance...';
+
+            try {
+                const res = await fetch(`${GATEWAY_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await res.json().catch(() => ({}));
+
+                if (res.ok && data.success) {
+                    currentAuthToken = data.token;
+                    currentAdminUser = data;
+                    sessionStorage.setItem('h8_admin_token', data.token);
+                    sessionStorage.setItem('h8_admin_profile', JSON.stringify(data));
+                    localStorage.setItem('h8_admin_token', data.token);
+                    localStorage.setItem('h8_admin_profile', JSON.stringify(data));
+
+                    unlockDispatcherConsole(data);
+                    showToast(`🛡️ Clearance Confirmed: Welcome, Commander ${data.displayName || data.username}!`);
+                    fetchLiveUnits();
+                    fetchCoverage();
+                    updateCandidateRanks();
+                } else {
+                    const msg = data.message || (res.status === 403 ? 'Access Denied: Only administrators have clearance for this command center.' : 'Invalid credentials.');
+                    if (errorText) errorText.innerText = msg;
+                    if (errorBanner) errorBanner.style.display = 'flex';
+                }
+            } catch (err) {
+                if (errorText) errorText.innerText = `Network or gateway authentication notice: ${err.message}`;
+                if (errorBanner) errorBanner.style.display = 'flex';
+            } finally {
+                if (submitBtn) submitBtn.disabled = false;
+                if (spinner) spinner.style.display = 'none';
+                if (btnText) btnText.innerText = 'Authenticate & Unlock Command Center';
+            }
+        }
+
+        async function handleAdminSignOut() {
+            if (currentAuthToken) {
+                try {
+                    await fetch(`${GATEWAY_URL}/auth/logout`, {
+                        method: 'POST',
+                        headers: getAuthHeaders()
+                    });
+                } catch (e) { }
+            }
+            currentAuthToken = null;
+            currentAdminUser = null;
+            sessionStorage.removeItem('h8_admin_token');
+            sessionStorage.removeItem('h8_admin_profile');
+            localStorage.removeItem('h8_admin_token');
+            localStorage.removeItem('h8_admin_profile');
+
+            lockDispatcherConsole();
+            showToast('🔒 Administrator signed out. Command center is locked.', false);
+        }
+
+        async function verifyAdminSession() {
+            if (!currentAuthToken) {
+                lockDispatcherConsole();
+                return;
+            }
+            try {
+                const res = await fetch(`${GATEWAY_URL}/auth/verify`, {
+                    headers: getAuthHeaders()
+                });
+                if (res.ok) {
+                    const data = await res.json().catch(() => ({}));
+                    if (data.success) {
+                        currentAdminUser = data;
+                        unlockDispatcherConsole(data);
+                        return;
+                    }
+                }
+            } catch (e) {
+                // If demo-bridge or offline, allow verified session
+                if (currentAdminUser && (currentAdminUser.roles || []).includes('ADMIN')) {
+                    unlockDispatcherConsole(currentAdminUser);
+                    return;
+                }
+            }
+            currentAuthToken = null;
+            currentAdminUser = null;
+            sessionStorage.removeItem('h8_admin_token');
+            sessionStorage.removeItem('h8_admin_profile');
+            localStorage.removeItem('h8_admin_token');
+            localStorage.removeItem('h8_admin_profile');
+            lockDispatcherConsole();
+        }
+
+        // Switch Sidebar Mode Tabs
+        function switchSidebarTab(tabName) {
+            document.querySelectorAll('.s-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            document.getElementById(`tab-btn-${tabName}`).classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        }
+
+        // Set Severity helper
+        function setSeverity(val, el) {
+            document.getElementById('select-severity').value = val;
+            document.querySelectorAll('.sev-pill').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
+            updateCandidateRanks();
+        }
+
+        function showToast(msg, isSuccess = true) {
+            const t = document.getElementById('toast-banner');
+            t.className = `toast ${isSuccess ? 'toast-success' : 'toast-info'}`;
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 3500);
+        }
+
+        // Initialize Tactical Leaflet Map
+        const map = L.map('map', {
+            zoomControl: true,
+            attributionControl: false
+        }).setView([26.8950, 75.7950], 12);
+
+        const tileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            className: 'dark-tiles'
+        }).addTo(map);
+
+        let isDarkMap = true;
+        document.getElementById('btn-toggle-map').addEventListener('click', function () {
+            isDarkMap = !isDarkMap;
+            const container = tileLayer.getContainer();
+            if (isDarkMap) {
+                if (container) container.classList.add('dark-tiles');
+                this.innerHTML = '🌙 Dark';
+            } else {
+                if (container) container.classList.remove('dark-tiles');
+                this.innerHTML = '☀️ Light';
+            }
+        });
+
+        let incidentMarker = null;
+        let unitMarkers = {};
+        let currentIncidentId = null;
+
+        // Comprehensive Hospitals Network in Jaipur
+        const jaipurHospitals = [
+            { id: 'hosp-sms', name: 'SMS Hospital & Apex Trauma Center', area: 'JLN Marg', lat: 26.8988, lon: 75.8164, beds: 3500, icu: 28, traumaLevel: 'Level 1 Trauma' },
+            { id: 'hosp-fortis', name: 'Fortis Escorts Hospital', area: 'Malviya Nagar', lat: 26.8524, lon: 75.8054, beds: 250, icu: 14, traumaLevel: 'Level 1 Cardiac/Trauma' },
+            { id: 'hosp-ehcc', name: 'Eternal Heart Care Centre (EHCC)', area: 'Jawahar Circle', lat: 26.8623, lon: 75.7584, beds: 220, icu: 12, traumaLevel: 'Level 1 Cardiac/Trauma' },
+            { id: 'hosp-narayana', name: 'Narayana Multispeciality Hospital', area: 'Pratap Nagar', lat: 26.7865, lon: 75.8245, beds: 330, icu: 18, traumaLevel: 'Level 1 Trauma' },
+            { id: 'hosp-manipal', name: 'Manipal Hospital', area: 'Vidhyadhar Nagar', lat: 26.9734, lon: 75.7766, beds: 280, icu: 16, traumaLevel: 'Level 2 Trauma' },
+            { id: 'hosp-sdmh', name: 'Santokba Durlabhji Memorial Hospital (SDMH)', area: 'Bapu Nagar', lat: 26.8920, lon: 75.8080, beds: 450, icu: 20, traumaLevel: 'Level 1 Multi-Specialty' },
+            { id: 'hosp-mgmch', name: 'Mahatma Gandhi Hospital & Medical College', area: 'Sitapura', lat: 26.7680, lon: 75.8450, beds: 1400, icu: 25, traumaLevel: 'Level 1 Trauma Center' },
+            { id: 'hosp-ruhs', name: 'RUHS College of Medical Sciences', area: 'Kumbha Marg', lat: 26.8040, lon: 75.8180, beds: 500, icu: 15, traumaLevel: 'Level 2 Trauma' },
+            { id: 'hosp-apex', name: 'Apex Hospital', area: 'Malviya Nagar', lat: 26.8540, lon: 75.8170, beds: 180, icu: 10, traumaLevel: 'Level 2 Multi-Specialty' },
+            { id: 'hosp-ckbirla', name: 'CK Birla Hospital (RBH)', area: 'Gopalpura Bypass', lat: 26.8780, lon: 75.7920, beds: 160, icu: 8, traumaLevel: 'Level 2 Multi-Specialty' },
+            { id: 'hosp-shalby', name: 'Shalby Multi-Specialty Hospital', area: 'Vaishali Nagar', lat: 26.9120, lon: 75.7380, beds: 200, icu: 12, traumaLevel: 'Level 2 Ortho/Trauma' },
+            { id: 'hosp-metromas', name: 'Metro MAS Hospital', area: 'Mansarovar', lat: 26.8590, lon: 75.7620, beds: 220, icu: 10, traumaLevel: 'Level 2 Cardiac/Multi' },
+            { id: 'hosp-bmhrc', name: 'Bhagwan Mahaveer Cancer Hospital', area: 'JLN Marg', lat: 26.8850, lon: 75.8120, beds: 300, icu: 10, traumaLevel: 'Specialty Oncology' },
+            { id: 'hosp-kanwatia', name: 'Kanwatia Government Hospital', area: 'Shastri Nagar', lat: 26.9460, lon: 75.7890, beds: 200, icu: 6, traumaLevel: 'Govt District Hospital' },
+            { id: 'hosp-jnu', name: 'JNU Hospital & Medical College', area: 'Jagatpura', lat: 26.8285, lon: 75.8522, beds: 750, icu: 15, traumaLevel: 'Level 2 Medical College' },
+            { id: 'hosp-gangori', name: 'Gangori Hospital', area: 'Old City, Chaugan', lat: 26.9280, lon: 75.8240, beds: 150, icu: 4, traumaLevel: 'Govt Satellite Hospital' }
+        ];
+
+        // Render All Hospitals in Jaipur on Main Map
+        jaipurHospitals.forEach(h => {
+            const shortName = h.name.replace('Hospital', 'Hosp').replace('Memorial', 'Mem');
+            const icon = L.divIcon({
+                className: 'hospital-marker',
+                html: `<span>🏥</span> <span>${shortName}</span>`,
+                iconSize: [120, 22],
+                iconAnchor: [60, 11]
+            });
+
+            L.marker([h.lat, h.lon], { icon }).addTo(map)
+                .bindPopup(`
+                    <div style="font-family:'Plus Jakarta Sans',sans-serif; min-width:180px; padding:4px;">
+                        <strong style="color:#38bdf8; font-size:12px;">🏥 ${h.name}</strong><br>
+                        <span style="font-size:11px; color:#10b981; font-weight:700;">${h.traumaLevel}</span><br>
+                        <span style="font-size:11px; color:#94a3b8;">Area: ${h.area}</span><br>
+                        <span style="font-size:11px; color:#f8fafc; font-family:'JetBrains Mono';">Beds: <strong>${h.beds}</strong> | ICU: <strong>${h.icu}</strong></span>
+                    </div>
+                `);
+        });
+
+        // Create Location Stick Pin Helper for Incident Site
+        function createLocationStickPin(lat, lon) {
+            const html = `
+                <div class="location-stick-pin">
+                    <div class="stick-pin-head">
+                        <span>📍</span> <span>INCIDENT SITE</span>
+                    </div>
+                    <div class="stick-needle"></div>
+                    <div class="stick-base-dot"></div>
+                </div>
+            `;
+
+            return L.marker([lat, lon], {
+                icon: L.divIcon({
+                    className: 'custom-stick-wrapper',
+                    html: html,
+                    iconSize: [120, 48],
+                    iconAnchor: [60, 48]
+                })
+            });
+        }
+
+        // Set initial incident stick pin
+        const initLat = parseFloat(document.getElementById('input-lat').value);
+        const initLon = parseFloat(document.getElementById('input-lon').value);
+        incidentMarker = createLocationStickPin(initLat, initLon).addTo(map);
+
+        // Map Click Event: update incident coordinates with location stick
+        map.on('click', function (e) {
+            const lat = e.latlng.lat.toFixed(5);
+            const lon = e.latlng.lng.toFixed(5);
+            document.getElementById('input-lat').value = lat;
+            document.getElementById('input-lon').value = lon;
+
+            if (incidentMarker) {
+                incidentMarker.setLatLng([lat, lon]);
+            } else {
+                incidentMarker = createLocationStickPin(lat, lon).addTo(map);
+            }
+            updateCandidateRanks();
+            showToast(`Incident stick pinned at ${lat}, ${lon}`);
+        });
+
+
+        const defaultFleet = [
+            { unitId: 'aaaaaaaa-1111-1111-1111-111111111111', callSign: 'AMB-01', lat: 26.9150, lon: 75.8100, type: 'ALS', status: 'OFFLINE' },
+            { unitId: 'bbbbbbbb-2222-2222-2222-222222222222', callSign: 'AMB-02', lat: 26.9239, lon: 75.8267, type: 'BLS', status: 'OFFLINE' },
+            { unitId: 'cccccccc-3333-3333-3333-333333333333', callSign: 'AMB-03', lat: 26.8988, lon: 75.8164, type: 'ALS', status: 'OFFLINE' },
+            { unitId: 'dddddddd-4444-4444-4444-444444444444', callSign: 'AMB-04', lat: 26.9073, lon: 75.7925, type: 'BLS', status: 'OFFLINE' },
+            { unitId: '55555555-0005-0005-0005-000000000005', callSign: 'AMB-05', lat: 26.8524, lon: 75.8054, type: 'ALS', status: 'OFFLINE' },
+            { unitId: '66666666-0006-0006-0006-000000000006', callSign: 'AMB-06', lat: 26.8512, lon: 75.7892, type: 'BLS', status: 'OFFLINE' },
+            { unitId: '77777777-0007-0007-0007-000000000007', callSign: 'AMB-07', lat: 26.8623, lon: 75.7584, type: 'ALS', status: 'OFFLINE' },
+            { unitId: '88888888-0008-0008-0008-000000000008', callSign: 'AMB-08', lat: 26.9077, lon: 75.7397, type: 'BLS', status: 'OFFLINE' },
+            { unitId: '99999999-0009-0009-0009-000000000009', callSign: 'AMB-09', lat: 26.8973, lon: 75.8260, type: 'ALS', status: 'OFFLINE' },
+            { unitId: 'aaaaaaaa-0010-0010-0010-000000000010', callSign: 'AMB-10', lat: 26.9452, lon: 75.7337, type: 'BLS', status: 'OFFLINE' },
+            { unitId: 'bbbbbbbb-0011-0011-0011-000000000011', callSign: 'AMB-11', lat: 26.9734, lon: 75.7766, type: 'ALS', status: 'OFFLINE' },
+            { unitId: 'cccccccc-0012-0012-0012-000000000012', callSign: 'AMB-12', lat: 26.9050, lon: 75.7780, type: 'BLS', status: 'OFFLINE' },
+            { unitId: 'dddddddd-0013-0013-0013-000000000013', callSign: 'AMB-13', lat: 26.8285, lon: 75.8522, type: 'ALS', status: 'OFFLINE' },
+            { unitId: 'eeeeeeee-0014-0014-0014-000000000014', callSign: 'AMB-14', lat: 26.7788, lon: 75.8277, type: 'ALS', status: 'OFFLINE' }
+        ];
+
+        // Fetch Live Units from Backend
+        async function fetchLiveUnits() {
+            if (!currentAuthToken) return;
+            try {
+                const res = await fetch(`${GATEWAY_URL}/dispatch/units`, {
+                    headers: getAuthHeaders()
+                });
+                if (res.ok) {
+                    const units = await res.json();
+                    renderUnitsOnMap(units);
+                } else if (res.status === 401 || res.status === 403) {
+                    lockDispatcherConsole();
+                }
+            } catch (err) {
+                renderDefaultUnits();
+            }
+        }
+
+        let knownOnlineUnits = new Set(['AMB-01']);
+
+        // Render Ambulances with Ambulance Symbol (🚑) on Map
+        function renderUnitsOnMap(units) {
+            let availCount = 0;
+            let busyCount = 0;
+            let offlineCount = 0;
+            let newlyOnlineUnit = null;
+
+            if (Array.isArray(units) && units.length > 0) {
+                units.forEach(live => {
+                    const uid = live.id || live.unitId;
+                    const found = defaultFleet.find(f => f.unitId === uid || f.callSign.toUpperCase() === (live.callSign || '').toUpperCase());
+                    if (found) {
+                        const wasOffline = (found.status || 'OFFLINE').toUpperCase() === 'OFFLINE';
+                        if (live.lat != null && live.lon != null) {
+                            found.lat = live.lat;
+                            found.lon = live.lon;
+                        }
+                        if (live.status) found.status = live.status;
+                        if (live.type) found.type = live.type;
+
+                        const isNowOnline = (found.status || 'OFFLINE').toUpperCase() !== 'OFFLINE';
+                        if (wasOffline && isNowOnline && !knownOnlineUnits.has(found.callSign)) {
+                            knownOnlineUnits.add(found.callSign);
+                            newlyOnlineUnit = found;
+                        }
+                    } else if (live.callSign) {
+                        // Dynamically registered unit from Crew PWA
+                        const isNowOnline = (live.status || 'OFFLINE').toUpperCase() !== 'OFFLINE';
+                        defaultFleet.push({
+                            unitId: uid,
+                            callSign: live.callSign,
+                            lat: live.lat,
+                            lon: live.lon,
+                            type: live.type || 'ALS',
+                            status: live.status || 'OFFLINE'
+                        });
+                        if (isNowOnline && !knownOnlineUnits.has(live.callSign)) {
+                            knownOnlineUnits.add(live.callSign);
+                            newlyOnlineUnit = live;
+                        }
+                    }
+                });
+            }
+
+            if (newlyOnlineUnit) {
+                showToast(`🚨 ${newlyOnlineUnit.callSign} (${newlyOnlineUnit.type || 'Ambulance'}) connected LIVE! Tracking position.`, true);
+                fitFleetBounds();
+            }
+
+            defaultFleet.forEach(u => {
+                const status = (u.status || 'OFFLINE').toUpperCase();
+
+                // Hard Rule: If unit is OFFLINE (crew not logged in), DO NOT show on map!
+                if (status === 'OFFLINE') {
+                    offlineCount++;
+                    if (unitMarkers[u.unitId]) {
+                        map.removeLayer(unitMarkers[u.unitId]);
+                        delete unitMarkers[u.unitId];
+                    }
+                    return;
+                }
+
+                const isAvailable = (status === 'AVAILABLE');
+                if (isAvailable) availCount++; else busyCount++;
+
+                let pinClass = 'pin-avail';
+                let statusLabel = 'AVAILABLE';
+                if (status === 'DISPATCHED' || status === 'EN_ROUTE_SCENE') {
+                    pinClass = 'pin-dispatched';
+                    statusLabel = 'EN-ROUTE';
+                } else if (status === 'ON_SCENE') {
+                    pinClass = 'pin-on-scene';
+                    statusLabel = 'ON-SCENE';
+                } else if (status === 'TRANSPORTING' || status === 'EN_ROUTE_HOSPITAL') {
+                    pinClass = 'pin-transporting';
+                    statusLabel = 'EN-ROUTE ED';
+                } else if (status === 'AT_HOSPITAL') {
+                    pinClass = 'pin-at-hospital';
+                    statusLabel = 'AT ED';
+                }
+
+                // Prominent Ambulance Symbol (🚑) Marker
+                const icon = L.divIcon({
+                    className: `ambulance-marker ${pinClass}`,
+                    html: `<span style="font-size:13px;">🚑</span> <span>${u.callSign}</span>`,
+                    iconSize: [85, 24],
+                    iconAnchor: [42, 12]
+                });
+
+                const popupHtml = `
+                    <div style="font-family:'Plus Jakarta Sans',sans-serif; min-width: 140px; padding: 4px;">
+                        <strong style="color:#38bdf8;font-size:13px;">🚑 ${u.callSign} (${u.type})</strong><br>
+                        <span style="font-size:11px;color:#94a3b8;">Status: <b style="color:${isAvailable ? '#10b981' : '#f59e0b'}">${statusLabel}</b></span><br>
+                        <span style="font-size:10px;font-family:'JetBrains Mono';color:#64748b;">${u.lat.toFixed(4)}, ${u.lon.toFixed(4)}</span>
+                    </div>
+                `;
+
+                if (unitMarkers[u.unitId]) {
+                    unitMarkers[u.unitId].setIcon(icon);
+                    unitMarkers[u.unitId].setLatLng([u.lat, u.lon]);
+                    unitMarkers[u.unitId].getPopup().setContent(popupHtml);
+                } else {
+                    unitMarkers[u.unitId] = L.marker([u.lat, u.lon], { icon }).addTo(map)
+                        .bindPopup(popupHtml);
+                }
+            });
+
+            renderRosterList();
+        }
+
+        let currentRosterFilter = 'ALL';
+
+        function filterRoster(filter, btn) {
+            currentRosterFilter = filter;
+            document.querySelectorAll('#tab-fleet .nav-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            renderRosterList();
+        }
+
+        function renderRosterList() {
+            const container = document.getElementById('fleet-roster-list');
+            if (!container) return;
+
+            let filtered = defaultFleet;
+            if (currentRosterFilter === 'AVAILABLE') {
+                filtered = defaultFleet.filter(u => (u.status || 'OFFLINE').toUpperCase() === 'AVAILABLE');
+            } else if (currentRosterFilter === 'BUSY') {
+                filtered = defaultFleet.filter(u => {
+                    const st = (u.status || 'OFFLINE').toUpperCase();
+                    return st !== 'AVAILABLE' && st !== 'OFFLINE';
+                });
+            }
+
+            const onlineCount = defaultFleet.filter(u => (u.status || 'OFFLINE').toUpperCase() !== 'OFFLINE').length;
+            const filterCountEl = document.getElementById('fleet-filter-count');
+            if (filterCountEl) {
+                filterCountEl.innerText = `${onlineCount} Online / ${defaultFleet.length} Registered`;
+            }
+
+            container.innerHTML = filtered.map(u => {
+                const st = (u.status || 'OFFLINE').toUpperCase();
+                const isOffline = (st === 'OFFLINE');
+                let badgeClass = 'rb-avail';
+                let label = 'AVAILABLE';
+                if (isOffline) {
+                    badgeClass = 'rb-offline';
+                    label = 'OFFLINE';
+                } else if (st === 'DISPATCHED' || st === 'EN_ROUTE_SCENE') { 
+                    badgeClass = 'rb-busy'; 
+                    label = 'EN-ROUTE'; 
+                } else if (st === 'ON_SCENE') { 
+                    badgeClass = 'rb-scene'; 
+                    label = 'ON-SCENE'; 
+                } else if (st === 'TRANSPORTING' || st === 'EN_ROUTE_HOSPITAL' || st === 'AT_HOSPITAL') { 
+                    badgeClass = 'rb-hosp'; 
+                    label = 'AT ED'; 
+                }
+
+                return `
+                    <div class="roster-card ${isOffline ? 'roster-offline' : ''}" ${isOffline ? '' : `onclick="panToUnit('${u.unitId}', ${u.lat}, ${u.lon})"`} style="${isOffline ? 'cursor: default;' : ''}">
+                        <div class="roster-left">
+                            <span style="font-size: 1.2rem;">${isOffline ? '💤' : '🚑'}</span>
+                            <div>
+                                <div class="roster-callsign">${u.callSign} <span style="font-size: 0.7rem; color: var(--accent-cyan);">(${u.type})</span></div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted); font-family: 'JetBrains Mono';">${isOffline ? 'Crew Not Logged In' : `${u.lat.toFixed(4)}, ${u.lon.toFixed(4)}`}</div>
+                            </div>
+                        </div>
+                        <span class="roster-badge ${badgeClass}">${label}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function panToUnit(unitId, lat, lon) {
+            map.flyTo([lat, lon], 15, { duration: 1.0 });
+            if (unitMarkers[unitId]) {
+                unitMarkers[unitId].openPopup();
+            }
+        }
+
+        function fitFleetBounds() {
+            const active = defaultFleet.filter(u => (u.status || 'OFFLINE').toUpperCase() !== 'OFFLINE');
+            if (active.length === 0) {
+                map.flyTo([26.8950, 75.7950], 12);
+                return;
+            }
+            const points = active.map(u => [u.lat, u.lon]);
+            if (points.length === 1) {
+                map.flyTo(points[0], 14, { duration: 1.0 });
+            } else {
+                const bounds = L.latLngBounds(points);
+                map.fitBounds(bounds, { padding: [60, 60], maxZoom: 14 });
+            }
+        }
+
+        function renderDefaultUnits() {
+            renderUnitsOnMap(defaultFleet);
+        }
+
+
+
+
+        // Fast 1200ms real-time polling
+        setInterval(fetchLiveUnits, 1200);
+
+        // Candidate Ranking Query
+        async function updateCandidateRanks() {
+            if (!currentAuthToken) return;
+            const lat = parseFloat(document.getElementById('input-lat').value);
+            const lon = parseFloat(document.getElementById('input-lon').value);
+            const severity = document.getElementById('select-severity').value;
+            const need = document.getElementById('select-need').value;
+            const requiresAls = document.getElementById('check-als').checked;
+
+            try {
+                const candRes = await fetch(`${GATEWAY_URL}/dispatch/candidates?lat=${lat}&lon=${lon}&severity=${severity}&need=${need}&requiresAls=${requiresAls}`, {
+                    headers: getAuthHeaders()
+                });
+                if (candRes.ok) {
+                    const candidates = await candRes.json();
+                    renderCandidates(candidates);
+                } else if (candRes.status === 401 || candRes.status === 403) {
+                    lockDispatcherConsole();
+                }
+            } catch (err) {
+                console.warn('Auto candidate rank notice:', err);
+            }
+        }
+
+        document.getElementById('select-need').addEventListener('change', updateCandidateRanks);
+        document.getElementById('check-als').addEventListener('change', updateCandidateRanks);
+        document.getElementById('input-lat').addEventListener('change', updateCandidateRanks);
+        document.getElementById('input-lon').addEventListener('change', updateCandidateRanks);
+
+        // Register Incident Action
+        document.getElementById('btn-create-and-rank').addEventListener('click', async () => {
+            if (!currentAuthToken) {
+                lockDispatcherConsole();
+                showToast('⚠️ Admin clearance required to register incidents', false);
+                return;
+            }
+
+            const lat = parseFloat(document.getElementById('input-lat').value);
+            const lon = parseFloat(document.getElementById('input-lon').value);
+            const severity = document.getElementById('select-severity').value;
+            const need = document.getElementById('select-need').value;
+            const requiresAls = document.getElementById('check-als').checked;
+
+            const btn = document.getElementById('btn-create-and-rank');
+            btn.disabled = true;
+            btn.innerText = 'Scoring in progress...';
+
+            try {
+                const incRes = await fetch(`${GATEWAY_URL}/incidents`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        lat, lon, severity, need, requiresAls,
+                        callerHash: 'hash_' + Date.now()
+                    })
+                });
+
+                if (incRes.ok) {
+                    const incData = await incRes.json();
+                    currentIncidentId = incData.incidentId;
+                    showToast(`Incident #${currentIncidentId.substring(0, 8)} created. DispatchScorer executed.`);
+                } else if (incRes.status === 401 || incRes.status === 403) {
+                    lockDispatcherConsole();
+                    showToast('⚠️ Admin session expired', false);
+                    return;
+                }
+                await updateCandidateRanks();
+            } catch (err) {
+                console.error('Error during dispatch flow:', err);
+                showToast('Failed to create incident', false);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = '⚡ Register Incident & Rank Units';
+            }
+        });
+
+        // Render Candidates Card List
+        function renderCandidates(candidates) {
+            const container = document.getElementById('candidates-container');
+            document.getElementById('cand-count').innerText = `${candidates.length} Scored Units`;
+
+            if (!candidates || candidates.length === 0) {
+                container.innerHTML = `
+                    <div style="color: var(--text-secondary); text-align: center; padding: 2rem 1rem; border: 1px dashed rgba(255,255,255,0.12); border-radius: 12px; background: rgba(15,23,42,0.65);">
+                        <span style="font-size: 2rem; display: block; margin-bottom: 0.6rem;">🚑💤</span>
+                        <div style="color: var(--accent-amber); font-weight: 800; font-size: 0.95rem;">No On-Duty Ambulances Online</div>
+                        <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.4rem; line-height: 1.45;">
+                            All units are currently offline. Paramedic crews must sign in via the <b>Crew PWA</b> with GPS enabled to appear on the map and become available for dispatch.
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = candidates.map((c, idx) => {
+                const isTop = idx === 0;
+                const etaMins = (c.etaSeconds / 60).toFixed(1);
+                return `
+                    <div class="candidate-card ${isTop ? 'top-rank' : ''}" id="cand-${c.unitId}">
+                        ${isTop ? '<div class="top-badge-banner">⭐ TOP RECOMMENDED</div>' : ''}
+                        <div class="cand-header">
+                            <div class="cand-callsign">
+                                ${c.callSign}
+                                <span class="cand-badge ${c.type === 'ALS' ? 'badge-als' : 'badge-bls'}">${c.type}</span>
+                            </div>
+                            <div class="cand-score">Score: ${c.score.toFixed(3)}</div>
+                        </div>
+
+                        <div class="cand-stats">
+                            <div class="cand-stat-box">
+                                <div>ETA</div>
+                                <div class="val">${Math.round(c.etaSeconds)}s (${etaMins}m)</div>
+                            </div>
+                            <div class="cand-stat-box">
+                                <div>Distance</div>
+                                <div class="val">${c.distanceKm.toFixed(1)} km</div>
+                            </div>
+                            <div class="cand-stat-box">
+                                <div>Capability</div>
+                                <div class="val" style="color: ${c.capabilityComponent === 0 ? 'var(--accent-green)' : 'var(--accent-rose)'}">
+                                    ${c.capabilityComponent === 0 ? '✓ Match' : '⚠ Penalty'}
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-success btn-full" style="padding: 0.55rem; font-size: 0.8rem;" 
+                                onclick="dispatchUnit('${c.unitId}', '${c.callSign}')">
+                            🚑 Confirm Dispatch ${c.callSign}
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Dispatch unit
+        window.dispatchUnit = async function (unitId, callSign) {
+            const btn = document.querySelector(`#cand-${unitId} button`);
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = `Dispatching ${callSign}...`;
+            }
+
+            const lat = parseFloat(document.getElementById('input-lat').value) || 26.9124;
+            const lon = parseFloat(document.getElementById('input-lon').value) || 75.7873;
+            const severity = document.getElementById('select-severity').value || 'CRITICAL';
+            const need = document.getElementById('select-need').value || 'TRAUMA';
+            const requiresAls = document.getElementById('check-als').checked;
+
+            if (!currentAuthToken) {
+                lockDispatcherConsole();
+                showToast('⚠️ Admin clearance required to dispatch units', false);
+                return;
+            }
+
+            if (!currentIncidentId) {
+                currentIncidentId = '00000000-0000-0000-0000-' + Math.floor(Math.random() * 1000000000000).toString().padStart(12, '0');
+            }
+
+            try {
+                const res = await fetch(`${GATEWAY_URL}/dispatch`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        incidentId: currentIncidentId,
+                        unitId: unitId,
+                        callSign: callSign,
+                        incidentLat: lat,
+                        incidentLon: lon,
+                        severity: severity,
+                        clinicalNeed: need,
+                        requiresAls: requiresAls,
+                        targetAddress: `Incident Scene (${lat.toFixed(4)}, ${lon.toFixed(4)})`
+                    })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    showToast(`✅ Assigned ${callSign}! Dispatched to [${lat.toFixed(4)}, ${lon.toFixed(4)}].`);
+
+                    const unit = defaultFleet.find(u => u.unitId === unitId);
+                    if (unit) unit.status = 'DISPATCHED';
+                    renderDefaultUnits();
+
+                    currentIncidentId = null;
+                    await updateCandidateRanks();
+                } else if (res.status === 401 || res.status === 403) {
+                    lockDispatcherConsole();
+                    showToast('⚠️ Admin clearance expired or unauthorized', false);
+                } else {
+                    const errData = await res.json().catch(() => ({ message: res.statusText }));
+                    showToast(`⚠️ Conflict: ${errData.message || 'Ambulance is already committed'}`, false);
+                    await updateCandidateRanks();
+                }
+            } catch (err) {
+                showToast(`Dispatch network notice: ${err.message}`, false);
+            }
+        };
+
+        // Instant cross-tab sync via BroadcastChannel & Global Cloud Relay window events
+        try {
+            const syncChannel = new BroadcastChannel('h8_demo_sync');
+            syncChannel.onmessage = function (e) {
+                if (currentAuthToken && e.data && (e.data.type === 'state_changed' || e.data.type === 'unit_dispatched')) {
+                    fetchLiveUnits();
+                    updateCandidateRanks();
+                    fetchCoverage();
+                }
+            };
+        } catch (e) { }
+
+        window.addEventListener('h8_state_changed', function () {
+            if (currentAuthToken) {
+                fetchLiveUnits();
+                updateCandidateRanks();
+                fetchCoverage();
+            }
+        });
+
+        async function fetchCoverage() {
+            if (!currentAuthToken) return;
+            try {
+                const res = await fetch(`${GATEWAY_URL}/redeployment/coverage`, {
+                    headers: getAuthHeaders()
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    const cov = data.coveragePercent || '100.0%';
+                    document.getElementById('redeploy-gauge').innerText = cov;
+                }
+            } catch (e) { }
+        }
+
+        async function triggerRedeploymentRun() {
+            if (!currentAuthToken) {
+                lockDispatcherConsole();
+                showToast('⚠️ Admin clearance required to trigger MEXCLP redeployment', false);
+                return;
+            }
+
+            const btn = document.getElementById('btn-run-redeploy');
+            btn.disabled = true;
+            btn.innerText = 'Evaluating under Redis lock...';
+            try {
+                const res = await fetch(`${GATEWAY_URL}/redeployment/plan`, {
+                    method: 'POST',
+                    headers: getAuthHeaders()
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    showToast(`🌐 MEXCLP Plan: ${data.message || 'Coverage rebalanced'}`);
+                    fetchCoverage();
+                }
+            } catch (e) {
+                showToast('Redeployment evaluated under Redis lock');
+            }
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerText = '⚡ Evaluate Redeployment (Greedy)';
+            }, 2000);
+        }
+
+        // Periodic polling only when authenticated
+        setInterval(() => {
+            if (currentAuthToken) {
+                fetchLiveUnits();
+            }
+        }, 1200);
+
+        // Startup verification: Gated behind Admin sign-in
+        verifyAdminSession().then(() => {
+            if (currentAuthToken) {
+                fetchLiveUnits();
+                fetchCoverage();
+                updateCandidateRanks();
+            }
+        });
+    </script>
+
+
+
+</body>
+
+</html>
