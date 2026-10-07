@@ -10,7 +10,7 @@ In metropolitan emergency healthcare, every second delay increases patient morta
 2. **Euclidean Routing Flaws**: Nearest ambulances are often assigned using straight-line distance ("as the crow flies"), ignoring city rivers, one-way streets, traffic congestion, and medical capability fit (ALS vs BLS).
 3. **Ambulance Ramping**: Ambulances arrive unannounced at overcrowded hospital emergency rooms, forcing paramedics to wait outside for hours with critical patients because resuscitation bays are occupied.
 
-The **H8 EMS Platform** is a unified, high-speed cloud orchestration system engineered to solve these challenges. It synchronizes 911 emergency call dispatchers, frontline ambulance crews streaming live satellite GPS telemetry, and hospital trauma resuscitation bays on a single sub-second cloud network.
+The **EMS Platform** is a unified, high-speed cloud orchestration system engineered to solve these challenges. It synchronizes 911 emergency call dispatchers, frontline ambulance crews streaming live satellite GPS telemetry, and hospital trauma resuscitation bays on a single sub-second cloud network.
 
 ---
 
@@ -36,7 +36,7 @@ The **H8 EMS Platform** is a unified, high-speed cloud orchestration system engi
 > **Batch**: 2024–2028  
 > **Project Category**: Major Capstone Engineering Project  
 > **Project Guide / Mentor**: **Er Ram Babu Buri** (Associate Professor, Department of Information Technology)  
-> **Project Title**: H8 Emergency Medical Services (EMS) Cloud Orchestration Platform  
+> **Project Title**: Emergency Medical Services (EMS) Cloud Orchestration Platform  
 
 ---
 
@@ -184,7 +184,7 @@ Over four intensive development weeks, each student took 100% ownership of their
 - **Presentation Slides (PPT)**:
   - Prepared 10-slide viva presentation deck detailing problem statement, architecture, student contributions, live demo, and experimental results.
 - **Video Demonstration**:
-  - Recorded end-to-end video walkthrough demonstrating all three operational web hubs working synchronously ([Watch Project Video Demo](https://youtu.be/demo-h8-ems-platform)).
+  - Recorded end-to-end video walkthrough demonstrating all three operational web hubs working synchronously ([Watch Project Video Demo](https://youtu.be/demo-ems-platform)).
 - **Final Viva Voce Presentation**:
   - Comprehensive technical defense prepared for RTU academic evaluation panel and Project Guide Er Ram Babu Buri.
   - Live demonstrations conducted on both local server and public cloud environments.
@@ -232,7 +232,7 @@ The platform executes a 6-phase autonomous lifecycle ensuring zero communication
 The platform is designed following an event-driven, 4-tier distributed microservices architecture:
 
 1. **Client Tier (All Front-End Portals — Led by Pushkar)**: Responsive web applications tailored for specific user form factors (desktop GIS console for dispatchers, mobile touch PWA for paramedics, trauma dashboard for hospital staff).
-2. **Security & Edge Gateway Tier (Full-Stack Team)**: Spring Cloud Gateway validating cryptographic Bearer session tokens (`h8-auth-token-...`) and enforcing a 4-tier Role-Based Access Control (RBAC) matrix (`ADMIN`, `DISPATCHER`, `CREW`, `HOSPITAL_STAFF`).
+2. **Security & Edge Gateway Tier (Full-Stack Team)**: Spring Cloud Gateway validating cryptographic Bearer session tokens (`ems-auth-token-...`) and enforcing a 4-tier Role-Based Access Control (RBAC) matrix (`ADMIN`, `DISPATCHER`, `CREW`, `HOSPITAL_STAFF`).
 3. **Business Microservices Tier (Java 17 / Spring Boot — Manish, Rahul & Ashutosh)**:
    - `dispatch-service` (Manish - Full-Stack): Autonomous candidate ranking and dispatch lifecycle coordinator.
    - `routing-service` (Manish - Full-Stack): Turn-by-turn road network routing and matrix calculations via GraphHopper OpenStreetMap.
@@ -411,6 +411,6 @@ cd hospital-service && mvn spring-boot:run
 | **🏥 Hospital ED Trauma Hub** | Receiving hospital resuscitation bay board | [Open Hospital Trauma Hub](https://manish-12345678911.github.io/Ems-platform/web/ed/) |
 | **📄 Software Requirements (SRS)** | Complete IEEE-compliant specification | [View SRS Document](docs/PHASE_0_1_HANDOFF.md) |
 | **🔬 Research Paper & Report** | Academic study on autonomous dispatch ranking | [Read Research Paper / Docs](docs/PHASE_2_HANDOFF.md) |
-| **🎥 Video Demonstration** | End-to-end video walkthrough of the platform | [Watch Project Video Demo](https://youtu.be/demo-h8-ems-platform) |
+| **🎥 Video Demonstration** | End-to-end video walkthrough of the platform | [Watch Project Video Demo](https://youtu.be/demo-ems-platform) |
 | **⚡ Interactive Live Testbed** | Full-system interactive simulation interface | [Explore Interactive Live Demo](https://manish-12345678911.github.io/Ems-platform/web/) |
 | **🐙 Source Code Repository** | Master GitHub repository | [GitHub Repository](https://github.com/manish-12345678911/Ems-platform) |

@@ -340,7 +340,7 @@ class ThreadingServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
 if __name__ == '__main__':
     print(f"""
 ====================================================================
-  H8 EMS Unified Server
+  EMS Unified Server
   Static Web:  http://localhost:{PORT}/
   Dispatcher:  http://localhost:{PORT}/dispatcher/
   Crew PWA:    http://localhost:{PORT}/crew/
@@ -353,5 +353,5 @@ if __name__ == '__main__':
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:
-            print("\nShutting down H8 server...")
+            print("\nShutting down EMS server...")
             httpd.shutdown()

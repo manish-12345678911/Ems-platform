@@ -3,24 +3,24 @@
 
 ```mermaid
 stateDiagram-v2
-    [*] --> AVAILABLE : Vehicle On-Duty & Registered
+ [*] --> AVAILABLE : Vehicle On-Duty & Registered
 
-    AVAILABLE --> DISPATCHED : Incident Assigned by Dispatcher
-    AVAILABLE --> OFFLINE : Shift End / Vehicle Maintenance
+ AVAILABLE --> DISPATCHED : Incident Assigned by Dispatcher
+ AVAILABLE --> OFFLINE : Shift End / Vehicle Maintenance
 
-    DISPATCHED --> EN_ROUTE : Paramedic Crew Acknowledges Mission (Step 1)
-    DISPATCHED --> AVAILABLE : Mission Cancelled by Dispatcher
+ DISPATCHED --> EN_ROUTE : Paramedic Crew Acknowledges Mission (Step 1)
+ DISPATCHED --> AVAILABLE : Mission Cancelled by Dispatcher
 
-    EN_ROUTE --> AT_SCENE : Ambulance Arrives at Patient Location (Step 2)
-    
-    AT_SCENE --> TRANSPORTING : Patient Stabilized, Rolling to Hospital (Step 3)
-    AT_SCENE --> AVAILABLE : False Alarm / Treat and Release on Scene
+ EN_ROUTE --> AT_SCENE : Ambulance Arrives at Patient Location (Step 2)
+ 
+ AT_SCENE --> TRANSPORTING : Patient Stabilized, Rolling to Hospital (Step 3)
+ AT_SCENE --> AVAILABLE : False Alarm / Treat and Release on Scene
 
-    TRANSPORTING --> CLINICAL_HANDOVER : Ambulance Arrives at Hospital Resus Bay (Step 4)
+ TRANSPORTING --> CLINICAL_HANDOVER : Ambulance Arrives at Hospital Resus Bay (Step 4)
 
-    CLINICAL_HANDOVER --> AVAILABLE : Patient Care Transferred to ED Doctors (Step 5)
-    
-    OFFLINE --> AVAILABLE : Unit Re-enters Active Sector
+ CLINICAL_HANDOVER --> AVAILABLE : Patient Care Transferred to ED Doctors (Step 5)
+ 
+ OFFLINE --> AVAILABLE : Unit Re-enters Active Sector
 ```
 
 ### State Definitions

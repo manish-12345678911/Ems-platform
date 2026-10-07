@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>routing-service</artifactId>
-    <name>H8 Routing Service</name>
+    <name>Routing Service</name>
     <description>GraphHopper ETA + HTTP controller, fallback to HaversineEta.</description>
 
     <dependencies>

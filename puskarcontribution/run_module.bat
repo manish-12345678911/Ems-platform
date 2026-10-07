@@ -1,8 +1,8 @@
 @echo off
-title H8 EMS - Pushkar Module (Security & Auth Gate Testbed)
+title EMS - Pushkar Module (Security & Auth Gate Testbed)
 echo ==========================================================
-echo  H8 EMS - MODULE 02: SECURITY, RBAC & HIPAA PHONE ANONYMIZER
-echo  Author: Pushkar (Security & Authorization Engineer)
+echo EMS - MODULE 02: SECURITY, RBAC & HIPAA PHONE ANONYMIZER
+echo Author: Pushkar (Security & Authorization Engineer)
 echo ==========================================================
 echo.
 echo Launching standalone security testbed on port 8082...

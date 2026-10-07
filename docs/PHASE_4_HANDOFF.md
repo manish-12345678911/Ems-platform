@@ -1,4 +1,4 @@
-# Phase 4 Tracking & Dispatch — Completion & Handoff — H8 EMS Platform
+# Phase 4 Tracking & Dispatch — Completion & Handoff — EMS Platform
 
 > **Status**: **Phase 4 is ✅ 100% COMPLETE & VERIFIED**
 > - `tracking-service`: ✅ **100% complete, 8/8 tests passing** (Port 8083)
@@ -112,17 +112,17 @@
 During Phase 4 compilation and test verification, the following issues were identified and resolved:
 
 1. **`NearbyUnitResponse` Constructor Signature**:
-   - Signature: `(UUID unitId, double distanceKm, double lat, double lon, long lastSeenEpochMs)`.
-   - Updated `DispatchRankingServiceTest` and `TrackingClient` fallback constructor to supply all 5 parameters.
+ - Signature: `(UUID unitId, double distanceKm, double lat, double lon, long lastSeenEpochMs)`.
+ - Updated `DispatchRankingServiceTest` and `TrackingClient` fallback constructor to supply all 5 parameters.
 2. **`IncidentStatus` Enum**:
-   - `IncidentStatus` does not have `PENDING`; use `RECEIVED` for newly received incidents.
-   - Updated `DispatchController` and `DispatchRankingServiceTest`.
+ - `IncidentStatus` does not have `PENDING`; use `RECEIVED` for newly received incidents.
+ - Updated `DispatchController` and `DispatchRankingServiceTest`.
 3. **`MockBean` Package**:
-   - Changed import in `DispatchControllerTest` from `org.springframework.boot.test.mock.bean.MockBean` to `org.springframework.boot.test.mock.mockito.MockBean`.
-   - Added `@Import(SecurityConfig.class)` to `DispatchControllerTest` to correctly configure permitted test endpoints.
+ - Changed import in `DispatchControllerTest` from `org.springframework.boot.test.mock.bean.MockBean` to `org.springframework.boot.test.mock.mockito.MockBean`.
+ - Added `@Import(SecurityConfig.class)` to `DispatchControllerTest` to correctly configure permitted test endpoints.
 4. **Jackson `JavaTimeModule` in Unit Tests**:
-   - Tests instantiating `new ObjectMapper()` directly were unable to serialize `java.time.Instant`.
-   - Registered `new JavaTimeModule()` on `ObjectMapper` instances in `DispatchExecutionServiceTest` and `DispatchConcurrencyTest`.
+ - Tests instantiating `new ObjectMapper()` directly were unable to serialize `java.time.Instant`.
+ - Registered `new JavaTimeModule()` on `ObjectMapper` instances in `DispatchExecutionServiceTest` and `DispatchConcurrencyTest`.
 
 ---
 
@@ -132,22 +132,22 @@ Command executed: `mvn test` across all 13 Maven modules.
 
 ```
 ------------------------------------------------------------------------
-Module                                   Tests    Failures  Errors  Status
+Module Tests Failures Errors Status
 ------------------------------------------------------------------------
-H8 Common Library                        50       0         0       SUCCESS
-H8 Contracts                              6       0         0       SUCCESS
-H8 Simulator                             72       0         0       SUCCESS
-H8 Data Seed                              0       0         0       SUCCESS
-H8 API Gateway                            0       0         0       SUCCESS
-H8 Incident Service                      12       0         0       SUCCESS
-H8 Dispatch Service                      28       0         0       SUCCESS
-H8 Tracking Service                       8       0         0       SUCCESS
-H8 Routing Service                        5       0         0       SUCCESS
-H8 Hospital Service                       0       0         0       SUCCESS
-H8 Redeployment Service                   0       0         0       SUCCESS
-H8 Audit Service                          0       0         0       SUCCESS
+ Common Library 50 0 0 SUCCESS
+ Contracts 6 0 0 SUCCESS
+ Simulator 72 0 0 SUCCESS
+ Data Seed 0 0 0 SUCCESS
+ API Gateway 0 0 0 SUCCESS
+ Incident Service 12 0 0 SUCCESS
+ Dispatch Service 28 0 0 SUCCESS
+ Tracking Service 8 0 0 SUCCESS
+ Routing Service 5 0 0 SUCCESS
+ Hospital Service 0 0 0 SUCCESS
+ Redeployment Service 0 0 0 SUCCESS
+ Audit Service 0 0 0 SUCCESS
 ------------------------------------------------------------------------
-Total:                                  181       0         0       BUILD SUCCESS
+Total: 181 0 0 BUILD SUCCESS
 ------------------------------------------------------------------------
 ```
 

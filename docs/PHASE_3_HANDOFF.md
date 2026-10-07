@@ -1,4 +1,4 @@
-# Phase 3 Completion & Phase 4 Implementation Handoff — H8 EMS Platform
+# Phase 3 Completion & Phase 4 Implementation Handoff — EMS Platform
 
 > **Status**: **Phases 0, 1, 2, and Phase 3 Core Implementation are 100% COMPLETE & PASSING** ✅
 > - `common`: 50/50 tests passing (plain Java 21, ArchUnit clean, jqwik property tests).
@@ -48,30 +48,30 @@
 
 ### 3.1 `routing-service` (Port 8084) — Complete & Verified ✅
 - **Classes**:
-  - `RoutingEtaService`: Injects primary `EtaProvider` (GraphHopper placeholder for Phase 5) with fallback to `HaversineEta` from `common`.
-  - `@CircuitBreaker(name = "routingEta", fallbackMethod = "calculateFallback")`: When primary fails, circuit breaker triggers fallback to `HaversineEta` returning `fallback = true`.
-  - `RoutingController`: Exposes `POST /eta` (accepts `EtaRequest`) and `GET /eta` (accepts `fromLat, fromLon, toLat, toLon`).
-  - `SecurityConfig`: Configures public access for `/eta/**` and `/actuator/**`.
+ - `RoutingEtaService`: Injects primary `EtaProvider` (GraphHopper placeholder for Phase 5) with fallback to `HaversineEta` from `common`.
+ - `@CircuitBreaker(name = "routingEta", fallbackMethod = "calculateFallback")`: When primary fails, circuit breaker triggers fallback to `HaversineEta` returning `fallback = true`.
+ - `RoutingController`: Exposes `POST /eta` (accepts `EtaRequest`) and `GET /eta` (accepts `fromLat, fromLon, toLat, toLon`).
+ - `SecurityConfig`: Configures public access for `/eta/**` and `/actuator/**`.
 - **Tests (5 tests)**:
-  - `RoutingEtaServiceTest`: Verifies fallback without primary, primary routing, and circuit breaker fallback method.
-  - `RoutingControllerTest`: WebMvc tests for POST and GET endpoints.
+ - `RoutingEtaServiceTest`: Verifies fallback without primary, primary routing, and circuit breaker fallback method.
+ - `RoutingControllerTest`: WebMvc tests for POST and GET endpoints.
 
 ### 3.2 `incident-service` (Port 8081) — Complete & Verified ✅
 - **Database & Entities**:
-  - `V1__init_incident_schema.sql`: Schema `incident`, tables `incident`, `outbox_event` (with `idx_outbox_unpub` partial index), `processed_event`.
-  - `IncidentEntity`: Mapped to `incident.incident`. PostGIS `location GEOGRAPHY(Point, 4326)` using JTS `Point`. Clean JSON serialization with `getLat()`, `getLon()` and `@JsonIgnore` on raw geometry.
-  - `OutboxEventEntity`: Mapped to `incident.outbox_event`. Stores `aggregateId`, `topic`, `eventKey`, `payload` (JSONB), `createdAt`, `publishedAt`.
+ - `V1__init_incident_schema.sql`: Schema `incident`, tables `incident`, `outbox_event` (with `idx_outbox_unpub` partial index), `processed_event`.
+ - `IncidentEntity`: Mapped to `incident.incident`. PostGIS `location GEOGRAPHY(Point, 4326)` using JTS `Point`. Clean JSON serialization with `getLat()`, `getLon()` and `@JsonIgnore` on raw geometry.
+ - `OutboxEventEntity`: Mapped to `incident.outbox_event`. Stores `aggregateId`, `topic`, `eventKey`, `payload` (JSONB), `createdAt`, `publishedAt`.
 - **Business Logic & Services**:
-  - `CallerHashUtil`: Computes salted SHA-256 hash of caller phone (Rule #6).
-  - `IncidentService`: Atomically creates `IncidentEntity` and `OutboxEventEntity` within a single `@Transactional` method (Rule #4).
-  - `OutboxRelay`: Scheduled component (`@Scheduled(fixedDelay = 500)`) reading unpublished outbox records, publishing to Kafka topic `incident.events`, and updating `publishedAt` upon broker ACK. If Kafka is unavailable, records remain pending for subsequent retries without event loss.
-  - `IncidentController`: Exposes `POST /incidents` (returns 201 Created with `incidentId`) and `GET /incidents/{id}`.
-  - `SecurityConfig`: Configures access for `/incidents/**` and `/actuator/**`.
+ - `CallerHashUtil`: Computes salted SHA-256 hash of caller phone (Rule #6).
+ - `IncidentService`: Atomically creates `IncidentEntity` and `OutboxEventEntity` within a single `@Transactional` method (Rule #4).
+ - `OutboxRelay`: Scheduled component (`@Scheduled(fixedDelay = 500)`) reading unpublished outbox records, publishing to Kafka topic `incident.events`, and updating `publishedAt` upon broker ACK. If Kafka is unavailable, records remain pending for subsequent retries without event loss.
+ - `IncidentController`: Exposes `POST /incidents` (returns 201 Created with `incidentId`) and `GET /incidents/{id}`.
+ - `SecurityConfig`: Configures access for `/incidents/**` and `/actuator/**`.
 - **Tests (12 tests)**:
-  - `IncidentServiceTest`: Verifies atomic creation of incident + outbox event and phone hashing.
-  - `OutboxRelayTest`: Verifies publishing, asynchronous ACK updating, and fault-tolerance under broker connection loss.
-  - `CallerHashUtilTest`: Verifies SHA-256 64-char hex format and salt variation.
-  - `IncidentControllerTest`: WebMvc tests for `POST /incidents` and `GET /incidents/{id}`.
+ - `IncidentServiceTest`: Verifies atomic creation of incident + outbox event and phone hashing.
+ - `OutboxRelayTest`: Verifies publishing, asynchronous ACK updating, and fault-tolerance under broker connection loss.
+ - `CallerHashUtilTest`: Verifies SHA-256 64-char hex format and salt variation.
+ - `IncidentControllerTest`: WebMvc tests for `POST /incidents` and `GET /incidents/{id}`.
 
 ### 3.3 `contracts` — Updated & Verified ✅
 - Added `OutboxRecord` record representing outbox message transfer.
@@ -82,13 +82,13 @@
 ## 4. Current Test Baseline
 
 ```
-H8 Common Library .................................. 50 tests ✅
-H8 Contracts .......................................  1 test  ✅
-H8 Simulator ....................................... 72 tests ✅
-H8 Incident Service ................................ 12 tests ✅
-H8 Routing Service .................................  5 tests ✅
+ Common Library .................................. 50 tests ✅
+ Contracts ....................................... 1 test ✅
+ Simulator ....................................... 72 tests ✅
+ Incident Service ................................ 12 tests ✅
+ Routing Service ................................. 5 tests ✅
 -----------------------------------------------------------------
-Total Automated Tests:                              140 tests ✅ (0 failures, 0 errors)
+Total Automated Tests: 140 tests ✅ (0 failures, 0 errors)
 ```
 
 ---
@@ -100,31 +100,31 @@ Phase 4 consists of two interconnected services:
 2. **`dispatch-service`**: Candidate ranking using `DispatchScorer` from `common`, atomic unit reservation via conditional SQL `UPDATE`, and transactional outbox publishing.
 
 ```
-                    ┌─────────────────────────┐
-                    │  Kafka: unit.location   │
-                    └───────────┬─────────────┘
-                                │
-                                ▼
-                    ┌─────────────────────────┐
-                    │    tracking-service     │
-                    │   (Port 8083, Redis)    │
-                    └───────────┬─────────────┘
-                                │
-                   Redis GEO: Nearby Unit IDs
-                                │
-                                ▼
-┌──────────────────┐   Candidates   ┌─────────────────────────┐
-│ routing-service  │───────────────▶│    dispatch-service     │
-│   (Port 8084)    │      ETAs      │       (Port 8082)       │
-└──────────────────┘                └───────────┬─────────────┘
-                                                │
-                                    1. Conditional UPDATE
-                                    2. Outbox: dispatch.decisions
-                                    3. Outbox: unit.status
-                                                ▼
-                                    ┌─────────────────────────┐
-                                    │    PostgreSQL & Kafka   │
-                                    └─────────────────────────┘
+ ┌─────────────────────────┐
+ │ Kafka: unit.location │
+ └───────────┬─────────────┘
+ │
+ ▼
+ ┌─────────────────────────┐
+ │ tracking-service │
+ │ (Port 8083, Redis) │
+ └───────────┬─────────────┘
+ │
+ Redis GEO: Nearby Unit IDs
+ │
+ ▼
+┌──────────────────┐ Candidates ┌─────────────────────────┐
+│ routing-service │───────────────▶│ dispatch-service │
+│ (Port 8084) │ ETAs │ (Port 8082) │
+└──────────────────┘ └───────────┬─────────────┘
+ │
+ 1. Conditional UPDATE
+ 2. Outbox: dispatch.decisions
+ 3. Outbox: unit.status
+ ▼
+ ┌─────────────────────────┐
+ │ PostgreSQL & Kafka │
+ └─────────────────────────┘
 ```
 
 ---
@@ -151,11 +151,11 @@ Create `TrackingRedisService` executing this Redis script:
 
 local current_ts = redis.call('GET', KEYS[1])
 if not current_ts or tonumber(ARGV[1]) > tonumber(current_ts) then
-    redis.call('SET', KEYS[1], ARGV[1])
-    redis.call('GEOADD', KEYS[2], ARGV[2], ARGV[3], ARGV[4])
-    return 1
+ redis.call('SET', KEYS[1], ARGV[1])
+ redis.call('GEOADD', KEYS[2], ARGV[2], ARGV[3], ARGV[4])
+ return 1
 else
-    return 0 -- out of order update rejected
+ return 0 -- out of order update rejected
 end
 ```
 
@@ -166,16 +166,16 @@ end
 
 #### D. REST Endpoints for `dispatch-service`
 - `GET /tracking/nearby?lat={lat}&lon={lon}&radiusKm={radiusKm}&limit={limit}`:
-  - Executes `GEOSEARCH units:geo FROMLONLAT {lon} {lat} BYRADIUS {radiusKm} KM ASC WITHDIST COUNT {limit}`.
-  - Returns `List<NearbyUnitResponse>` containing `unitId`, `distanceKm`, and `lastPositionAt`.
+ - Executes `GEOSEARCH units:geo FROMLONLAT {lon} {lat} BYRADIUS {radiusKm} KM ASC WITHDIST COUNT {limit}`.
+ - Returns `List<NearbyUnitResponse>` containing `unitId`, `distanceKm`, and `lastPositionAt`.
 
 #### E. Heartbeat TTL & Pruner
 - Heartbeat TTL: default 90 seconds (from `ScorerParams.staleTtlSeconds`).
 - `@Scheduled(fixedDelay = 15000)` `TrackingPruner`:
-  - Scans `units:geo` members.
-  - For any unit where `nowEpochMs - unit:ts:{unitId} > ttlMs`:
-    - Remove from `units:geo` (`ZREM`).
-    - Publish `UnitStatusEvent(UUID.randomUUID(), unitId, "AVAILABLE", "OFFLINE", Instant.now())` to `unit.status`.
+ - Scans `units:geo` members.
+ - For any unit where `nowEpochMs - unit:ts:{unitId} > ttlMs`:
+ - Remove from `units:geo` (`ZREM`).
+ - Publish `UnitStatusEvent(UUID.randomUUID(), unitId, "AVAILABLE", "OFFLINE", Instant.now())` to `unit.status`.
 
 #### F. Unit & Integration Tests to Write
 1. `TrackingRedisServiceTest`: Verifies Lua script rejects timestamps where `newTs <= currentTs` and accepts `newTs > currentTs`.
@@ -200,7 +200,7 @@ In `AmbulanceUnitRepository`:
 ```java
 @Modifying
 @Query("UPDATE AmbulanceUnitEntity u SET u.status = 'DISPATCHED' " +
-       "WHERE u.id = :unitId AND u.status = 'AVAILABLE'")
+ "WHERE u.id = :unitId AND u.status = 'AVAILABLE'")
 int reserveIfAvailable(@Param("unitId") UUID unitId);
 ```
 - If return value == `1`: reservation succeeded.
@@ -216,69 +216,69 @@ In `DispatchCandidateService`:
 2. Query `tracking-service` for nearby available units: `GET /tracking/nearby?lat=...&lon=...&radiusKm=25`.
 3. Fetch candidate `AmbulanceUnitEntity` rows from database where `id IN (:ids) AND status = 'AVAILABLE'`.
 4. For each candidate unit:
-   - Call `routing-service` `POST /eta` with `(unitLat, unitLon, incidentLat, incidentLon)`.
-   - Build `UnitSnapshot` from entity and live position.
+ - Call `routing-service` `POST /eta` with `(unitLat, unitLon, incidentLat, incidentLon)`.
+ - Build `UnitSnapshot` from entity and live position.
 5. Invoke `DispatchScorer.score(unitSnapshot, incidentSnapshot, etaSeconds, Instant.now(), availableSnapshots)` and `DispatchScorer.breakdown(...)` from `common` (**Rule #2: imported directly, never copied**).
 6. Sort candidates by score ascending (lowest score is optimal).
 7. Return candidate list with breakdown components:
-   - ETA penalty ($0.40 \times \text{ETA} \times \text{Severity.scaleFactor}$).
-   - Capability penalty ($0.25$, BLS vs ALS-needed).
-   - Fatigue penalty ($0.10$, shift $> 10$ h).
-   - Coverage loss ($0.15 \times \text{lossIfRemoved}$).
-   - Staleness penalty ($0.10$, position $> 90$ s old).
+ - ETA penalty ($0.40 \times \text{ETA} \times \text{Severity.scaleFactor}$).
+ - Capability penalty ($0.25$, BLS vs ALS-needed).
+ - Fatigue penalty ($0.10$, shift $> 10$ h).
+ - Coverage loss ($0.15 \times \text{lossIfRemoved}$).
+ - Staleness penalty ($0.10$, position $> 90$ s old).
 
 #### E. Dispatch Confirmation Workflow (`POST /dispatch`)
 ```java
 @Transactional
 public DispatchResult dispatchUnit(DispatchUnitRequest req) {
-    // 1. Conditional update reservation
-    int updated = unitRepository.reserveIfAvailable(req.unitId());
-    if (updated == 0) {
-        throw new UnitNotAvailableException("Unit " + req.unitId() + " is no longer available");
-    }
+ // 1. Conditional update reservation
+ int updated = unitRepository.reserveIfAvailable(req.unitId());
+ if (updated == 0) {
+ throw new UnitNotAvailableException("Unit " + req.unitId() + " is no longer available");
+ }
 
-    // 2. Insert assignment with ranked snapshot
-    AssignmentEntity assignment = new AssignmentEntity();
-    assignment.setIncidentId(req.incidentId());
-    assignment.setUnitId(req.unitId());
-    assignment.setRankedSnapshot(req.rankedSnapshotJson());
-    assignment.setChosenBy(req.chosenBy()); // AUTO or DISPATCHER
-    assignment.setDecidedAt(Instant.now());
-    assignmentRepository.save(assignment);
+ // 2. Insert assignment with ranked snapshot
+ AssignmentEntity assignment = new AssignmentEntity();
+ assignment.setIncidentId(req.incidentId());
+ assignment.setUnitId(req.unitId());
+ assignment.setRankedSnapshot(req.rankedSnapshotJson());
+ assignment.setChosenBy(req.chosenBy()); // AUTO or DISPATCHER
+ assignment.setDecidedAt(Instant.now());
+ assignmentRepository.save(assignment);
 
-    // 3. Insert OutboxEvent for dispatch.decisions
-    DispatchDecision decision = new DispatchDecision(
-        UUID.randomUUID(), req.incidentId(), req.unitId(),
-        req.chosenBy(), req.rankedSnapshotJson(), 1
-    );
-    outboxRepository.save(new OutboxEventEntity(
-        UUID.randomUUID(), req.incidentId(), "dispatch.decisions",
-        req.incidentId().toString(), toJson(decision), Instant.now(), null
-    ));
+ // 3. Insert OutboxEvent for dispatch.decisions
+ DispatchDecision decision = new DispatchDecision(
+ UUID.randomUUID(), req.incidentId(), req.unitId(),
+ req.chosenBy(), req.rankedSnapshotJson(), 1
+ );
+ outboxRepository.save(new OutboxEventEntity(
+ UUID.randomUUID(), req.incidentId(), "dispatch.decisions",
+ req.incidentId().toString(), toJson(decision), Instant.now(), null
+ ));
 
-    // 4. Insert OutboxEvent for unit.status
-    UnitStatusEvent statusEvent = new UnitStatusEvent(
-        UUID.randomUUID(), req.unitId(), "AVAILABLE", "DISPATCHED", Instant.now(), 1
-    );
-    outboxRepository.save(new OutboxEventEntity(
-        UUID.randomUUID(), req.unitId(), "unit.status",
-        req.unitId().toString(), toJson(statusEvent), Instant.now(), null
-    ));
+ // 4. Insert OutboxEvent for unit.status
+ UnitStatusEvent statusEvent = new UnitStatusEvent(
+ UUID.randomUUID(), req.unitId(), "AVAILABLE", "DISPATCHED", Instant.now(), 1
+ );
+ outboxRepository.save(new OutboxEventEntity(
+ UUID.randomUUID(), req.unitId(), "unit.status",
+ req.unitId().toString(), toJson(statusEvent), Instant.now(), null
+ ));
 
-    return new DispatchResult(assignment.getId(), req.unitId(), "DISPATCHED");
+ return new DispatchResult(assignment.getId(), req.unitId(), "DISPATCHED");
 }
 ```
 
 #### F. Unit & Concurrency Tests to Write
 1. **Concurrency Test (Rule #8)**:
-   - Spawn 50 concurrent threads attempting to call `reserveIfAvailable(unitId)` on a single `AVAILABLE` unit.
-   - Assert: Exactly 1 thread succeeds (returns 1), 49 threads return 0.
+ - Spawn 50 concurrent threads attempting to call `reserveIfAvailable(unitId)` on a single `AVAILABLE` unit.
+ - Assert: Exactly 1 thread succeeds (returns 1), 49 threads return 0.
 2. `DispatchScorerIntegrationTest`:
-   - Verifies scoring order matches `DispatchScorer` from `common`.
+ - Verifies scoring order matches `DispatchScorer` from `common`.
 3. `RuralFallbackTest`:
-   - Verifies radius expansion when 0 units found within 25 km.
+ - Verifies radius expansion when 0 units found within 25 km.
 4. `DispatchControllerTest`:
-   - WebMvc tests for `GET /dispatch/candidates` and `POST /dispatch`.
+ - WebMvc tests for `GET /dispatch/candidates` and `POST /dispatch`.
 
 ---
 

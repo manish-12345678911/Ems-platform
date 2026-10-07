@@ -1,5 +1,5 @@
 -- ====================================================================
--- H8 EMS Platform — 1-Click Supabase Cloud Database Schema & Seed
+-- EMS Platform — 1-Click Supabase Cloud Database Schema & Seed
 -- Run this in Supabase SQL Editor (https://supabase.com/dashboard)
 -- ====================================================================
 

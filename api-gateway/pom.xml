@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>api-gateway</artifactId>
-    <name>H8 API Gateway</name>
+    <name>API Gateway</name>
     <description>Spring Cloud Gateway — routing, JWT validation, CORS, rate limiting.</description>
 
     <dependencies>

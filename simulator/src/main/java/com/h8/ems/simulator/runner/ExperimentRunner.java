@@ -204,7 +204,7 @@ public final class ExperimentRunner {
                                      List<MetricsAggregator.PairedComparison> pairedList) throws IOException {
         Path reportFile = outputDir.resolve("experiments_report.md");
         try (BufferedWriter w = Files.newBufferedWriter(reportFile)) {
-            w.write("# H8 EMS Platform — Scientific Experiment Results (Phase 8)\n\n");
+            w.write("# EMS Platform — Scientific Experiment Results (Phase 8)\n\n");
             w.write("## 1. Overview\n");
             w.write("This report presents discrete-event simulation results across experimental scenarios S1–S5 ");
             w.write("evaluating baseline policies (B1, B2) against proposed capability-aware and redeployment policies (P1, P2, P3).\n");

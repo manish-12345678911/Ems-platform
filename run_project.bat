@@ -1,6 +1,6 @@
 @echo off
 echo =====================================================================
-echo  H8 EMS Tactical Platform - Automated Deployment and Startup Script
+echo  EMS Tactical Platform - Automated Deployment and Startup Script
 echo =====================================================================
 echo.
 
@@ -14,7 +14,7 @@ if %ERRORLEVEL% NEQ 0 (
 echo.
 
 echo [2/3] Starting Unified Web + API Proxy Server on Port 8088...
-start "H8 EMS Unified Server (Port 8088)" cmd /k "python %~dp0server.py"
+start "EMS Unified Server (Port 8088)" cmd /k "python %~dp0server.py"
 echo [OK] Unified server started at http://localhost:8088
 echo.
 

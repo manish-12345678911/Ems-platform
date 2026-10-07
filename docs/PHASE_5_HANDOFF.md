@@ -1,4 +1,4 @@
-# Phase 5 Hospital, Redeployment & Routing — Completion & Handoff — H8 EMS Platform
+# Phase 5 Hospital, Redeployment & Routing — Completion & Handoff — EMS Platform
 
 > **Status**: **Phase 5 is ✅ 100% COMPLETE & VERIFIED**
 > - `hospital-service`: ✅ **100% complete, 10/10 tests passing** (Port 8085)
@@ -67,42 +67,42 @@
 
 ### 4.1 `hospital-service` (Port 8085)
 - **Entities & Repositories**:
-  - `HospitalEntity`, `HospitalCapabilityEntity` (`HospitalRepository`)
-  - `CapacitySnapshotEntity` (`CapacitySnapshotRepository`)
-  - `PreArrivalAlertEntity` (`PreArrivalAlertRepository`)
-  - `OutboxEventEntity` (`OutboxRepository`)
-  - `ProcessedEventEntity` (`ProcessedEventRepository`)
+ - `HospitalEntity`, `HospitalCapabilityEntity` (`HospitalRepository`)
+ - `CapacitySnapshotEntity` (`CapacitySnapshotRepository`)
+ - `PreArrivalAlertEntity` (`PreArrivalAlertRepository`)
+ - `OutboxEventEntity` (`OutboxRepository`)
+ - `ProcessedEventEntity` (`ProcessedEventRepository`)
 - **Services**:
-  - `HospitalCapacityService`: Writes capacity to Redis with configurable TTL (default 10 min) and stores historical snapshots in PostgreSQL.
-  - `HospitalRecommendationService`: Queries `routing-service` (with Haversine fallback) and executes `DestinationRanker` from `common` to sort destination hospitals.
-  - `AlertHub`: Manages SSE emitters per hospital, schedules 15s ping heartbeats, and replays unreceived alerts from a 100-entry ring buffer on reconnect using `Last-Event-ID`.
-  - `HandoverService`: Records unit arrival and clinical handover timestamps for ED turnaround metrics.
+ - `HospitalCapacityService`: Writes capacity to Redis with configurable TTL (default 10 min) and stores historical snapshots in PostgreSQL.
+ - `HospitalRecommendationService`: Queries `routing-service` (with Haversine fallback) and executes `DestinationRanker` from `common` to sort destination hospitals.
+ - `AlertHub`: Manages SSE emitters per hospital, schedules 15s ping heartbeats, and replays unreceived alerts from a 100-entry ring buffer on reconnect using `Last-Event-ID`.
+ - `HandoverService`: Records unit arrival and clinical handover timestamps for ED turnaround metrics.
 - **REST Endpoints**:
-  - `GET /hospitals`: List all hospitals with capabilities and current capacity.
-  - `PUT /hospitals/{id}/capacity`: Update bed, ICU, and ventilator availability.
-  - `GET /hospitals/recommend`: Destination ranking given incident location and clinical need.
-  - `POST /hospitals/{id}/handover`: Record ambulance handover event.
-  - `GET /hospitals/{id}/alerts`: Server-Sent Events stream for ED dashboard.
+ - `GET /hospitals`: List all hospitals with capabilities and current capacity.
+ - `PUT /hospitals/{id}/capacity`: Update bed, ICU, and ventilator availability.
+ - `GET /hospitals/recommend`: Destination ranking given incident location and clinical need.
+ - `POST /hospitals/{id}/handover`: Record ambulance handover event.
+ - `GET /hospitals/{id}/alerts`: Server-Sent Events stream for ED dashboard.
 
 ### 4.2 `redeployment-service` (Port 8086)
 - **Entities & Repositories**:
-  - `ZoneEntity`: Demand zones with PostGIS centroids and hourly demand weights (`ZoneRepository`).
-  - `RedeployMoveEntity`: Suggested and executed unit moves (`RedeployMoveRepository`).
-  - `OutboxEventEntity` & `ProcessedEventEntity` (`OutboxRepository`, `ProcessedEventRepository`).
+ - `ZoneEntity`: Demand zones with PostGIS centroids and hourly demand weights (`ZoneRepository`).
+ - `RedeployMoveEntity`: Suggested and executed unit moves (`RedeployMoveRepository`).
+ - `OutboxEventEntity` & `ProcessedEventEntity` (`OutboxRepository`, `ProcessedEventRepository`).
 - **Services**:
-  - `RedeploymentService`:
-    - Acquires Redis distributed lock `lock:redeploy` (TTL 30s) using `SET NX EX`.
-    - Computes coverage using `CoverageModel(coverageRadiusKm, zoneCentroids)`.
-    - Runs greedy `RedeploymentPlanner.plan()` from `common` to evaluate moves.
-    - Filters moves against unit cooldown window (`cooldown-minutes: 10`).
-    - Persists moves and writes transactional outbox records (`redeploy.suggestions`, `redeploy.moves`).
-    - Provides `acceptMove()` and `declineMove()` workflows.
+ - `RedeploymentService`:
+ - Acquires Redis distributed lock `lock:redeploy` (TTL 30s) using `SET NX EX`.
+ - Computes coverage using `CoverageModel(coverageRadiusKm, zoneCentroids)`.
+ - Runs greedy `RedeploymentPlanner.plan()` from `common` to evaluate moves.
+ - Filters moves against unit cooldown window (`cooldown-minutes: 10`).
+ - Persists moves and writes transactional outbox records (`redeploy.suggestions`, `redeploy.moves`).
+ - Provides `acceptMove()` and `declineMove()` workflows.
 - **REST Endpoints**:
-  - `POST /redeployment/plan` (alias `/redeploy/run`): Triggers planner run under Redis lock.
-  - `GET /redeployment/suggestions`: Lists pending suggested moves.
-  - `POST /redeployment/accept/{id}`: Marks move accepted and publishes move event.
-  - `POST /redeployment/decline/{id}`: Declines move.
-  - `GET /redeployment/coverage` (alias `/coverage`): Returns current area coverage percentage.
+ - `POST /redeployment/plan` (alias `/redeploy/run`): Triggers planner run under Redis lock.
+ - `GET /redeployment/suggestions`: Lists pending suggested moves.
+ - `POST /redeployment/accept/{id}`: Marks move accepted and publishes move event.
+ - `POST /redeployment/decline/{id}`: Declines move.
+ - `GET /redeployment/coverage` (alias `/coverage`): Returns current area coverage percentage.
 
 ### 4.3 `routing-service` (Port 8084)
 - `GraphHopperEta`: OSM pbf graph routing with time-of-day traffic speed factor.
@@ -114,21 +114,21 @@
 
 ```text
 ------------------------------------------------------------------------
-Reactor Summary for H8 EMS Platform 1.0.0-SNAPSHOT:
+Reactor Summary for EMS Platform 1.0.0-SNAPSHOT:
 ------------------------------------------------------------------------
-H8 Platform (Parent) ...................................... SUCCESS [ 0.004 s]
-H8 Common Library (51 tests) .............................. SUCCESS [ 8.438 s]
-H8 Contracts (6 tests) .................................... SUCCESS [ 1.788 s]
-H8 Simulator (42 tests) ................................... SUCCESS [ 3.564 s]
-H8 Data Seed .............................................. SUCCESS [ 0.147 s]
-H8 API Gateway (4 tests) .................................. SUCCESS [ 1.586 s]
-H8 Incident Service (25 tests) ............................ SUCCESS [12.407 s]
-H8 Dispatch Service (35 tests) ............................ SUCCESS [10.758 s]
-H8 Tracking Service (17 tests) ............................ SUCCESS [10.118 s]
-H8 Routing Service (7 tests) .............................. SUCCESS [ 8.849 s]
-H8 Hospital Service (10 tests) ............................ SUCCESS [ 7.129 s]
-H8 Redeployment Service (9 tests) ......................... SUCCESS [ 7.780 s]
-H8 Audit Service (0 tests) ................................ SUCCESS [ 0.603 s]
+ Platform (Parent) ...................................... SUCCESS [ 0.004 s]
+ Common Library (51 tests) .............................. SUCCESS [ 8.438 s]
+ Contracts (6 tests) .................................... SUCCESS [ 1.788 s]
+ Simulator (42 tests) ................................... SUCCESS [ 3.564 s]
+ Data Seed .............................................. SUCCESS [ 0.147 s]
+ API Gateway (4 tests) .................................. SUCCESS [ 1.586 s]
+ Incident Service (25 tests) ............................ SUCCESS [12.407 s]
+ Dispatch Service (35 tests) ............................ SUCCESS [10.758 s]
+ Tracking Service (17 tests) ............................ SUCCESS [10.118 s]
+ Routing Service (7 tests) .............................. SUCCESS [ 8.849 s]
+ Hospital Service (10 tests) ............................ SUCCESS [ 7.129 s]
+ Redeployment Service (9 tests) ......................... SUCCESS [ 7.780 s]
+ Audit Service (0 tests) ................................ SUCCESS [ 0.603 s]
 ------------------------------------------------------------------------
 BUILD SUCCESS
 Total tests: 200 | Failures: 0 | Errors: 0 | Skipped: 0
@@ -174,49 +174,49 @@ Per `ARCHITECTURE.md` Phase 6:
 
 #### 1. Security & Authentication Configuration
 - **Keycloak Realm**: Verify or configure the `h8` realm at `http://localhost:8180/realms/h8`.
-  - Roles: `DISPATCHER`, `CREW`, `ED_STAFF`, `SUPERVISOR`.
-  - Clients:
-    - `ems-gateway` (confidential or bearer-only)
-    - `ems-frontend` (public client with PKCE for web applications)
-  - Test Users:
-    - `dispatcher1` / password with role `DISPATCHER`
-    - `crew1` / password with role `CREW`
-    - `nurse1` / password with role `ED_STAFF`
-    - `supervisor1` / password with role `SUPERVISOR`
+ - Roles: `DISPATCHER`, `CREW`, `ED_STAFF`, `SUPERVISOR`.
+ - Clients:
+ - `ems-gateway` (confidential or bearer-only)
+ - `ems-frontend` (public client with PKCE for web applications)
+ - Test Users:
+ - `dispatcher1` / password with role `DISPATCHER`
+ - `crew1` / password with role `CREW`
+ - `nurse1` / password with role `ED_STAFF`
+ - `supervisor1` / password with role `SUPERVISOR`
 
 #### 2. `api-gateway` (Port 8080) Finalization
 - Configure `SecurityWebFilterChain` in `api-gateway` to extract JWT authorities from Keycloak realm roles.
 - Path-based role authorization:
-  - `/incidents/**` -> `DISPATCHER`, `SUPERVISOR`
-  - `/dispatch/**` -> `DISPATCHER`, `SUPERVISOR`
-  - `/units/*/status`, `/units/*/reject` -> `CREW`
-  - `/hospitals/*/capacity`, `/hospitals/*/handover`, `/hospitals/*/alerts` -> `ED_STAFF`
-  - `/coverage`, `/redeploy/**`, `/redeployment/**` -> `SUPERVISOR`
-  - `/actuator/**` -> permitAll
+ - `/incidents/**` -> `DISPATCHER`, `SUPERVISOR`
+ - `/dispatch/**` -> `DISPATCHER`, `SUPERVISOR`
+ - `/units/*/status`, `/units/*/reject` -> `CREW`
+ - `/hospitals/*/capacity`, `/hospitals/*/handover`, `/hospitals/*/alerts` -> `ED_STAFF`
+ - `/coverage`, `/redeploy/**`, `/redeployment/**` -> `SUPERVISOR`
+ - `/actuator/**` -> permitAll
 - CORS configuration for the web frontend origins (`http://localhost:8088`).
 
 #### 3. Frontend Web Applications (`c:\ambulance\web`)
 The web apps reside under `c:\ambulance\web/`:
 - **Dispatcher Dashboard** (`web/dispatcher/`):
-  - Leaflet.js live map showing:
-    - Active incidents with severity badges (RED/YELLOW/GREEN).
-    - Ambulance positions from `tracking-service` (live polling or SSE).
-    - Hospital markers with current ED bed status.
-  - New incident intake form (triggering `POST /incidents`).
-  - Candidate recommendation pane (calling `GET /dispatch/candidates`).
-  - One-click Dispatch button (`POST /dispatch`) and Override modal (`POST /dispatch/override`).
-  - Redeployment suggestion monitor (`GET /redeployment/suggestions`) and Trigger button (`POST /redeployment/plan`).
+ - Leaflet.js live map showing:
+ - Active incidents with severity badges (RED/YELLOW/GREEN).
+ - Ambulance positions from `tracking-service` (live polling or SSE).
+ - Hospital markers with current ED bed status.
+ - New incident intake form (triggering `POST /incidents`).
+ - Candidate recommendation pane (calling `GET /dispatch/candidates`).
+ - One-click Dispatch button (`POST /dispatch`) and Override modal (`POST /dispatch/override`).
+ - Redeployment suggestion monitor (`GET /redeployment/suggestions`) and Trigger button (`POST /redeployment/plan`).
 - **Crew PWA** (`web/crew/`):
-  - Mobile-responsive UI showing assigned incident details and patient condition.
-  - Status progression buttons: `EN_ROUTE_SCENE`, `ON_SCENE`, `EN_ROUTE_HOSPITAL`, `AT_HOSPITAL`.
-  - Route guidance / ETA display from `routing-service`.
-  - Hospital destination recommendation display (`GET /hospitals/recommend`).
-  - Handover button (`POST /hospitals/{id}/handover`).
+ - Mobile-responsive UI showing assigned incident details and patient condition.
+ - Status progression buttons: `EN_ROUTE_SCENE`, `ON_SCENE`, `EN_ROUTE_HOSPITAL`, `AT_HOSPITAL`.
+ - Route guidance / ETA display from `routing-service`.
+ - Hospital destination recommendation display (`GET /hospitals/recommend`).
+ - Handover button (`POST /hospitals/{id}/handover`).
 - **Emergency Department (ED) Dashboard** (`web/hospital/`):
-  - Live pre-arrival alert feed connected to SSE endpoint `GET /hospitals/{id}/alerts`.
-  - Real-time countdown to ambulance ETA.
-  - Capacity management sliders / inputs (`PUT /hospitals/{id}/capacity`).
-  - Handover confirmation log.
+ - Live pre-arrival alert feed connected to SSE endpoint `GET /hospitals/{id}/alerts`.
+ - Real-time countdown to ambulance ETA.
+ - Capacity management sliders / inputs (`PUT /hospitals/{id}/capacity`).
+ - Handover confirmation log.
 
 ### 7.2 Step-by-Step Instructions for Phase 6 Agent
 1. **Step 1**: Check Keycloak setup at `http://localhost:8180` and verify realm `h8` users & roles.
@@ -224,5 +224,5 @@ The web apps reside under `c:\ambulance\web/`:
 3. **Step 3**: Verify token generation using Keycloak direct grant (`POST /realms/h8/protocol/openid-connect/token`).
 4. **Step 4**: Wire the Dispatcher, Crew, and ED web interfaces in `c:\ambulance\web` with real API calls through `http://localhost:8080` (or direct backend ports with fallback demo mode).
 5. **Step 5**: Test the complete end-to-end workflow:
-   - Call intake -> Triage -> Dispatch recommendation -> Confirmation -> Crew En-Route -> Hospital pre-arrival alert on ED dashboard -> Handover -> Unit available -> Redeployment check.
+ - Call intake -> Triage -> Dispatch recommendation -> Confirmation -> Crew En-Route -> Hospital pre-arrival alert on ED dashboard -> Handover -> Unit available -> Redeployment check.
 6. **Step 6**: Run `mvn test` across the repo to verify 200+ tests remain passing and produce `docs/PHASE_6_HANDOFF.md`.

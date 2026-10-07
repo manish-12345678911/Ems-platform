@@ -1,4 +1,4 @@
-# Phase 0–1 Completion Handoff — H8 EMS Platform
+# Phase 0–1 Completion Handoff — EMS Platform
 
 > **Purpose**: This file gives a new agent/model all context needed to continue from **Phase 2 (simulator)** onward without re-reading the full ARCHITECTURE.md or scanning every file. Read this first, then build.
 
@@ -22,71 +22,71 @@
 
 ```
 c:\ambulance\
-├── pom.xml                          # Parent POM (Java 21, Spring Boot 3.3.4 BOM)
-├── AGENTS.md                        # Hard rules for agents (read this!)
-├── ARCHITECTURE.md                  # Full architecture spec (803 lines)
-├── docs/ARCHITECTURE.md             # Copy in docs/
-├── docker-compose.yml               # Full infra + all services
-├── .env.example                     # Secrets template
+├── pom.xml # Parent POM (Java 21, Spring Boot 3.3.4 BOM)
+├── AGENTS.md # Hard rules for agents (read this!)
+├── ARCHITECTURE.md # Full architecture spec (803 lines)
+├── docs/ARCHITECTURE.md # Copy in docs/
+├── docker-compose.yml # Full infra + all services
+├── .env.example # Secrets template
 │
-├── common/                          # ✅ COMPLETE — plain Java 21 library
-│   ├── pom.xml
-│   └── src/main/java/com/h8/ems/common/
-│       ├── model/
-│       │   ├── GeoPoint.java            # record(lat, lon) + distanceTo(Haversine)
-│       │   ├── Severity.java            # CRITICAL(0.25), EMERGENCY(0.50), URGENT(0.75), LOW(1.0)
-│       │   ├── ClinicalNeed.java        # TRAUMA, CARDIAC, STROKE, PEDIATRIC, BURN, GENERAL
-│       │   ├── UnitType.java            # ALS, BLS
-│       │   ├── UnitStatus.java          # 6 states + validTransitions() + canTransitionTo()
-│       │   ├── IncidentStatus.java      # 8 states + validTransitions() + canTransitionTo()
-│       │   ├── UnitSnapshot.java        # record(id, callSign, type, status, position, positionAt, shiftStart, homeStationId, homeStationLocation)
-│       │   ├── IncidentSnapshot.java    # record(id, location, severity, need, requiresAls, status, receivedAt)
-│       │   └── HospitalSnapshot.java    # record(id, name, location, capabilities, edBedsFree, icuBedsFree, ventilatorsFree, capacityUpdatedAt)
-│       ├── statemachine/
-│       │   ├── UnitStateMachine.java          # static check(from, to) throws IllegalStateTransitionException
-│       │   └── IllegalStateTransitionException.java
-│       ├── eta/
-│       │   ├── EtaProvider.java               # interface: double etaSeconds(GeoPoint from, GeoPoint to, Instant at)
-│       │   └── HaversineEta.java              # implements EtaProvider, 50 km/h base speed + time-of-day factor
-│       └── scoring/
-│           ├── ScorerParams.java              # record(etaWeight, capabilityWeight, fatigueWeight, coverageWeight, stalePenaltyWeight, ...) + defaults()
-│           ├── DispatchScorer.java             # score(unit, incident, etaSec, now, availableUnits) → double; breakdown() → ScoreBreakdown record
-│           ├── CoverageModel.java             # coverage(units), lossIfRemoved(unit, available), coverageIfMoved(units, unit, standby)
-│           ├── DestinationRanker.java         # rank(incident, hospitals, transportEta, now, ttlMinutes) → List<RankedHospital>
-│           └── RedeploymentPlanner.java       # plan(idleUnits, standbyPoints, PlannerLimits) → List<RedeployMove>
+├── common/ # ✅ COMPLETE — plain Java 21 library
+│ ├── pom.xml
+│ └── src/main/java/com/h8/ems/common/
+│ ├── model/
+│ │ ├── GeoPoint.java # record(lat, lon) + distanceTo(Haversine)
+│ │ ├── Severity.java # CRITICAL(0.25), EMERGENCY(0.50), URGENT(0.75), LOW(1.0)
+│ │ ├── ClinicalNeed.java # TRAUMA, CARDIAC, STROKE, PEDIATRIC, BURN, GENERAL
+│ │ ├── UnitType.java # ALS, BLS
+│ │ ├── UnitStatus.java # 6 states + validTransitions() + canTransitionTo()
+│ │ ├── IncidentStatus.java # 8 states + validTransitions() + canTransitionTo()
+│ │ ├── UnitSnapshot.java # record(id, callSign, type, status, position, positionAt, shiftStart, homeStationId, homeStationLocation)
+│ │ ├── IncidentSnapshot.java # record(id, location, severity, need, requiresAls, status, receivedAt)
+│ │ └── HospitalSnapshot.java # record(id, name, location, capabilities, edBedsFree, icuBedsFree, ventilatorsFree, capacityUpdatedAt)
+│ ├── statemachine/
+│ │ ├── UnitStateMachine.java # static check(from, to) throws IllegalStateTransitionException
+│ │ └── IllegalStateTransitionException.java
+│ ├── eta/
+│ │ ├── EtaProvider.java # interface: double etaSeconds(GeoPoint from, GeoPoint to, Instant at)
+│ │ └── HaversineEta.java # implements EtaProvider, 50 km/h base speed + time-of-day factor
+│ └── scoring/
+│ ├── ScorerParams.java # record(etaWeight, capabilityWeight, fatigueWeight, coverageWeight, stalePenaltyWeight, ...) + defaults()
+│ ├── DispatchScorer.java # score(unit, incident, etaSec, now, availableUnits) → double; breakdown() → ScoreBreakdown record
+│ ├── CoverageModel.java # coverage(units), lossIfRemoved(unit, available), coverageIfMoved(units, unit, standby)
+│ ├── DestinationRanker.java # rank(incident, hospitals, transportEta, now, ttlMinutes) → List<RankedHospital>
+│ └── RedeploymentPlanner.java # plan(idleUnits, standbyPoints, PlannerLimits) → List<RedeployMove>
 │
-├── contracts/                       # ✅ COMPLETE — Kafka events + REST DTOs
-│   ├── pom.xml                      # depends on: common
-│   └── src/main/java/com/h8/ems/contracts/
-│       ├── events/
-│       │   ├── IncidentEvent.java         # record(eventId, type, incidentId, at, body, schemaVersion)
-│       │   ├── UnitStatusEvent.java       # record(eventId, unitId, from, to, at, schemaVersion)
-│       │   ├── LocationUpdate.java        # record(unitId, lat, lon, epochMs, speed, schemaVersion)
-│       │   ├── DispatchDecision.java      # record(eventId, incidentId, unitId, chosenBy, List<RankedCandidate> ranked, at, schemaVersion)
-│       │   ├── PreArrivalAlert.java       # record(eventId, incidentId, hospitalId, severity, need, requiresAls, etaSeconds, sentAt, schemaVersion)
-│       │   └── AuditEvent.java            # record(eventId, kind, actor, payload, at, schemaVersion)
-│       └── dto/
-│           ├── CreateIncidentRequest.java # record(lat, lon, severity, need, requiresAls, callerHash)
-│           ├── EtaRequest.java            # record(fromLat, fromLon, toLat, toLon)
-│           └── EtaResponse.java           # record(etaSeconds, fallback)
+├── contracts/ # ✅ COMPLETE — Kafka events + REST DTOs
+│ ├── pom.xml # depends on: common
+│ └── src/main/java/com/h8/ems/contracts/
+│ ├── events/
+│ │ ├── IncidentEvent.java # record(eventId, type, incidentId, at, body, schemaVersion)
+│ │ ├── UnitStatusEvent.java # record(eventId, unitId, from, to, at, schemaVersion)
+│ │ ├── LocationUpdate.java # record(unitId, lat, lon, epochMs, speed, schemaVersion)
+│ │ ├── DispatchDecision.java # record(eventId, incidentId, unitId, chosenBy, List<RankedCandidate> ranked, at, schemaVersion)
+│ │ ├── PreArrivalAlert.java # record(eventId, incidentId, hospitalId, severity, need, requiresAls, etaSeconds, sentAt, schemaVersion)
+│ │ └── AuditEvent.java # record(eventId, kind, actor, payload, at, schemaVersion)
+│ └── dto/
+│ ├── CreateIncidentRequest.java # record(lat, lon, severity, need, requiresAls, callerHash)
+│ ├── EtaRequest.java # record(fromLat, fromLon, toLat, toLon)
+│ └── EtaResponse.java # record(etaSeconds, fallback)
 │
-├── simulator/                       # ⬅ PHASE 2 TARGET — placeholder only
-│   ├── pom.xml                      # depends on: common (NOT Spring). Has shade plugin → fat JAR
-│   └── src/main/java/com/h8/ems/simulator/Main.java  # placeholder println
+├── simulator/ # ⬅ PHASE 2 TARGET — placeholder only
+│ ├── pom.xml # depends on: common (NOT Spring). Has shade plugin → fat JAR
+│ └── src/main/java/com/h8/ems/simulator/Main.java # placeholder println
 │
-├── data-seed/                       # placeholder
-├── api-gateway/                     # placeholder app + config + Dockerfile
-├── incident-service/                # placeholder app + config + Dockerfile + Flyway V1
-├── dispatch-service/                # placeholder app + config + Dockerfile + Flyway V1
-├── tracking-service/                # placeholder app + config + Dockerfile
-├── routing-service/                 # placeholder app + config + Dockerfile
-├── hospital-service/                # placeholder app + config + Dockerfile + Flyway V1
-├── redeployment-service/            # placeholder app + config + Dockerfile + Flyway V1
-├── audit-service/                   # placeholder app + config + Dockerfile + Flyway V1
-├── web/                             # placeholder HTML pages (dispatcher, crew, ed)
-├── ops/                             # prometheus.yml + keycloak/h8-realm.json
-├── data/                            # (empty — OSM extract + zone grid go here)
-└── experiments/                     # (empty — scenario YAML + results go here)
+├── data-seed/ # placeholder
+├── api-gateway/ # placeholder app + config + Dockerfile
+├── incident-service/ # placeholder app + config + Dockerfile + Flyway V1
+├── dispatch-service/ # placeholder app + config + Dockerfile + Flyway V1
+├── tracking-service/ # placeholder app + config + Dockerfile
+├── routing-service/ # placeholder app + config + Dockerfile
+├── hospital-service/ # placeholder app + config + Dockerfile + Flyway V1
+├── redeployment-service/ # placeholder app + config + Dockerfile + Flyway V1
+├── audit-service/ # placeholder app + config + Dockerfile + Flyway V1
+├── web/ # placeholder HTML pages (dispatcher, crew, ed)
+├── ops/ # prometheus.yml + keycloak/h8-realm.json
+├── data/ # (empty — OSM extract + zone grid go here)
+└── experiments/ # (empty — scenario YAML + results go here)
 ```
 
 ---
@@ -112,122 +112,122 @@ c:\ambulance\
 ```java
 // com.h8.ems.common.model.GeoPoint
 record GeoPoint(double lat, double lon) {
-    double distanceTo(GeoPoint other);     // km, Haversine
-    double distanceToMeters(GeoPoint other);
+ double distanceTo(GeoPoint other); // km, Haversine
+ double distanceToMeters(GeoPoint other);
 }
 ```
 
 ### 4.2 Enums
 ```java
-enum Severity    { CRITICAL(0.25), EMERGENCY(0.50), URGENT(0.75), LOW(1.0) }  // scaleFactor()
+enum Severity { CRITICAL(0.25), EMERGENCY(0.50), URGENT(0.75), LOW(1.0) } // scaleFactor()
 enum ClinicalNeed { TRAUMA, CARDIAC, STROKE, PEDIATRIC, BURN, GENERAL }
-enum UnitType    { ALS, BLS }
-enum UnitStatus  { AVAILABLE, DISPATCHED, ON_SCENE, TRANSPORTING, AT_HOSPITAL, OFFLINE }
-    // .canTransitionTo(UnitStatus) → boolean
-    // .validTransitions() → Set<UnitStatus>
+enum UnitType { ALS, BLS }
+enum UnitStatus { AVAILABLE, DISPATCHED, ON_SCENE, TRANSPORTING, AT_HOSPITAL, OFFLINE }
+ // .canTransitionTo(UnitStatus) → boolean
+ // .validTransitions() → Set<UnitStatus>
 enum IncidentStatus { RECEIVED, TRIAGED, DISPATCHED, ON_SCENE, TRANSPORTING, HANDED_OVER, CLOSED, CANCELLED }
-    // same methods
+ // same methods
 ```
 
 ### 4.3 Snapshots (JPA-free domain records)
 ```java
 record UnitSnapshot(UUID id, String callSign, UnitType type, UnitStatus status,
-                    GeoPoint position, Instant positionAt, Instant shiftStart,
-                    UUID homeStationId, GeoPoint homeStationLocation) {
-    boolean isPositionStale(Instant now, long ttlSeconds);
-    double hoursOnShift(Instant now);
+ GeoPoint position, Instant positionAt, Instant shiftStart,
+ UUID homeStationId, GeoPoint homeStationLocation) {
+ boolean isPositionStale(Instant now, long ttlSeconds);
+ double hoursOnShift(Instant now);
 }
 
 record IncidentSnapshot(UUID id, GeoPoint location, Severity severity,
-                        ClinicalNeed need, boolean requiresAls,
-                        IncidentStatus status, Instant receivedAt)
+ ClinicalNeed need, boolean requiresAls,
+ IncidentStatus status, Instant receivedAt)
 
 record HospitalSnapshot(UUID id, String name, GeoPoint location,
-                        Set<ClinicalNeed> capabilities,
-                        int edBedsFree, int icuBedsFree, int ventilatorsFree,
-                        Instant capacityUpdatedAt) {
-    boolean isCapacityStale(Instant now, int ttlMinutes);
-    boolean supports(ClinicalNeed need);
-    double estimatedWaitMinutes();
+ Set<ClinicalNeed> capabilities,
+ int edBedsFree, int icuBedsFree, int ventilatorsFree,
+ Instant capacityUpdatedAt) {
+ boolean isCapacityStale(Instant now, int ttlMinutes);
+ boolean supports(ClinicalNeed need);
+ double estimatedWaitMinutes();
 }
 ```
 
 ### 4.4 State Machine
 ```java
-UnitStateMachine.check(UnitStatus from, UnitStatus to);   // throws IllegalStateTransitionException
-UnitStateMachine.isValid(UnitStatus from, UnitStatus to);  // returns boolean
+UnitStateMachine.check(UnitStatus from, UnitStatus to); // throws IllegalStateTransitionException
+UnitStateMachine.isValid(UnitStatus from, UnitStatus to); // returns boolean
 ```
 
 ### 4.5 ETA
 ```java
 interface EtaProvider {
-    double etaSeconds(GeoPoint from, GeoPoint to, Instant at);
+ double etaSeconds(GeoPoint from, GeoPoint to, Instant at);
 }
 
-class HaversineEta implements EtaProvider  // 50 km/h + rush hour(0.7x) + night(1.3x)
+class HaversineEta implements EtaProvider // 50 km/h + rush hour(0.7x) + night(1.3x)
 ```
 
 ### 4.6 DispatchScorer
 ```java
 class DispatchScorer {
-    DispatchScorer(ScorerParams params, CoverageModel coverageModel);
-    DispatchScorer(CoverageModel coverageModel);  // uses ScorerParams.defaults()
+ DispatchScorer(ScorerParams params, CoverageModel coverageModel);
+ DispatchScorer(CoverageModel coverageModel); // uses ScorerParams.defaults()
 
-    double score(UnitSnapshot unit, IncidentSnapshot incident,
-                 double etaSeconds, Instant now, List<UnitSnapshot> availableUnits);
+ double score(UnitSnapshot unit, IncidentSnapshot incident,
+ double etaSeconds, Instant now, List<UnitSnapshot> availableUnits);
 
-    ScoreBreakdown breakdown(UnitSnapshot unit, IncidentSnapshot incident,
-                              double etaSeconds, Instant now, List<UnitSnapshot> availableUnits);
+ ScoreBreakdown breakdown(UnitSnapshot unit, IncidentSnapshot incident,
+ double etaSeconds, Instant now, List<UnitSnapshot> availableUnits);
 
-    record ScoreBreakdown(double totalScore, double etaSeconds,
-                          double etaComponent, double capabilityComponent,
-                          double fatigueComponent, double coverageComponent,
-                          double stalenessComponent);
+ record ScoreBreakdown(double totalScore, double etaSeconds,
+ double etaComponent, double capabilityComponent,
+ double fatigueComponent, double coverageComponent,
+ double stalenessComponent);
 }
 
 record ScorerParams(double etaWeight, double capabilityWeight, double fatigueWeight,
-                    double coverageWeight, double stalePenaltyWeight,
-                    double fatigueThresholdHours, double staleTtlSeconds,
-                    double coverageRadiusKm) {
-    static ScorerParams defaults(); // (0.40, 0.25, 0.10, 0.15, 0.10, 10.0, 90.0, 8.0)
+ double coverageWeight, double stalePenaltyWeight,
+ double fatigueThresholdHours, double staleTtlSeconds,
+ double coverageRadiusKm) {
+ static ScorerParams defaults(); // (0.40, 0.25, 0.10, 0.15, 0.10, 10.0, 90.0, 8.0)
 }
 ```
 
 ### 4.7 CoverageModel
 ```java
 class CoverageModel {
-    CoverageModel(double coverageRadiusKm, List<GeoPoint> demandZoneCentroids);
-    double coverage(List<UnitSnapshot> units);                               // [0,1]
-    double lossIfRemoved(UnitSnapshot unit, List<UnitSnapshot> available);    // [0,1]
-    double coverageIfMoved(List<UnitSnapshot> units, UnitSnapshot unit, GeoPoint standby);  // [0,1]
+ CoverageModel(double coverageRadiusKm, List<GeoPoint> demandZoneCentroids);
+ double coverage(List<UnitSnapshot> units); // [0,1]
+ double lossIfRemoved(UnitSnapshot unit, List<UnitSnapshot> available); // [0,1]
+ double coverageIfMoved(List<UnitSnapshot> units, UnitSnapshot unit, GeoPoint standby); // [0,1]
 }
 ```
 
 ### 4.8 DestinationRanker
 ```java
 class DestinationRanker {
-    List<RankedHospital> rank(IncidentSnapshot incident, List<HospitalSnapshot> hospitals,
-                               BiFunction<GeoPoint, GeoPoint, Double> transportEta,
-                               Instant now, int ttlMinutes);
+ List<RankedHospital> rank(IncidentSnapshot incident, List<HospitalSnapshot> hospitals,
+ BiFunction<GeoPoint, GeoPoint, Double> transportEta,
+ Instant now, int ttlMinutes);
 
-    record RankedHospital(HospitalSnapshot hospital, double score,
-                          double transportEtaSeconds, double estimatedWaitMinutes,
-                          boolean capacityStale);
+ record RankedHospital(HospitalSnapshot hospital, double score,
+ double transportEtaSeconds, double estimatedWaitMinutes,
+ boolean capacityStale);
 }
 ```
 
 ### 4.9 RedeploymentPlanner
 ```java
 class RedeploymentPlanner {
-    RedeploymentPlanner(CoverageModel coverageModel);
-    List<RedeployMove> plan(List<UnitSnapshot> idleUnits, List<GeoPoint> standbyPoints,
-                             PlannerLimits limits);
+ RedeploymentPlanner(CoverageModel coverageModel);
+ List<RedeployMove> plan(List<UnitSnapshot> idleUnits, List<GeoPoint> standbyPoints,
+ PlannerLimits limits);
 
-    record RedeployMove(UUID unitId, String callSign,
-                        GeoPoint currentPosition, GeoPoint target, double coverageGain);
-    record PlannerLimits(int maxMoves, double minGain, int cooldownMinutes) {
-        static PlannerLimits defaults();  // (3, 0.01, 10)
-    }
+ record RedeployMove(UUID unitId, String callSign,
+ GeoPoint currentPosition, GeoPoint target, double coverageGain);
+ record PlannerLimits(int maxMoves, double minGain, int cooldownMinutes) {
+ static PlannerLimits defaults(); // (3, 0.01, 10)
+ }
 }
 ```
 
@@ -264,8 +264,8 @@ All code goes in `simulator/src/main/java/com/h8/ems/simulator/`. Tests in `simu
 2. **Determinism**: Same seed → identical output. Use `java.util.Random` seeded deterministically. Verify with a test: run twice with same seed, assert files are byte-identical.
 
 3. **Two modes**:
-   - `batch`: Pure in-process, fast. No HTTP calls. Used for experiments E1–E5, E8.
-   - `replay`: Same incident stream drives the live HTTP APIs via simulated GPS. For end-to-end demos (E6, E7). Can be a stub initially.
+ - `batch`: Pure in-process, fast. No HTTP calls. Used for experiments E1–E5, E8.
+ - `replay`: Same incident stream drives the live HTTP APIs via simulated GPS. For end-to-end demos (E6, E7). Can be a stub initially.
 
 4. **Output**: One CSV row per incident per policy per seed. Columns: `scenario,policy,seed,incidentId,severity,need,receivedAt,dispatchedAt,arrivedSceneAt,transportStartedAt,arrivedHospitalAt,handedOverAt,responseTimeSec,unitCallSign,unitType,hospitalName`. So any statistic can be recomputed from raw data.
 
@@ -274,13 +274,13 @@ All code goes in `simulator/src/main/java/com/h8/ems/simulator/`. Tests in `simu
 ### 5.4 Available dependencies (already in simulator/pom.xml)
 
 ```xml
-com.h8.ems:common           # all the scoring, coverage, state machine, ETA
-org.yaml:snakeyaml           # YAML parsing
-com.fasterxml.jackson.*      # JSON/YAML serialization
-org.slf4j:slf4j-api          # logging
+com.h8.ems:common # all the scoring, coverage, state machine, ETA
+org.yaml:snakeyaml # YAML parsing
+com.fasterxml.jackson.* # JSON/YAML serialization
+org.slf4j:slf4j-api # logging
 ch.qos.logback:logback-classic
-org.junit.jupiter:junit-jupiter  (test)
-net.jqwik:jqwik                  (test)
+org.junit.jupiter:junit-jupiter (test)
+net.jqwik:jqwik (test)
 ```
 
 ### 5.5 Acceptance criteria

@@ -28,7 +28,7 @@ public class Main {
         String outDir = params.getOrDefault("out", "experiments/results");
         long baseSeed = Long.parseLong(params.getOrDefault("seed", "42"));
 
-        log.info("H8 EMS Simulator");
+        log.info("EMS Simulator");
         log.info("  Mode: {}", mode);
         log.info("  Scenarios: {}", scenarioNames);
         log.info("  Policies: {}", policyNames);

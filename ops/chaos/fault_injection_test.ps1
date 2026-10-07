@@ -1,5 +1,5 @@
 # ==============================================================================
-# H8 EMS Platform - Phase 7 Fault Injection & Chaos Validation Suite
+# EMS Platform - Phase 7 Fault Injection & Chaos Validation Suite
 # ==============================================================================
 # Validates Section 13.1 Fault Tolerance:
 # 1. Routing circuit breaker fallback (HaversineEta fallback) via Gateway
@@ -12,7 +12,7 @@
 $ErrorActionPreference = "Continue"
 
 Write-Host "==========================================================" -ForegroundColor Cyan
-Write-Host "   H8 EMS PLATFORM - FAULT INJECTION & RESILIENCE TEST    " -ForegroundColor Cyan
+Write-Host "      EMS PLATFORM - FAULT INJECTION & RESILIENCE TEST    " -ForegroundColor Cyan
 Write-Host "==========================================================" -ForegroundColor Cyan
 
 $GatewayUrl = "http://localhost:8080"

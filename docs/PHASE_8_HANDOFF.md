@@ -1,12 +1,12 @@
-# Phase 8 Scientific Experiments, Research Paper & Final Project Completion — H8 EMS Platform
+# Phase 8 Scientific Experiments, Research Paper & Final Project Completion — EMS Platform
 
-> **Status**: **Phase 8 is ✅ 100% COMPLETE — THE H8 EMS PLATFORM IS 100% FINISHED**
+> **Status**: **Phase 8 is ✅ 100% COMPLETE — THE EMS PLATFORM IS 100% FINISHED**
 > - **Discrete-Event Simulation**: ✅ **Executed 750 Monte Carlo simulation runs** (5 Scenarios $\times$ 9 Policies $\times$ 30 Random Seeds) with Common Random Numbers (CRN).
 > - **Statistical Significance**: ✅ Paired Student's $t$-tests and Wilcoxon tests confirm statistically significant improvements (**$p < 0.001$**) across clinical appropriateness and coverage preservation.
 > - **Publication Vector Figures**: ✅ Generated native vector SVGs in `experiments/plots/` and `docs/paper/figures/`:
->   - `fig1_response_times_ci.svg`: Mean response time with 95% Confidence Intervals across S1–S5.
->   - `fig2_als_appropriateness.svg`: ALS clinical matching rate comparison.
->   - `fig3_ablation_study.svg`: Parameter sensitivity and ablation breakdown.
+> - `fig1_response_times_ci.svg`: Mean response time with 95% Confidence Intervals across S1–S5.
+> - `fig2_als_appropriateness.svg`: ALS clinical matching rate comparison.
+> - `fig3_ablation_study.svg`: Parameter sensitivity and ablation breakdown.
 > - **Full Academic Paper**: ✅ Written and published at [docs/paper/RESEARCH_PAPER.md](file:///c:/ambulance/docs/paper/RESEARCH_PAPER.md).
 > - **All 13 Modules Built & Verified**: **216/216 unit, property, and integration tests passing across the platform**.
 
@@ -47,25 +47,25 @@ The experiments evaluated five scenarios across baseline policies (B1, B2), prop
 |---|---|---|---|---|---|---|---|
 | **S1** | **B1 (Nearest)** | 76.1 s | [73.9, 78.3] | 179.0 s | 100.0% | 60.1% | 2341.3 s |
 | | **B2 (Static ALS)** | 83.1 s | [80.4, 85.8] | 192.6 s | 99.8% | 61.8% | 2360.9 s |
-| | **P3 (Full H8)** | 105.4 s | [101.2, 109.7] | 254.6 s | 98.8% | **63.3%** | 2379.1 s |
+| | **P3 (Full )** | 105.4 s | [101.2, 109.7] | 254.6 s | 98.8% | **63.3%** | 2379.1 s |
 | **S2** | **B1 (Nearest)** | 128.4 s | [125.1, 131.7] | 280.5 s | 98.9% | 51.5% | 2512.5 s |
 | | **B2 (Static ALS)** | 139.9 s | [136.4, 143.4] | 303.2 s | 97.9% | 55.5% | 2535.6 s |
-| | **P3 (Full H8)** | 165.9 s | [162.1, 169.7] | 361.3 s | 96.1% | **56.1%** | 2557.6 s |
+| | **P3 (Full )** | 165.9 s | [162.1, 169.7] | 361.3 s | 96.1% | **56.1%** | 2557.6 s |
 | **S3** | **B1 (Nearest)** | 161.7 s | [151.8, 171.6] | 390.4 s | 95.1% | 51.5% | 2872.9 s |
 | | **B2 (Static ALS)** | 212.6 s | [198.9, 226.2] | 560.0 s | 90.8% | 54.5% | 2987.8 s |
-| | **P3 (Full H8)** | 223.2 s | [206.9, 239.4] | 598.6 s | 89.8% | **55.3%** | 3002.1 s |
+| | **P3 (Full )** | 223.2 s | [206.9, 239.4] | 598.6 s | 89.8% | **55.3%** | 3002.1 s |
 | **S4** | **B1 (Nearest)** | 90.2 s | [85.9, 94.5] | 200.8 s | 99.9% | 55.2% | 3574.0 s |
 | | **B2 (Static ALS)** | 98.7 s | [94.5, 102.9] | 217.8 s | 99.5% | 57.4% | 3595.7 s |
-| | **P3 (Full H8)** | 115.1 s | [109.8, 120.4] | 259.5 s | 98.6% | **60.9%** | 3610.8 s |
+| | **P3 (Full )** | 115.1 s | [109.8, 120.4] | 259.5 s | 98.6% | **60.9%** | 3610.8 s |
 | **S5** | **B1 (Nearest)** | 82.1 s | [79.0, 85.2] | 186.0 s | 100.0% | 58.0% | 2394.6 s |
 | | **B2 (Static ALS)** | 90.5 s | [87.3, 93.7] | 205.3 s | 99.7% | 64.3% | 2415.3 s |
-| | **P3 (Full H8)** | 110.8 s | [106.9, 114.6] | 255.7 s | 98.3% | **67.8%** | 2432.0 s |
+| | **P3 (Full )** | 110.8 s | [106.9, 114.6] | 255.7 s | 98.3% | **67.8%** | 2432.0 s |
 
 ### 2.3 Paired Hypothesis Tests
 Comparing matched runs under Common Random Numbers:
 - **B1 vs P3**: Paired $t$-statistics range from $-8.94$ to $-21.76$ (**$p < 0.001$** across all scenarios).
 - **B2 vs P3**: Paired $t$-statistics range from $-2.95$ to $-18.33$ (**$p < 0.01$** or **$p < 0.001$**).
-- **Conclusion**: H8 trades an average of 20–30 seconds of response time to ensure clinical tiering, boosting ALS appropriateness by up to $19.1\%$ while preserving $>96\%$ target adherence.
+- **Conclusion**: trades an average of 20–30 seconds of response time to ensure clinical tiering, boosting ALS appropriateness by up to $19.1\%$ while preserving $>96\%$ target adherence.
 
 ---
 
@@ -99,4 +99,4 @@ python experiments/generate_plots.py
 powershell -ExecutionPolicy Bypass -File ops/chaos/fault_injection_test.ps1
 ```
 
-The H8 EMS Platform is **fully complete, thoroughly validated, and ready for production and academic dissemination**.
+The EMS Platform is **fully complete, thoroughly validated, and ready for production and academic dissemination**.

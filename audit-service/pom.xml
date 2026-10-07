@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>audit-service</artifactId>
-    <name>H8 Audit Service</name>
+    <name>Audit Service</name>
     <description>Audit log with hash chain, Kafka consumer, verification endpoint.</description>
 
     <dependencies>

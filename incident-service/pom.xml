@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>incident-service</artifactId>
-    <name>H8 Incident Service</name>
+    <name>Incident Service</name>
     <description>Manages incidents — CRUD, outbox events, state transitions.</description>
 
     <dependencies>

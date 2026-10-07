@@ -1,5 +1,5 @@
 /**
- * H8 EMS Demo Bridge — Local mock API layer
+ * EMS Demo Bridge — Local mock API layer
  * Intercepts fetch() calls and provides working mock responses.
  * Uses BroadcastChannel + localStorage for cross-tab sync.
  * No backend required.
@@ -1202,5 +1202,5 @@
     // Start real-time global cloud relay and local server sync
     initGlobalSync();
 
-    console.log('%c[H8 Demo Bridge] Active — real-time global fleet sync running', 'color: #10b981; font-weight: bold;');
+    console.log('%c[EMS Demo Bridge] Active — real-time global fleet sync running', 'color: #10b981; font-weight: bold;');
 })();

@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>redeployment-service</artifactId>
-    <name>H8 Redeployment Service</name>
+    <name>Redeployment Service</name>
     <description>Scheduled redeployment planner under Redis lock, coverage optimization.</description>
 
     <dependencies>

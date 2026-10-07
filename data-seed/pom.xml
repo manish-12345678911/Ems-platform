@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>data-seed</artifactId>
-    <name>H8 Data Seed</name>
+    <name>Data Seed</name>
     <description>Synthetic stations, units, hospitals, zone grid loader.</description>
 
     <dependencies>

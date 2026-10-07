@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>dispatch-service</artifactId>
-    <name>H8 Dispatch Service</name>
+    <name>Dispatch Service</name>
     <description>Dispatch scoring, unit reservation (conditional UPDATE), assignment, reject/re-dispatch.</description>
 
     <dependencies>

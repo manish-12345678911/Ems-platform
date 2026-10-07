@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>common</artifactId>
-    <name>H8 Common Library</name>
+    <name>Common Library</name>
     <description>Plain Java 21 library: GeoPoint, enums, scorers, coverage, state machine, planner. No Spring dependencies allowed.</description>
 
     <dependencies>

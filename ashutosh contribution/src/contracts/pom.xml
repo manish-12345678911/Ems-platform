@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>contracts</artifactId>
-    <name>H8 Contracts</name>
+    <name>Contracts</name>
     <description>Kafka event records, REST DTOs, JSON schema. No business logic.</description>
 
     <dependencies>

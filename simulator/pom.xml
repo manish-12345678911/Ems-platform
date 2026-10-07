@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>simulator</artifactId>
-    <name>H8 Simulator</name>
+    <name>Simulator</name>
     <description>Discrete event simulator — plain Java 21, no Spring. CLI jar for batch and replay modes.</description>
 
     <dependencies>

@@ -1,22 +1,22 @@
 @echo off
 setlocal
 echo ========================================================
-echo  Push Module to Personal GitHub Repository
+echo Push Module to Personal GitHub Repository
 echo ========================================================
 echo.
 
 set /p REPO_URL="Enter your GitHub Repository URL (e.g. https://github.com/username/repo-name.git): "
 
 if "%REPO_URL%"=="" (
-    echo [ERROR] No repository URL entered. Exiting.
-    pause
-    exit /b 1
+ echo [ERROR] No repository URL entered. Exiting.
+ pause
+ exit /b 1
 )
 
 echo.
 echo [1/5] Initializing Git repository...
 if not exist ".git" (
-    git init
+ git init
 )
 
 echo [2/5] Staging module files...
@@ -34,18 +34,18 @@ git remote add origin %REPO_URL%
 git push -u origin main
 
 if %ERRORLEVEL% EQU 0 (
-    echo.
-    echo ========================================================
-    echo  SUCCESS! Your module has been pushed to GitHub.
-    echo ========================================================
+ echo.
+ echo ========================================================
+ echo SUCCESS! Your module has been pushed to GitHub.
+ echo ========================================================
 ) else (
-    echo.
-    echo ========================================================
-    echo  [NOTE] If push failed due to authentication:
-    echo  Ensure you have write access or push from your own machine,
-    echo  or use a Personal Access Token (PAT):
-    echo  https://<TOKEN>@github.com/<username>/<repo>.git
-    echo ========================================================
+ echo.
+ echo ========================================================
+ echo [NOTE] If push failed due to authentication:
+ echo Ensure you have write access or push from your own machine,
+ echo or use a Personal Access Token (PAT):
+ echo https://<TOKEN>@github.com/<username>/<repo>.git
+ echo ========================================================
 )
 
 pause

@@ -1,13 +1,13 @@
-# Phase 6 Security, API Gateway & Tactical Web GUI — Completion & Handoff — H8 EMS Platform
+# Phase 6 Security, API Gateway & Tactical Web GUI — Completion & Handoff — EMS Platform
 
 > **Status**: **Phase 6 is ✅ 100% COMPLETE & VERIFIED**
 > - `api-gateway`: ✅ **100% complete, 2/2 tests passing** (Port 8080)
 > - **Keycloak Authentication**: ✅ **Realm `h8` configured, users and roles active** (Port 8180)
 > - **Tactical Web GUI Suite**: ✅ **100% complete and verified on Port 8088**
->   - Landing Portal: `http://localhost:8088/index.html`
->   - Dispatcher Command Center: `http://localhost:8088/dispatcher/index.html`
->   - Crew Mobile PWA: `http://localhost:8088/crew/index.html`
->   - Emergency Department Dashboard: `http://localhost:8088/ed/index.html`
+> - Landing Portal: `http://localhost:8088/index.html`
+> - Dispatcher Command Center: `http://localhost:8088/dispatcher/index.html`
+> - Crew Mobile PWA: `http://localhost:8088/crew/index.html`
+> - Emergency Department Dashboard: `http://localhost:8088/ed/index.html`
 > - **All Platform Modules**: **202/202 unit & integration tests passing across all 13 modules**, zero failures, zero errors.
 > - **End-to-End Verified Flow**: Complete call intake &rarr; DispatchScorer ranking &rarr; confirmation &rarr; crew transit &rarr; ED capacity update &rarr; pre-arrival alert &rarr; clinical handover &rarr; redeployment optimization.
 
@@ -39,8 +39,8 @@
 - OIDC Discovery: `http://localhost:8180/realms/h8/.well-known/openid-configuration`
 - Token Endpoint: `http://localhost:8180/realms/h8/protocol/openid-connect/token`
 - Clients:
-  - `h8-web`: Public client with Direct Access Grants enabled and CORS origins `http://localhost:8088`.
-  - `h8-service`: Confidential service-account client.
+ - `h8-web`: Public client with Direct Access Grants enabled and CORS origins `http://localhost:8088`.
+ - `h8-service`: Confidential service-account client.
 
 ### 2.2 Users & Role Hierarchy
 
@@ -58,17 +58,17 @@
 
 - **Framework**: Spring Cloud Gateway (Reactive WebFlux / Netty).
 - **Security**:
-  - [`SecurityConfig`](file:///c:/ambulance/api-gateway/src/main/java/com/h8/ems/gateway/config/SecurityConfig.java) implementing reactive `SecurityWebFilterChain`.
-  - [`KeycloakRealmRoleConverter`](file:///c:/ambulance/api-gateway/src/main/java/com/h8/ems/gateway/config/KeycloakRealmRoleConverter.java) extracting `realm_access.roles` into Spring `ROLE_<role>` authorities.
-  - Global CORS enabled for `http://localhost:8088` and `http://127.0.0.1:8088` with credentials and pre-flight handling.
+ - [`SecurityConfig`](file:///c:/ambulance/api-gateway/src/main/java/com/h8/ems/gateway/config/SecurityConfig.java) implementing reactive `SecurityWebFilterChain`.
+ - [`KeycloakRealmRoleConverter`](file:///c:/ambulance/api-gateway/src/main/java/com/h8/ems/gateway/config/KeycloakRealmRoleConverter.java) extracting `realm_access.roles` into Spring `ROLE_<role>` authorities.
+ - Global CORS enabled for `http://localhost:8088` and `http://127.0.0.1:8088` with credentials and pre-flight handling.
 - **Routing Table**:
-  - `/incidents/**` &rarr; `incident-service` (:8081)
-  - `/dispatch/**` &rarr; `dispatch-service` (:8082)
-  - `/tracking/**` &rarr; `tracking-service` (:8083)
-  - `/eta/**` &rarr; `routing-service` (:8084)
-  - `/hospitals/**` &rarr; `hospital-service` (:8085)
-  - `/coverage`, `/redeploy/**`, `/redeployment/**` &rarr; `redeployment-service` (:8086)
-  - `/metrics/summary`, `/audit` &rarr; `audit-service` (:8087)
+ - `/incidents/**` &rarr; `incident-service` (:8081)
+ - `/dispatch/**` &rarr; `dispatch-service` (:8082)
+ - `/tracking/**` &rarr; `tracking-service` (:8083)
+ - `/eta/**` &rarr; `routing-service` (:8084)
+ - `/hospitals/**` &rarr; `hospital-service` (:8085)
+ - `/coverage`, `/redeploy/**`, `/redeployment/**` &rarr; `redeployment-service` (:8086)
+ - `/metrics/summary`, `/audit` &rarr; `audit-service` (:8087)
 
 ---
 
@@ -76,42 +76,42 @@
 
 ### 4.1 Dispatcher Command Tactical Center (`/dispatcher/index.html`)
 - **Live Leaflet GIS Map**:
-  - Real-time ambulance unit positions (ALS/BLS) with status indicators.
-  - Interactive incident drop-pin by clicking anywhere on the map.
-  - Hospital markers with dynamic bed capacity indicators.
+ - Real-time ambulance unit positions (ALS/BLS) with status indicators.
+ - Interactive incident drop-pin by clicking anywhere on the map.
+ - Hospital markers with dynamic bed capacity indicators.
 - **Incident Intake**:
-  - Latitude, longitude, triage severity (CRITICAL, EMERGENCY, URGENT, LOW), and clinical need (TRAUMA, CARDIAC, STROKE, BURN, PEDIATRIC, GENERAL).
-  - ALS life support requirement toggle.
+ - Latitude, longitude, triage severity (CRITICAL, EMERGENCY, URGENT, LOW), and clinical need (TRAUMA, CARDIAC, STROKE, BURN, PEDIATRIC, GENERAL).
+ - ALS life support requirement toggle.
 - **AI Candidate Ranking**:
-  - Invokes `DispatchScorer` from `common` to compute composite scores (ETA, capability match, clinical suitability).
-  - One-click confirmation dispatch button (`POST /dispatch`) with conditional SQL update reservation.
+ - Invokes `DispatchScorer` from `common` to compute composite scores (ETA, capability match, clinical suitability).
+ - One-click confirmation dispatch button (`POST /dispatch`) with conditional SQL update reservation.
 - **Redeployment Planner Panel**:
-  - Displays real-time coverage ratio computed by `CoverageModel`.
-  - Trigger button executing greedy `RedeploymentPlanner` under Redis distributed lock.
+ - Displays real-time coverage ratio computed by `CoverageModel`.
+ - Trigger button executing greedy `RedeploymentPlanner` under Redis distributed lock.
 
 ### 4.2 Crew Mobile PWA (`/crew/index.html`)
 - **Mobile-First Responsive Interface**:
-  - Unit identity header with callsign and capability badge (`AMB-01`, ALS Paramedic).
-  - Active mission card displaying patient clinical need, triage severity, scene coordinates, and transit ETA.
-  - Status progression buttons: `DISPATCHED` &rarr; `EN_ROUTE_SCENE` &rarr; `ON_SCENE` &rarr; `EN_ROUTE_HOSPITAL` &rarr; `AT_HOSPITAL`.
-  - Rejection workflow for crew rest/maintenance.
+ - Unit identity header with callsign and capability badge (`AMB-01`, ALS Paramedic).
+ - Active mission card displaying patient clinical need, triage severity, scene coordinates, and transit ETA.
+ - Status progression buttons: `DISPATCHED` &rarr; `EN_ROUTE_SCENE` &rarr; `ON_SCENE` &rarr; `EN_ROUTE_HOSPITAL` &rarr; `AT_HOSPITAL`.
+ - Rejection workflow for crew rest/maintenance.
 - **Hospital Destination Selection**:
-  - Interactive destination list ranked by `DestinationRanker` considering road network ETA, available ED beds, and ICU/burn capabilities.
-  - "Transmit Pre-Arrival Alert" button connecting to hospital ED via AlertHub SSE.
-  - "Complete Clinical Handover" button recording hospital arrival turnaround.
+ - Interactive destination list ranked by `DestinationRanker` considering road network ETA, available ED beds, and ICU/burn capabilities.
+ - "Transmit Pre-Arrival Alert" button connecting to hospital ED via AlertHub SSE.
+ - "Complete Clinical Handover" button recording hospital arrival turnaround.
 
 ### 4.3 Emergency Department Dashboard (`/ed/index.html`)
 - **Live AlertHub SSE Inbound Stream**:
-  - Real-time inbound pre-arrival alerts streamed via Server-Sent Events from `hospital-service`.
-  - Live countdown timer to ambulance arrival.
-  - Clinical stabilization summary (intubated, IV access, cath lab requirement).
-  - One-click alert acknowledgment and clinical handover acceptance.
+ - Real-time inbound pre-arrival alerts streamed via Server-Sent Events from `hospital-service`.
+ - Live countdown timer to ambulance arrival.
+ - Clinical stabilization summary (intubated, IV access, cath lab requirement).
+ - One-click alert acknowledgment and clinical handover acceptance.
 - **Dynamic ED Capacity Management**:
-  - Interactive sliders for Free ED Beds, ICU Beds, and Free Ventilators.
-  - Emergency diversion status selector (`ACCEPTING_ALL`, `DIVERSION_TRAUMA`, `FULL_DIVERSION`).
-  - Commits updates to Redis with a 10-minute TTL and records immutable PostgreSQL snapshots.
+ - Interactive sliders for Free ED Beds, ICU Beds, and Free Ventilators.
+ - Emergency diversion status selector (`ACCEPTING_ALL`, `DIVERSION_TRAUMA`, `FULL_DIVERSION`).
+ - Commits updates to Redis with a 10-minute TTL and records immutable PostgreSQL snapshots.
 - **Turnaround Handover Log**:
-  - Real-time log of completed handovers with dwell time analytics.
+ - Real-time log of completed handovers with dwell time analytics.
 
 ### 4.4 System Launchpad Portal (`/index.html`)
 - Central landing dashboard linking to Dispatcher, Crew, ED, and Keycloak consoles.
@@ -139,21 +139,21 @@ The following complete flow was verified through the API Gateway (Port 8080) wit
 
 ```text
 ------------------------------------------------------------------------
-Reactor Summary for H8 EMS Platform 1.0.0-SNAPSHOT:
+Reactor Summary for EMS Platform 1.0.0-SNAPSHOT:
 ------------------------------------------------------------------------
-H8 Platform (Parent) ...................................... SUCCESS [ 0.005 s]
-H8 Common Library (51 tests) .............................. SUCCESS [14.228 s]
-H8 Contracts (6 tests) .................................... SUCCESS [ 3.632 s]
-H8 Simulator (42 tests) ................................... SUCCESS [ 6.767 s]
-H8 Data Seed .............................................. SUCCESS [ 0.223 s]
-H8 API Gateway (2 tests) .................................. SUCCESS [ 7.274 s]
-H8 Incident Service (25 tests) ............................ SUCCESS [12.922 s]
-H8 Dispatch Service (35 tests) ............................ SUCCESS [11.977 s]
-H8 Tracking Service (17 tests) ............................ SUCCESS [ 8.769 s]
-H8 Routing Service (7 tests) .............................. SUCCESS [ 9.312 s]
-H8 Hospital Service (10 tests) ............................ SUCCESS [ 7.660 s]
-H8 Redeployment Service (9 tests) ......................... SUCCESS [ 6.399 s]
-H8 Audit Service (0 tests) ................................ SUCCESS [ 0.285 s]
+ Platform (Parent) ...................................... SUCCESS [ 0.005 s]
+ Common Library (51 tests) .............................. SUCCESS [14.228 s]
+ Contracts (6 tests) .................................... SUCCESS [ 3.632 s]
+ Simulator (42 tests) ................................... SUCCESS [ 6.767 s]
+ Data Seed .............................................. SUCCESS [ 0.223 s]
+ API Gateway (2 tests) .................................. SUCCESS [ 7.274 s]
+ Incident Service (25 tests) ............................ SUCCESS [12.922 s]
+ Dispatch Service (35 tests) ............................ SUCCESS [11.977 s]
+ Tracking Service (17 tests) ............................ SUCCESS [ 8.769 s]
+ Routing Service (7 tests) .............................. SUCCESS [ 9.312 s]
+ Hospital Service (10 tests) ............................ SUCCESS [ 7.660 s]
+ Redeployment Service (9 tests) ......................... SUCCESS [ 6.399 s]
+ Audit Service (0 tests) ................................ SUCCESS [ 0.285 s]
 ------------------------------------------------------------------------
 BUILD SUCCESS
 Total tests: 202 | Failures: 0 | Errors: 0 | Skipped: 0
@@ -171,11 +171,11 @@ Per `ARCHITECTURE.md` Phase 7:
 
 ### 7.1 Scope of Phase 7
 1. **`audit-service` (Port 8087)**:
-   - Kafka consumer subscribing to all topics: `incident.events`, `dispatch.decisions`, `unit.status`, `redeploy.suggestions`, `redeploy.moves`.
-   - Hash-chained append-only audit log: each entry includes `sha256(previous_hash + payload + at)`.
-   - Tamper-detection endpoint: `GET /audit/verify` traverses the blockchain-style hash chain to verify cryptographic integrity.
+ - Kafka consumer subscribing to all topics: `incident.events`, `dispatch.decisions`, `unit.status`, `redeploy.suggestions`, `redeploy.moves`.
+ - Hash-chained append-only audit log: each entry includes `sha256(previous_hash + payload + at)`.
+ - Tamper-detection endpoint: `GET /audit/verify` traverses the blockchain-style hash chain to verify cryptographic integrity.
 2. **Prometheus & Observability**:
-   - Verify `ops/prometheus.yml` scrapes Actuator endpoints from ports 8080–8087.
-   - Configure Micrometer metrics: `dispatch.latency.seconds`, `unit.turnaround.seconds`, `routing.circuitbreaker.state`, `coverage.ratio`.
+ - Verify `ops/prometheus.yml` scrapes Actuator endpoints from ports 8080–8087.
+ - Configure Micrometer metrics: `dispatch.latency.seconds`, `unit.turnaround.seconds`, `routing.circuitbreaker.state`, `coverage.ratio`.
 3. **Fault Injection Scripts**:
-   - Network latency simulation, Redis failover test, Kafka consumer lag scenario, and circuit breaker verification under load.
+ - Network latency simulation, Redis failover test, Kafka consumer lag scenario, and circuit breaker verification under load.

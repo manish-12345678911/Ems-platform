@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>hospital-service</artifactId>
-    <name>H8 Hospital Service</name>
+    <name>Hospital Service</name>
     <description>Hospital capacity, destination ranking, pre-arrival alerts (SSE), handover.</description>
 
     <dependencies>

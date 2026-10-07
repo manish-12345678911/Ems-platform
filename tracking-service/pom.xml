@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>tracking-service</artifactId>
-    <name>H8 Tracking Service</name>
+    <name>Tracking Service</name>
     <description>Real-time unit tracking via Redis GEO, heartbeat TTL, pruner job.</description>
 
     <dependencies>
