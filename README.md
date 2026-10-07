@@ -351,56 +351,6 @@ cd hospital-service && mvn spring-boot:run
 
 ---
 
-## 🎓 Academic Viva Voce & Evaluation Defense (Teacher Q&A Guide)
-
-### 👤 1. Pushkar Priyadarshi (Front-End Lead & UI/UX Design Architect):
-**Q1: What was your specific role in this group project?**
-> *Answer*: "I was the Front-End Lead and UI/UX Architect. I had 100% ownership of all user-facing front-end applications across the platform, including the Tactical Dispatcher GIS Console, the Frontline Paramedic Mobile Cockpit PWA, and the Hospital Emergency Trauma Hub, as well as the design system and interactive mock-ups."
-
-**Q2: How did you optimize the Paramedic Mobile Cockpit for emergency field use?**
-> *Answer*: "Paramedics operate under extreme stress and movement. I built the interface as a mobile Progressive Web App (PWA) with high-contrast dark themes for night visibility, oversized touch targets for tactile glove use, synthesized siren alerts via the Web Audio API, and a 5-stage sequential mission stepper preventing skipped clinical procedures."
-
-**Q3: How does the Hospital ED Trauma Hub display bay capacity?**
-> *Answer*: "I used CSS3 Glassmorphism with real-time color-coded cards: Red for fully occupied resuscitation bays, Yellow for incoming ambulances, and Green for available bays. It also displays countdown ETA timers and provides a 1-click dynamic hospital diversion toggle."
-
----
-
-### 👤 2. Manish Kumar Sah (Full-Stack Lead & Core Dispatch Architect):
-**Q1: What was your specific role in this group project?**
-> *Answer*: "I served as the Full-Stack Lead and Core Dispatch Architect. I spearheaded the end-to-end integration between front-end dispatcher actions and backend microservices, built the Autonomous Candidate Ranking algorithm, and integrated the GraphHopper OpenStreetMap road routing engine."
-
-**Q2: Why is multi-factor candidate scoring better than simply picking the nearest ambulance?**
-> *Answer*: "Simply dispatching the nearest ambulance leads to 'ALS exhaustion'—where Advanced Life Support units get consumed by non-life-threatening calls, leaving cardiac/respiratory patients waiting. Our multi-factor ranking balances ETA (50%), capability fit (30%), and receiving hospital capacity (20%) to preserve critical care resources."
-
----
-
-### 👤 3. Rahul Mandal (Full-Stack Telemetry & Fleet Simulation Engineer):
-**Q1: What was your specific role in this group project?**
-> *Answer*: "I was the Full-Stack Telemetry and Fleet Simulation Engineer. I developed the full-stack telemetry pipeline streaming live GPS coordinates from mobile units to backend tracking servers at 1Hz, built the multithreaded Java Fleet Simulator, and implemented the Redis GEO tracking microservice."
-
-**Q2: How does the fleet simulator handle concurrent ambulances?**
-> *Answer*: "The Java simulator runs concurrent worker threads for 14 ambulance units across Jaipur's road network. Each unit calculates its waypoint progression and velocity, broadcasting real-time geographic telemetry packets via WebSockets with sub-150ms glass-to-glass latency."
-
----
-
-### 👤 4. Niraj Mandal (Database Architect & Spatial Systems Engineer):
-**Q1: What was your specific role in this group project?**
-> *Answer*: "I was the Database Architect and Spatial Systems Engineer. I designed and implemented the relational PostgreSQL PostGIS spatial schema, configured GiST spatial indexes, and authored high-efficiency proximity queries for the platform."
-
-**Q2: Why did you choose PostGIS spatial indexing over standard SQL queries?**
-> *Answer*: "Standard Euclidean distance queries require full table scans ($O(N)$) calculating Haversine formulas in application memory. PostGIS GiST spatial indexing operates on R-Tree bounding boxes, filtering candidate units within a 10km radius in under 10 milliseconds ($O(\log N)$)."
-
----
-
-### 👤 5. Ashutosh Kumar (Systems Design Architect & Integration QA Lead):
-**Q1: What was your specific role in this group project?**
-> *Answer*: "I served as the Systems Design Architect and Integration QA Lead. I authored the formal 6-Diagram UML Architecture Suite, specified the shared microservices API contracts and Java DTOs, and built the automated 25-case End-to-End integration test suite."
-
-**Q2: How did you ensure reliability across distributed microservices?**
-> *Answer*: "I established strongly-typed API schemas and contract tests across microservices. Our automated E2E test suite (`e2e_integration_test.py`) verifies 25 critical paths including network partitioning, candidate scoring accuracy, and hospital diversion fallbacks, with 216/216 passing tests."
-
----
-
 ## 🔗 Important Project Links
 
 | Resource | Description | Live Link |
