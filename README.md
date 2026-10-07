@@ -42,10 +42,10 @@ The **H8 EMS Platform** is a unified, high-speed cloud orchestration system engi
 
 ## 👥 5-Person Engineering Team & Work Distribution
 
-| # | Student Name | RTU Roll No. | Core Role & Specialization | Key Modules & Code Ownership | Independent Module Repository |
+| # | Student Name | RTU Roll No. | Core Role & Specialization | Key Modules & Code Ownership | Code Directories |
 | :-: | :--- | :---: | :--- | :--- | :--- |
 | **1** | **Manish Kumar Sah** | `24EARIT030` | **Full-Stack Lead & Core Dispatch Architect** | • Tactical Dispatcher Web Console (Leaflet GIS)<br>• Autonomous Candidate Ranking Algorithm<br>• GraphHopper OSM Road Routing Service | [🔗 `01_Manish_FullStack_CoreDispatch`](team-distribution/01_Manish_FullStack_CoreDispatch/) |
-| **2** | **Pushkar Priyadarshi** | `24EARIT040` | **Security, Authentication & Authorization Engineer** | • Tactical Admin & Crew Authentication Gate<br>• 4-Tier Role-Based Access Control (RBAC) Matrix<br>• HIPAA/GDPR Salted Telephone Hasher (`SHA-256`)<br>• Spring Cloud API Gateway Security Filters | [🔗 `02_Pushkar_Security_Auth`](team-distribution/02_Pushkar_Security_Auth/) |
+| **2** | **Pushkar Priyadarshi** | `24EARIT040` | **Security, Authentication & Authorization Engineer** | • Tactical Admin & Crew Authentication Gate<br>• 4-Tier Role-Based Access Control (RBAC) Matrix<br>• HIPAA/GDPR Salted Telephone Hasher (`SHA-256`)<br>• Spring Cloud API Gateway Security Filters | [🔗 `puskarcontribution/`](puskarcontribution/)<br>[🔗 `02_Pushkar_Security_Auth`](team-distribution/02_Pushkar_Security_Auth/) |
 | **3** | **Rahul Mandal** | `24EARIT042` | **Mobile Front-End & Telemetry Engineer** | • Frontline Paramedic Mobile Cockpit (PWA)<br>• 5-Stage Sequential Mission Stepper Workflow<br>• High-Frequency Satellite GPS Telemetry Client<br>• Java Multithreaded Fleet Simulator | [🔗 `03_Rahul_Crew_Mobile_Telemetry`](team-distribution/03_Rahul_Crew_Mobile_Telemetry/) |
 | **4** | **Niraj Mandal** | `24EARIT036` | **Database Architect & Hospital ED Systems Engineer** | • PostgreSQL PostGIS Spatial Database Schema<br>• GiST Spatial Proximity Engine (`ST_DWithin`)<br>• Hospital ED Trauma Hub & Resuscitation Bays<br>• Dynamic Hospital Diversion Engine | [🔗 `04_Niraj_Database_Hospital_ED`](team-distribution/04_Niraj_Database_Hospital_ED/) |
 | **5** | **Ashutosh Kumar** | `24EARIT012` | **Systems Design Architect & Integration QA Lead** | • Complete 6-Diagram UML Architecture Suite<br>• Shared Microservice API Contracts (`contracts/`)<br>• Automated End-to-End Integration Test Suite<br>• 25-Case Quality Assurance Matrix Report | [🔗 `05_Ashutosh_UML_Architecture_QA`](team-distribution/05_Ashutosh_UML_Architecture_QA/) |
@@ -54,15 +54,15 @@ The **H8 EMS Platform** is a unified, high-speed cloud orchestration system engi
 
 ## 🗓️ 5. 10-Week Project Timeline & Detailed Milestones
 
-The project was executed following a structured **10-Week Academic Development Lifecycle** supervised under **Er Ram Babu Buri** (Associate Professor):
+The platform was built and evaluated following the formal **10-Week Academic Development Lifecycle** supervised under **Er Ram Babu Buri** (Associate Professor):
 
 | Wk | Milestone | Status | Key Deliverables & Artifacts |
 | :---: | :--- | :---: | :--- |
-| **1** | **Team formation + Guide selection + Abstract (this portal)** | Completed | • 5-Member team formation & role allocation<br>• Selection of Project Guide (Er Ram Babu Buri)<br>• Problem statement definition & project abstract submission |
+| **1** | **Team formation + Guide selection + Abstract (this portal)** | Completed | • 5-Member team formation & specialization assignment<br>• Project Guide selection: **Er Ram Babu Buri** (Associate Professor)<br>• Problem statement definition & academic project abstract submission |
 | **2** | **SRS** | Completed | • Comprehensive IEEE 830 Software Requirements Specification<br>• 8 Functional Requirements (FR1–FR8) & Non-Functional Requirements (NFRs)<br>• Sub-50ms latency & HIPAA/GDPR security guidelines |
-| **3** | **UML Design** | Completed | • Complete 6-Diagram UML Architecture Suite<br>• Use Case, Class, Sequence, Activity, State Machine & Deployment diagrams<br>• Formal system interaction modeling |
+| **3** | **UML Design** | Completed | • Complete 6-Diagram UML Architecture Suite by Ashutosh Kumar<br>• Use Case, Class, Sequence, Activity, State Machine & Deployment diagrams<br>• Formal system interaction modeling |
 | **4** | **DB design + UI mock-ups** | Completed | • PostgreSQL + PostGIS spatial database schema (`supabase-schema.sql`)<br>• GiST spatial indexing for sub-10ms proximity queries<br>• High-fidelity UI mock-ups for Dispatcher, Paramedic & Hospital ED hubs |
-| **5–8** | **Module coding (each student owns 1 module)** | Completed | • 4 Weeks of deep modular development across 5 dedicated student modules:<br>  - Module 1 (Manish): Dispatch Console & Candidate Ranker<br>  - Module 2 (Pushkar): Security Gate, RBAC & Phone Hasher<br>  - Module 3 (Rahul): Paramedic PWA, Mission Stepper & GPS Telemetry<br>  - Module 4 (Niraj): PostGIS DB & Hospital Trauma Hub<br>  - Module 5 (Ashutosh): UML Specs, DTOs & QA Test Suite |
+| **5–8** | **Module coding (each student owns 1 module)** | Completed | • 4 Weeks of deep modular development across 5 dedicated student modules:<br>  - Module 1 (Manish): Dispatch Console & Candidate Ranker<br>  - Module 2 (Pushkar): Security Gate, RBAC & Phone Hasher (`puskarcontribution/`)<br>  - Module 3 (Rahul): Paramedic PWA, Mission Stepper & GPS Telemetry<br>  - Module 4 (Niraj): PostGIS DB & Hospital Trauma Hub<br>  - Module 5 (Ashutosh): UML Specs, DTOs & QA Test Suite |
 | **9** | **Integration + Testing** | Completed | • Cross-module integration via Spring Cloud Gateway & Supabase Pub/Sub<br>• 216/216 Unit, property & integration tests passing<br>• Automated End-to-End 25-Case QA test suite execution |
 | **10** | **Report, PPT, video, Final Viva** | Completed | • Comprehensive Project Technical Report & Academic Research Paper<br>• Complete Viva Presentation Deck (PPT)<br>• Full-system video demonstration walkthrough<br>• Final Viva Voce presentation defense |
 
@@ -131,11 +131,12 @@ Over four intensive development weeks, each student took 100% ownership of their
   - Built the 1-click **Green-Wave Corridor** visualizer for high-acuity Alpha/Echo calls.
 
 - **Module 2 (Weeks 5–8) — Pushkar Priyadarshi (`24EARIT040`)**:
-  - *Security, Authentication & Authorization Engineer* (`team-distribution/02_Pushkar_Security_Auth/`)
+  - *Security, Authentication & Authorization Engineer* (`puskarcontribution/`, `team-distribution/02_Pushkar_Security_Auth/`)
   - Engineered the **Tactical Authentication Gate** (`auth-manager.js`) issuing cryptographic Bearer session tokens (`h8-auth-token-...`).
   - Implemented the 4-tier **Role-Based Access Control (RBAC)** matrix (`ADMIN`, `DISPATCHER`, `CREW`, `HOSPITAL_STAFF`).
   - Built the **HIPAA/GDPR Salted Telephone Hasher** (`salted-phone-hasher.js`) converting phone numbers into deterministic SHA-256 digests (`CALLER-#F48A`).
   - Configured Spring Cloud API Gateway (:8080) pre-routing security filters and rate-limiting.
+  - Developed the **Tamper-Evident Audit Microservice** (`audit-service/`) with SHA-256 hash chains.
 
 - **Module 3 (Weeks 5–8) — Rahul Mandal (`24EARIT042`)**:
   - *Mobile Front-End & Telemetry Engineer* (`team-distribution/03_Rahul_Crew_Mobile_Telemetry/`)
@@ -182,6 +183,77 @@ Over four intensive development weeks, each student took 100% ownership of their
 - **Final Viva Voce Presentation**:
   - Comprehensive technical defense prepared for RTU academic evaluation panel and Project Guide Er Ram Babu Buri.
   - Live demonstrations conducted on both local server and public cloud environments.
+
+---
+
+## 🛡️ Security, Role-Based Access Control (RBAC) & HIPAA Phone Anonymizer (`puskarcontribution/`)
+> **Subsystem Lead Author**: **Pushkar Priyadarshi** (Security & Authorization Engineer)
+
+In an emergency medical platform handling real-time city dispatches and patient telephone calls, unauthorized access or patient data leakage constitutes a critical compliance violation. This module enforces strict **Role-Based Access Control (RBAC)** across dispatchers, admins, paramedic crews, and hospital staff, while guaranteeing **HIPAA & GDPR privacy** through salted cryptographic hashing.
+
+```
+                      [ Incoming User / Request ]
+                                   │
+                                   ▼
+                   [ Tactical Authentication Gate ]
+                 Verifies Passcode / Credentials
+                                   │
+                                   ▼
+                    [ Cryptographic Bearer Token ]
+                                   │
+       ┌───────────────────────────┼───────────────────────────┐
+       ▼                           ▼                           ▼
+ [ Tactical Admin ]        [ 911 Dispatcher ]        [ Paramedic Crew ]
+  Full Permissions          Intake & Ranking           Mission Stepper
+       │                           │                           │
+       └───────────────────────────┼───────────────────────────┘
+                                   ▼
+                    [ Salted Phone Anonymizer ]
+                     Raw 911 Number ──> SHA-256
+                     Protected Caller Hash (#3F9A12)
+```
+
+### Detailed Subsystem Contributions:
+
+#### A. Tactical Authentication Gate & RBAC (`puskarcontribution/src/security/auth-manager.js`, `rbac-policy.json`)
+- Designed the multi-tier role hierarchy:
+  - `ADMIN`: Full tactical override, corridor control, audit log inspection.
+  - `DISPATCHER`: Incident intake, candidate ranking, ambulance unit dispatch.
+  - `CREW`: Unit authentication, GPS telemetry broadcast, 5-stage mission stepper.
+  - `HOSPITAL_STAFF`: Resuscitation bay allocation, dynamic hospital diversion.
+- Implemented tamper-evident session token issuance (`h8-auth-token-<payload>`) with expiration tracking.
+
+#### B. HIPAA & GDPR 911 Caller Phone Hasher (`puskarcontribution/src/security/salted-phone-hasher.js`)
+- Solved the privacy dilemma in emergency medical systems: Caller phone numbers cannot be stored in plaintext in dispatch logs.
+- Engineered a **Salted SHA-256 / PBKDF2 Anonymizer** converting raw phone numbers into deterministic, non-reversible hashes (`CALLER-#F48A3B`).
+- Preserves the ability to link repeat emergency callers without revealing Personal Identifiable Information (PII).
+
+#### C. Spring Cloud API Gateway Security Filters (`puskarcontribution/src/api-gateway/`)
+- Pre-routing authentication filter intercepting all HTTP & WebSocket traffic.
+- Validates bearer tokens before forwarding calls to downstream microservices (`dispatch-service`, `hospital-service`).
+
+#### D. Audit Logging Microservice (`puskarcontribution/src/audit-service/`)
+- Generates an immutable, timestamped audit log of every login attempt, dispatch action, and security override using SHA-256 hash chains.
+
+### Subsystem Directory Structure:
+```
+puskarcontribution/
+├── push_to_github.bat                 <-- Helper script to push module independently
+├── run_module.bat                     <-- 1-Click runner for Pushkar's security testbed
+└── src/
+    ├── api-gateway/                   <-- Java Spring Cloud API Gateway with Auth Filters
+    │   ├── pom.xml
+    │   └── src/main/java/com/h8/ems/gateway/
+    ├── audit-service/                 <-- Java Spring Boot Audit Logging microservice
+    │   ├── pom.xml
+    │   └── src/main/java/com/h8/ems/audit/
+    ├── security/
+    │   ├── auth-manager.js            <-- Core RBAC & Bearer Token Controller
+    │   ├── salted-phone-hasher.js     <-- HIPAA Salted Phone Anonymizer
+    │   └── rbac-policy.json           <-- Security Policy & Permissions Matrix
+    └── auth-ui/
+        └── login-demo.html            <-- Interactive Security & Auth Testbed UI
+```
 
 ---
 
@@ -308,7 +380,21 @@ Open your browser and navigate to:
 - **Paramedic BLS Unit**: `amb-02` / `crew123`
 - **Hospital ED Staff**: `nurse1` / `ed123`
 
-### Option 2: Java Spring Boot Microservices
+### Option 2: Standalone Security & Auth Testbed (Pushkar's Module)
+1. Double-click `puskarcontribution\run_module.bat` or run:
+   ```cmd
+   python -m http.server 8082 --directory puskarcontribution/src/auth-ui
+   ```
+2. Open your browser at:
+   ```
+   http://localhost:8082/login-demo.html
+   ```
+3. Test Authentication & Cryptography:
+   - Enter `admin` / `admin123` $\rightarrow$ Observe `200 AUTH_GRANTED` with Admin Token.
+   - Enter `baduser` / `wrongpwd` $\rightarrow$ Observe `401 AUTH_DENIED`.
+   - Enter any phone number (e.g. `+91 98290 12345`) $\rightarrow$ Observe instant Salted SHA-256 Digest and masked alias (`CALLER-#F48A...`).
+
+### Option 3: Java Spring Boot Microservices
 Start the backend microservices using the batch launcher:
 ```cmd
 start_backend.bat
@@ -319,6 +405,30 @@ cd dispatch-service && mvn spring-boot:run
 cd api-gateway && mvn spring-boot:run
 cd hospital-service && mvn spring-boot:run
 ```
+
+---
+
+## 🎓 Academic Viva Voce & Evaluation Defense (Teacher Q&A Guide)
+
+### Pushkar's Module (Security, Auth & Privacy):
+**Q1: What was your specific role in this group project?**
+> *Answer*: "I was the Security and Authorization Engineer. I developed the Role-Based Access Control (RBAC) engine, the Tactical Authentication Gate, the API Gateway pre-routing security filters, and the HIPAA-compliant salted telephone anonymizer."
+
+**Q2: Why do you need salted hashing for telephone numbers? Why not simple encryption?**
+> *Answer*: "With two-way encryption, encryption keys can be leaked or subpoenaed, compromising caller privacy. Salted one-way hashing (SHA-256 + secret salt) irreversibly masks the phone number, preventing rainbow table attacks while still allowing deterministic matching if the same caller calls back multiple times."
+
+**Q3: How does your Role-Based Access Control (RBAC) work across services?**
+> *Answer*: "We defined 4 distinct roles (Admin, Dispatcher, Crew, Hospital Staff) in a strict policy matrix. When a user logs in, they receive a signed bearer token containing their role and timestamp. The API Gateway validates this token before routing any request to downstream microservices."
+
+**Q4: What happens if an unauthorized user tries to trigger a green-wave traffic corridor?**
+> *Answer*: "The gateway inspects the token's permissions. Only the `ADMIN` role possesses the `ACTIVATE_GREEN_WAVE` permission. Any unauthorized attempt is rejected with HTTP 403 Forbidden and logged to the Audit Service."
+
+### General Platform & Architecture:
+**Q5: Why did the team choose PostGIS over standard SQL distance calculations?**
+> *Answer*: "Standard Euclidean distance queries require full table scans ($O(N)$) calculating Haversine formulas in application memory. PostGIS GiST spatial indexing operates on R-Tree bounding boxes, filtering candidate units within a 10km radius in under 10 milliseconds ($O(\log N)$)."
+
+**Q6: Why is candidate scoring better than simply picking the nearest ambulance?**
+> *Answer*: "Simply picking the nearest unit leads to 'ALS exhaustion'—where Advanced Life Support units get consumed by non-life-threatening calls, leaving cardiac/respiratory patients waiting. Our multi-factor ranking balances ETA (50%), capability fit (30%), and receiving hospital capacity (20%) to preserve critical care resources."
 
 ---
 
