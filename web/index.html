@@ -113,19 +113,16 @@
             z-index: 1;
         }
 
-        /* Top Fixed Glass Navigation */
+        /* Top Sticky Glass Navigation */
         header.site-nav {
-            position: fixed;
+            position: sticky;
             top: 0;
-            left: 0;
-            right: 0;
-            width: 100%;
             z-index: 1000;
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
-            background: rgba(5, 8, 17, 0.75);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 1.05rem 3.5rem;
+            background: rgba(5, 8, 17, 0.88);
+            border-bottom: 1px solid var(--border-glass);
+            padding: 1rem 3.5rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -227,7 +224,7 @@
             position: relative;
             z-index: 10;
             width: 100%;
-            min-height: 100vh;
+            min-height: calc(100vh - 68px);
             display: flex;
             align-items: center;
             overflow: hidden;
@@ -246,12 +243,12 @@
 
         .hero-bg-img {
             width: 100%;
-            height: 100vh;
+            height: 100%;
             min-height: 100%;
             object-fit: cover;
-            object-position: 85% center;
+            object-position: 80% 60%;
             display: block;
-            filter: contrast(1.04) brightness(0.95);
+            filter: contrast(1.06) brightness(0.96);
         }
 
         /* Overlay: Deep readable dark backdrop on left, smoothly opening up to clear transparency on right */
@@ -261,15 +258,15 @@
             background: 
                 linear-gradient(90deg, 
                     rgba(5, 8, 17, 0.96) 0%, 
-                    rgba(5, 8, 17, 0.90) 36%, 
-                    rgba(5, 8, 17, 0.65) 54%, 
-                    rgba(5, 8, 17, 0.18) 72%, 
-                    rgba(5, 8, 17, 0.05) 100%),
+                    rgba(5, 8, 17, 0.90) 38%, 
+                    rgba(5, 8, 17, 0.65) 55%, 
+                    rgba(5, 8, 17, 0.15) 75%, 
+                    transparent 100%),
                 linear-gradient(180deg, 
-                    rgba(5, 8, 17, 0.70) 0%, 
-                    transparent 16%, 
-                    transparent 78%, 
-                    rgba(5, 8, 17, 0.98) 100%);
+                    rgba(5, 8, 17, 0.50) 0%, 
+                    transparent 18%, 
+                    transparent 75%, 
+                    rgba(5, 8, 17, 1) 100%);
             pointer-events: none;
         }
 
@@ -279,10 +276,10 @@
             width: 100%;
             max-width: 1440px;
             margin: 0 auto;
-            padding: 7rem 3.5rem 5rem;
+            padding: 4.5rem 3.5rem;
             display: flex;
             align-items: center;
-            min-height: 100vh;
+            min-height: calc(100vh - 68px);
         }
 
         .hero-left-content {
@@ -407,8 +404,9 @@
             position: relative;
             z-index: 10;
             max-width: 1420px;
-            margin: 0 auto 5rem;
+            margin: 5rem auto 5rem;
             padding: 0 3.5rem;
+            scroll-margin-top: 90px;
         }
 
         .metrics-grid {
@@ -943,7 +941,7 @@
         <section class="hero-wrapper">
             <!-- Full 100vh Ambulance Background Image with Right-Aligned Focus -->
             <div class="hero-bg-media">
-                <img src="assets/normal-ambulance.jpg" alt="Emergency Medical Service Ambulance" class="hero-bg-img">
+                <img src="assets/ambulance-hero.jpg" alt="EMS Tactical Emergency Ambulance" class="hero-bg-img">
                 <div class="hero-bg-overlay"></div>
             </div>
 
