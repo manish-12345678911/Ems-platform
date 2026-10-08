@@ -383,12 +383,11 @@
             border-radius: 28px;
             overflow: hidden;
             background: #0d1424;
-            border: 1px solid rgba(255, 255, 255, 0.14);
+            border: none;
             box-shadow: 
                 0 30px 80px rgba(0, 0, 0, 0.75),
-                0 0 50px rgba(255, 71, 87, 0.22),
-                0 0 40px rgba(56, 189, 248, 0.18),
-                inset 0 1px 0 rgba(255, 255, 255, 0.25);
+                0 0 50px rgba(255, 71, 87, 0.15),
+                0 0 40px rgba(56, 189, 248, 0.12);
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -396,8 +395,8 @@
             transform: translateY(-4px) scale(1.01);
             box-shadow: 
                 0 35px 95px rgba(0, 0, 0, 0.85),
-                0 0 65px rgba(255, 71, 87, 0.35),
-                0 0 55px rgba(56, 189, 248, 0.28);
+                0 0 65px rgba(255, 71, 87, 0.22),
+                0 0 55px rgba(56, 189, 248, 0.18);
         }
 
         .hero-ambulance-img {
@@ -405,12 +404,14 @@
             height: 480px;
             object-fit: cover;
             display: block;
-            filter: contrast(1.05) brightness(0.96);
+            border: none;
+            outline: none;
+            filter: contrast(1.03) brightness(0.98);
             transition: transform 6s ease;
         }
 
         .hero-visual-card:hover .hero-ambulance-img {
-            transform: scale(1.03);
+            transform: scale(1.02);
         }
 
         .hero-visual-gradient {
@@ -1090,11 +1091,6 @@
             <div class="hero-layout">
                 <!-- Left Column: Copy & Actions -->
                 <div class="hero-left-content">
-                    <div class="hero-badge-pill">
-                        <span class="pulse-dot-coral"></span>
-                        <span>LIVE DISPATCH &amp; TRAUMA GRID ACTIVE</span>
-                    </div>
-
                     <h1 class="hero-main-title">
                         Every Second Counts. <br>
                         <span class="gradient-headline">One Unified</span> <br>
@@ -1129,36 +1125,10 @@
                     </div>
                 </div>
 
-                <!-- Right Column: Emergency Ambulance Life-Saving Visual Card -->
+                <!-- Right Column: Emergency Ambulance Visual Card -->
                 <div class="hero-right-visual">
                     <div class="hero-visual-card">
-                        <img src="assets/ambulance-saving-life.jpg" alt="Emergency Medical Service Ambulance Saving Life on Scene" class="hero-ambulance-img">
-                        <div class="hero-visual-gradient"></div>
-
-                        <!-- Top-Left Urgent Status Badge -->
-                        <div class="hero-hud-badge top-badge">
-                            <span class="hud-live-dot red"></span>
-                            <span>🚨 CODE RED • LIFE-SAVING RESCUE ON SCENE</span>
-                        </div>
-
-                        <!-- Bottom Live Telemetry Overlay Card -->
-                        <div class="hero-hud-card">
-                            <div class="hud-card-header">
-                                <span class="hud-unit-id">🚑 ALS PARAMEDIC UNIT 402</span>
-                                <span class="hud-status-chip">ON SCENE RESCUE</span>
-                            </div>
-                            <div class="hud-card-body">
-                                <div class="hud-stat-item">
-                                    <span class="hud-stat-lbl">PATIENT STATUS</span>
-                                    <span class="hud-stat-val val-green">RESUSCITATING &amp; STABILIZING</span>
-                                </div>
-                                <div class="hud-stat-divider"></div>
-                                <div class="hud-stat-item">
-                                    <span class="hud-stat-lbl">HOSPITAL TRAUMA BAY</span>
-                                    <span class="hud-stat-val val-blue">SMS BAY 3 PRE-ALLOCATED</span>
-                                </div>
-                            </div>
-                        </div>
+                        <img src="assets/ambulance-hero.jpg" alt="Emergency Medical Service Ambulance" class="hero-ambulance-img">
                     </div>
                 </div>
             </div>
