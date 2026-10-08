@@ -1509,11 +1509,14 @@
             z-index: 9999;
             background: radial-gradient(circle at 50% 25%, #180b38 0%, #0d0722 60%, #060312 100%);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
-            padding: 1.5rem;
+            padding: 2rem 1.25rem;
             overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
             transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s;
         }
 
@@ -1526,7 +1529,8 @@
         .crew-auth-card {
             width: 100%;
             max-width: 960px;
-            min-height: 580px;
+            min-height: 560px;
+            margin: auto 0;
             background: #140d2e;
             border: 1px solid rgba(139, 92, 246, 0.35);
             border-radius: 32px;
@@ -1982,31 +1986,95 @@
             text-decoration: underline;
         }
 
-        /* Responsive Mobile Layout (Stacked like the Phone in mockup) */
+        /* Responsive Mobile & Tablet Layout */
         @media (max-width: 860px) {
+            .crew-auth-overlay {
+                padding: 1.5rem 1rem;
+                align-items: flex-start;
+            }
             .crew-auth-card {
                 grid-template-columns: 1fr;
                 max-width: 440px;
+                min-height: auto;
                 border-radius: 28px;
+                margin: 0 auto;
             }
             .auth-hero-panel {
-                height: 220px;
-                padding: 1.5rem;
-                justify-content: space-between;
-                border-radius: 0 0 24px 24px;
+                height: auto;
+                min-height: 190px;
+                padding: 1.5rem 1.35rem 1.5rem;
+                justify-content: flex-start;
+                gap: 1.25rem;
+                border-radius: 28px 28px 0 0;
+            }
+            .auth-hero-top {
+                margin-bottom: auto;
+            }
+            .auth-hero-brand {
+                padding: 0.35rem 0.8rem;
+                background: rgba(20, 13, 46, 0.85);
+            }
+            .hero-brand-title {
+                font-size: 0.8rem;
+            }
+            .hero-brand-sub {
+                font-size: 0.58rem;
+            }
+            .auth-hero-bottom {
+                gap: 0.45rem;
             }
             .hero-headline {
                 font-size: 1.35rem;
+                line-height: 1.2;
             }
             .hero-subtext {
                 display: none;
             }
             .auth-form-panel {
-                padding: 1.75rem 1.5rem 2rem;
+                padding: 1.6rem 1.35rem 1.85rem;
                 gap: 1.1rem;
+                max-height: none;
+                overflow-y: visible;
             }
             .auth-main-title {
                 font-size: 1.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .crew-auth-overlay {
+                padding: 1rem 0.65rem;
+            }
+            .crew-auth-card {
+                max-width: 100%;
+                border-radius: 22px;
+            }
+            .auth-hero-panel {
+                min-height: 175px;
+                padding: 1.25rem 1rem 1.25rem;
+                gap: 1rem;
+                border-radius: 22px 22px 0 0;
+            }
+            .hero-headline {
+                font-size: 1.2rem;
+            }
+            .auth-form-panel {
+                padding: 1.25rem 1rem 1.5rem;
+                gap: 1rem;
+            }
+            .form-row-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-height: 720px) {
+            .crew-auth-overlay {
+                align-items: flex-start;
+                padding-top: 1rem;
+                padding-bottom: 1rem;
+            }
+            .crew-auth-card {
+                margin: 0 auto;
             }
         }
     </style>
