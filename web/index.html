@@ -251,7 +251,7 @@
             display: block;
             filter: contrast(1.06) brightness(0.96);
             opacity: 0;
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             will-change: opacity, transform;
             transform: scale(1);
         }
@@ -1222,7 +1222,7 @@
     <script>
     (function() {
         const slides = document.querySelectorAll('.hero-bg-img');
-        const SLIDE_DURATION = 1500; // 1.5 seconds per slide
+        const SLIDE_DURATION = 800; // 0.8 seconds per slide
         let currentSlide = 0;
         let slideTimer = null;
         let isPaused = false;
