@@ -871,6 +871,315 @@
             transform: translateY(-2px);
         }
 
+        /* Technology Architecture Section */
+        section.techstack-section {
+            position: relative;
+            z-index: 10;
+            max-width: 1420px;
+            margin: 0 auto 6rem;
+            padding: 0 3.5rem;
+            scroll-margin-top: 90px;
+        }
+
+        .techstack-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        .techstack-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 2rem 1.75rem;
+            backdrop-filter: blur(20px);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .techstack-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--border-glass-bright), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .techstack-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6);
+        }
+
+        .techstack-card:hover::after {
+            opacity: 1;
+        }
+
+        .techstack-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .techstack-card h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.45rem;
+        }
+
+        .techstack-card p {
+            font-size: 0.82rem;
+            color: var(--text-sub);
+            line-height: 1.55;
+        }
+
+        .techstack-label {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--brand-cyan);
+            background: rgba(0, 210, 211, 0.08);
+            border: 1px solid rgba(0, 210, 211, 0.2);
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin-top: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        /* Real-Time Capabilities Section */
+        section.realtime-section {
+            position: relative;
+            z-index: 10;
+            max-width: 1420px;
+            margin: 0 auto 6rem;
+            padding: 0 3.5rem;
+            scroll-margin-top: 90px;
+        }
+
+        .realtime-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .realtime-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            backdrop-filter: blur(24px);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .realtime-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--brand-blue), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .realtime-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        .realtime-card:hover::before {
+            opacity: 1;
+        }
+
+        .realtime-icon-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .realtime-icon-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .realtime-card h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 0.65rem;
+            letter-spacing: -0.02em;
+        }
+
+        .realtime-card p {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            line-height: 1.65;
+        }
+
+        /* Fleet Command Overview Section */
+        section.fleet-section {
+            position: relative;
+            z-index: 10;
+            max-width: 1420px;
+            margin: 0 auto 6rem;
+            padding: 0 3.5rem;
+            scroll-margin-top: 90px;
+        }
+
+        .fleet-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.25rem;
+        }
+
+        .fleet-stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 2rem 1.25rem;
+            backdrop-filter: blur(20px);
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .fleet-stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.5);
+            border-color: rgba(255, 255, 255, 0.18);
+        }
+
+        .fleet-stat-icon {
+            font-size: 1.75rem;
+            margin-bottom: 0.85rem;
+            display: block;
+        }
+
+        .fleet-stat-value {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.3rem;
+        }
+
+        .fleet-stat-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-sub);
+            margin-bottom: 0.25rem;
+        }
+
+        .fleet-stat-sub {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* FAQ Section */
+        section.faq-section {
+            position: relative;
+            z-index: 10;
+            max-width: 1420px;
+            margin: 0 auto 6rem;
+            padding: 0 3.5rem;
+            scroll-margin-top: 90px;
+        }
+
+        .faq-list {
+            max-width: 860px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .faq-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            backdrop-filter: blur(20px);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .faq-question {
+            width: 100%;
+            background: none;
+            border: none;
+            color: #ffffff;
+            padding: 1.5rem 1.75rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            transition: color 0.2s;
+        }
+
+        .faq-question:hover {
+            color: var(--brand-blue);
+        }
+
+        .faq-chevron {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        .faq-item.open .faq-chevron {
+            transform: rotate(45deg);
+            color: var(--brand-coral);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.3s ease;
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 300px;
+        }
+
+        .faq-answer-inner {
+            padding: 0 1.75rem 1.5rem;
+            font-size: 0.92rem;
+            color: var(--text-sub);
+            line-height: 1.7;
+        }
+
         /* Responsive Design */
         @media (max-width: 1100px) {
             header.site-nav { padding: 1rem 1.75rem; }
@@ -880,6 +1189,9 @@
             .metrics-grid { grid-template-columns: repeat(2, 1fr); }
             .portals-card-grid { grid-template-columns: 1fr; }
             .pipeline-steps-grid { grid-template-columns: repeat(2, 1fr); }
+            .techstack-grid { grid-template-columns: repeat(2, 1fr); }
+            .realtime-grid { grid-template-columns: 1fr; }
+            .fleet-stats-grid { grid-template-columns: repeat(3, 1fr); }
             .footer-cols { grid-template-columns: 1fr 1fr; gap: 2rem; }
         }
 
@@ -898,6 +1210,8 @@
             .hero-description { font-size: 1.02rem; }
             .metrics-grid { grid-template-columns: 1fr; }
             .pipeline-steps-grid { grid-template-columns: 1fr; }
+            .techstack-grid { grid-template-columns: 1fr 1fr; }
+            .fleet-stats-grid { grid-template-columns: repeat(2, 1fr); }
             .footer-cols { grid-template-columns: 1fr; }
             .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
         }
@@ -923,6 +1237,8 @@
             <li><a href="#metrics">City Impact</a></li>
             <li><a href="#portals">Operating Hubs</a></li>
             <li><a href="#pipeline">Workflow</a></li>
+            <li><a href="#techstack">Tech</a></li>
+            <li><a href="#faq">FAQ</a></li>
         </ul>
 
         <div class="nav-actions">
@@ -1151,6 +1467,269 @@
             </div>
         </section>
 
+        <!-- Technology Architecture Section (#techstack) -->
+        <section class="techstack-section" id="techstack">
+            <div class="section-header-center">
+                <span class="section-tag">ENGINEERING BACKBONE</span>
+                <h2 class="section-title">Built on Battle-Tested <br> Cloud-Native Architecture</h2>
+                <p class="section-subtitle">
+                    Every layer of the EMS platform is purpose-engineered for sub-second latency, satellite-grade telemetry, and zero-downtime resilience.
+                </p>
+            </div>
+
+            <div class="techstack-grid">
+                <div class="techstack-card">
+                    <span class="techstack-icon">⚡</span>
+                    <h4>Supabase Realtime</h4>
+                    <p>PostgreSQL-powered real-time engine for sub-35ms event propagation across all connected clients.</p>
+                    <span class="techstack-label">Database & Sync</span>
+                </div>
+
+                <div class="techstack-card">
+                    <span class="techstack-icon">🗺️</span>
+                    <h4>Leaflet GIS + GraphHopper</h4>
+                    <p>Interactive mapping with real road-network routing for accurate travel time calculations.</p>
+                    <span class="techstack-label">Geospatial</span>
+                </div>
+
+                <div class="techstack-card">
+                    <span class="techstack-icon">📡</span>
+                    <h4>Device GPS Streaming</h4>
+                    <p>Native browser Geolocation API streams physical satellite coordinates every 2 seconds.</p>
+                    <span class="techstack-label">Telemetry</span>
+                </div>
+
+                <div class="techstack-card">
+                    <span class="techstack-icon">☕</span>
+                    <h4>Spring Boot Microservices</h4>
+                    <p>Java 21 microservice mesh with API gateway, event sourcing, and distributed tracing.</p>
+                    <span class="techstack-label">Backend</span>
+                </div>
+
+                <div class="techstack-card">
+                    <span class="techstack-icon">🐳</span>
+                    <h4>Docker & CI/CD</h4>
+                    <p>Containerized deployments with GitHub Actions pipelines for continuous integration.</p>
+                    <span class="techstack-label">DevOps</span>
+                </div>
+
+                <div class="techstack-card">
+                    <span class="techstack-icon">🔐</span>
+                    <h4>HIPAA-Ready Security</h4>
+                    <p>Salted telephone hashing, row-level security policies, and end-to-end encrypted channels.</p>
+                    <span class="techstack-label">Compliance</span>
+                </div>
+
+                <div class="techstack-card">
+                    <span class="techstack-icon">📱</span>
+                    <h4>Progressive Web App</h4>
+                    <p>Offline-first mobile cockpit with service workers for unreliable network conditions.</p>
+                    <span class="techstack-label">Frontend</span>
+                </div>
+
+                <div class="techstack-card">
+                    <span class="techstack-icon">📊</span>
+                    <h4>Audit Event Stream</h4>
+                    <p>Immutable append-only audit log capturing every dispatch, status, and clinical event.</p>
+                    <span class="techstack-label">Observability</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Real-Time Capabilities Section -->
+        <section class="realtime-section" id="realtime">
+            <div class="section-header-center">
+                <span class="section-tag">LIVE CAPABILITIES</span>
+                <h2 class="section-title">Every Feature Operates <br> in Real Time</h2>
+                <p class="section-subtitle">
+                    No polling. No refresh buttons. Every data point streams instantly to every connected operator across all three portals.
+                </p>
+            </div>
+
+            <div class="realtime-grid">
+                <div class="realtime-card">
+                    <div class="realtime-icon-row">
+                        <div class="realtime-icon-circle" style="background: rgba(56, 189, 248, 0.12); color: #38bdf8;">🛰️</div>
+                    </div>
+                    <h4>Live Fleet GPS Tracking</h4>
+                    <p>All 14 ambulances stream satellite GPS positions every 2 seconds directly onto the dispatcher's Leaflet GIS map with animated motion trails and heading indicators.</p>
+                </div>
+
+                <div class="realtime-card">
+                    <div class="realtime-icon-row">
+                        <div class="realtime-icon-circle" style="background: rgba(255, 71, 87, 0.12); color: #ff4757;">🚨</div>
+                    </div>
+                    <h4>Instant Incident Broadcasting</h4>
+                    <p>When a dispatcher creates an incident, every relevant crew device receives push notifications within 200ms including priority level, location, and caller details.</p>
+                </div>
+
+                <div class="realtime-card">
+                    <div class="realtime-icon-row">
+                        <div class="realtime-icon-circle" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">🏥</div>
+                    </div>
+                    <h4>Hospital Bed Pressure Monitor</h4>
+                    <p>Emergency department capacity feeds stream resuscitation bay availability, ICU bed counts, and diversion status so dispatchers always route to the optimal facility.</p>
+                </div>
+
+                <div class="realtime-card">
+                    <div class="realtime-icon-row">
+                        <div class="realtime-icon-circle" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">⏱️</div>
+                    </div>
+                    <h4>Dynamic ETA Countdown</h4>
+                    <p>GraphHopper-powered ETAs recalculate continuously as ambulances navigate, providing receiving hospitals accurate arrival predictions that update in real time.</p>
+                </div>
+
+                <div class="realtime-card">
+                    <div class="realtime-icon-row">
+                        <div class="realtime-icon-circle" style="background: rgba(0, 210, 211, 0.12); color: #00d2d3;">🚦</div>
+                    </div>
+                    <h4>Green-Wave Signal Corridors</h4>
+                    <p>Smart traffic signal pre-emption creates uninterrupted green corridors ahead of responding ambulances, reducing intersection delays by up to 68%.</p>
+                </div>
+
+                <div class="realtime-card">
+                    <div class="realtime-icon-row">
+                        <div class="realtime-icon-circle" style="background: rgba(139, 92, 246, 0.12); color: #8b5cf6;">📋</div>
+                    </div>
+                    <h4>Pre-Arrival Clinical Alerts</h4>
+                    <p>Crew members transmit patient acuity, vitals summary, and intervention notes directly to the receiving trauma team before the ambulance arrives at the bay door.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fleet Command Overview Section -->
+        <section class="fleet-section" id="fleet">
+            <div class="section-header-center">
+                <span class="section-tag">FLEET COMMAND</span>
+                <h2 class="section-title">Metropolitan Fleet at a Glance</h2>
+                <p class="section-subtitle">
+                    A city-scale emergency fleet fully instrumented with satellite telemetry, capability tagging, and real-time status orchestration.
+                </p>
+            </div>
+
+            <div class="fleet-stats-grid">
+                <div class="fleet-stat-card">
+                    <span class="fleet-stat-icon">🚑</span>
+                    <div class="fleet-stat-value" style="color: var(--brand-coral);">14</div>
+                    <div class="fleet-stat-label">Active Ambulances</div>
+                    <div class="fleet-stat-sub">GPS INSTRUMENTED</div>
+                </div>
+
+                <div class="fleet-stat-card">
+                    <span class="fleet-stat-icon">⚕️</span>
+                    <div class="fleet-stat-value" style="color: var(--brand-cyan);">8</div>
+                    <div class="fleet-stat-label">ALS Units</div>
+                    <div class="fleet-stat-sub">ADVANCED LIFE SUPPORT</div>
+                </div>
+
+                <div class="fleet-stat-card">
+                    <span class="fleet-stat-icon">🏥</span>
+                    <div class="fleet-stat-value" style="color: var(--brand-amber);">6</div>
+                    <div class="fleet-stat-label">Linked Hospitals</div>
+                    <div class="fleet-stat-sub">TRAUMA CENTERS</div>
+                </div>
+
+                <div class="fleet-stat-card">
+                    <span class="fleet-stat-icon">👨‍⚕️</span>
+                    <div class="fleet-stat-value" style="color: var(--brand-lime);">42</div>
+                    <div class="fleet-stat-label">Active Crew</div>
+                    <div class="fleet-stat-sub">PARAMEDICS & EMTs</div>
+                </div>
+
+                <div class="fleet-stat-card">
+                    <span class="fleet-stat-icon">📡</span>
+                    <div class="fleet-stat-value" style="color: var(--brand-blue);">24/7</div>
+                    <div class="fleet-stat-label">Uptime Coverage</div>
+                    <div class="fleet-stat-sub">ZERO BLACKOUTS</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section (#faq) -->
+        <section class="faq-section" id="faq">
+            <div class="section-header-center">
+                <span class="section-tag">QUESTIONS & ANSWERS</span>
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <p class="section-subtitle">
+                    Everything you need to know about deploying and operating the EMS platform across your metropolitan emergency network.
+                </p>
+            </div>
+
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>How does the autonomous dispatch ranking algorithm work?</span>
+                        <span class="faq-chevron">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            The ranking engine evaluates every available ambulance against three weighted dimensions: capability match (ALS vs BLS for the incident severity), real-time GraphHopper road-network travel time from the unit's current GPS position, and destination hospital bed pressure scores. All three are computed in parallel and merged into a ranked candidate list in under 50ms.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Is the platform HIPAA and GDPR compliant?</span>
+                        <span class="faq-chevron">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            Yes. All patient-identifying data including caller phone numbers are salted and hashed before storage. Row-level security policies in Supabase ensure each portal only accesses data within its authorization scope. Audit logs are immutable and append-only for full regulatory traceability.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>What happens when a crew member loses cellular connectivity?</span>
+                        <span class="faq-chevron">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            The Paramedic Crew PWA is built offline-first with service workers. Mission data, navigation waypoints, and patient forms are cached locally. When connectivity is restored, all buffered GPS telemetry and status updates sync automatically without crew intervention.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Can hospitals dynamically divert incoming ambulances?</span>
+                        <span class="faq-chevron">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            Absolutely. The Hospital ED Trauma Hub includes a one-click diversion toggle. When activated, the system instantly removes that facility from the dispatcher's ranking pool and reroutes any in-transit ambulances to the next nearest qualifying hospital — all within seconds.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>How accurate is the real-time GPS tracking?</span>
+                        <span class="faq-chevron">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            The platform uses the browser's native Geolocation API which leverages the device's physical GPS chip. Accuracy is typically within 3–5 meters outdoors. Position updates stream every 2 seconds to Supabase, and the dispatcher map interpolates smooth animated motion between data points.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>What infrastructure is required to deploy the platform?</span>
+                        <span class="faq-chevron">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            The entire backend runs as Docker-containerized Spring Boot microservices orchestrated via Docker Compose. The frontend is static HTML/JS served from any CDN or web server. The only external dependency is a Supabase project for the real-time PostgreSQL database and authentication.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- CTA Callout Banner -->
         <section class="cta-banner">
             <div class="cta-box-glow">
@@ -1261,6 +1840,20 @@
 
         startAutoplay();
     })();
+    </script>
+
+    <!-- FAQ Interactive Accordion -->
+    <script>
+    document.querySelectorAll('.faq-question').forEach(button => {
+        button.addEventListener('click', () => {
+            const item = button.closest('.faq-item');
+            const isOpen = item.classList.contains('open');
+            document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('open'));
+            if (!isOpen) {
+                item.classList.add('open');
+            }
+        });
+    });
     </script>
 
     <!-- Demo Bridge Engine -->
