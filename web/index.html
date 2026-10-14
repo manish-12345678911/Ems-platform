@@ -8,6 +8,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Preload Hero Background Images for instant smooth transitions -->
+    <link rel="preload" as="image" href="assets/hero-paramedics-night.jpg">
+    <link rel="preload" as="image" href="assets/ambulance-hero-far-right.jpg">
+    <link rel="preload" as="image" href="assets/hero-ambulance-aerial.jpg">
+    <link rel="preload" as="image" href="assets/hero-hospital-dawn.jpg">
+    <link rel="preload" as="image" href="assets/hero-dispatch-center.jpg">
     <style>
         :root {
             --bg-deep: #050811;
@@ -249,39 +255,76 @@
             object-fit: cover;
             object-position: 85% center;
             display: block;
-            filter: contrast(1.06) brightness(0.96);
+            filter: contrast(1.05) brightness(0.95);
             opacity: 0;
-            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 0;
+            pointer-events: none;
             will-change: opacity, transform;
-            transform: scale(1);
+            transform: scale(1.0) translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            transition: opacity 1.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .hero-bg-img.active {
+        /* Base slide: stays fully visible under incoming slide during crossfade */
+        .hero-bg-img.is-base {
             opacity: 1;
-            animation: kenBurnsZoom 7s ease-in-out forwards;
+            z-index: 1;
         }
 
-        .hero-bg-img.prev {
-            opacity: 0;
+        /* Incoming / active slide: placed on top (z-index: 2) and smoothly fades in over the base slide */
+        .hero-bg-img.is-active {
+            opacity: 1;
+            z-index: 2;
         }
 
-        @keyframes kenBurnsZoom {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.06); }
+        /* Continuous cinematic Ken Burns motion */
+        .hero-bg-img.is-zooming {
+            animation: kenBurnsSmooth 16s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        @keyframes kenBurnsSmooth {
+            0% {
+                transform: scale(1.0) translate3d(0, 0, 0);
+            }
+            100% {
+                transform: scale(1.06) translate3d(-10px, -4px, 0);
+            }
         }
 
 
+
+        /* Blur Layer: Soft, light cinematic blur on left side behind text */
+        .hero-bg-blur {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            pointer-events: none;
+            backdrop-filter: blur(10px) saturate(110%);
+            -webkit-backdrop-filter: blur(10px) saturate(110%);
+            -webkit-mask-image: linear-gradient(90deg, 
+                rgba(0, 0, 0, 0.85) 0%, 
+                rgba(0, 0, 0, 0.85) 30%, 
+                rgba(0, 0, 0, 0.40) 48%, 
+                rgba(0, 0, 0, 0) 62%);
+            mask-image: linear-gradient(90deg, 
+                rgba(0, 0, 0, 0.85) 0%, 
+                rgba(0, 0, 0, 0.85) 30%, 
+                rgba(0, 0, 0, 0.40) 48%, 
+                rgba(0, 0, 0, 0) 62%);
+        }
 
         /* Overlay: Deep readable dark backdrop on left, smoothly opening up to clear transparency on right */
         .hero-bg-overlay {
             position: absolute;
             inset: 0;
+            z-index: 4;
             background: 
                 linear-gradient(90deg, 
-                    rgba(5, 8, 17, 0.96) 0%, 
-                    rgba(5, 8, 17, 0.90) 38%, 
-                    rgba(5, 8, 17, 0.65) 55%, 
-                    rgba(5, 8, 17, 0.15) 75%, 
+                    rgba(5, 8, 17, 0.88) 0%, 
+                    rgba(5, 8, 17, 0.82) 38%, 
+                    rgba(5, 8, 17, 0.48) 55%, 
+                    rgba(5, 8, 17, 0.12) 75%, 
                     transparent 100%),
                 linear-gradient(180deg, 
                     rgba(5, 8, 17, 0.50) 0%, 
@@ -293,7 +336,7 @@
 
         .hero-content-container {
             position: relative;
-            z-index: 2;
+            z-index: 10;
             width: 100%;
             max-width: 1440px;
             margin: 0 auto;
@@ -1034,6 +1077,18 @@
             .nav-menu { display: none; }
             .hero-content-container { padding: 5.5rem 1.25rem 3.5rem; }
             .hero-bg-img { object-position: 70% center; }
+            .hero-bg-blur {
+                -webkit-mask-image: linear-gradient(180deg, 
+                    rgba(0, 0, 0, 0.85) 0%, 
+                    rgba(0, 0, 0, 0.55) 45%, 
+                    rgba(0, 0, 0, 0) 75%);
+                mask-image: linear-gradient(180deg, 
+                    rgba(0, 0, 0, 0.85) 0%, 
+                    rgba(0, 0, 0, 0.55) 45%, 
+                    rgba(0, 0, 0, 0) 75%);
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+            }
             .hero-bg-overlay {
                 background: linear-gradient(180deg, 
                     rgba(5, 8, 17, 0.88) 0%, 
@@ -1088,11 +1143,12 @@
         <section class="hero-wrapper">
             <!-- Full 100vh Auto-Scrolling Background Slideshow -->
             <div class="hero-bg-media">
-                <img src="assets/ambulance-hero-far-right.jpg" alt="EMS Tactical Emergency Ambulance" class="hero-bg-img active" data-slide="0">
-                <img src="assets/hero-paramedics-night.jpg" alt="Paramedics responding at night" class="hero-bg-img" data-slide="1">
+                <img src="assets/hero-paramedics-night.jpg" alt="Paramedics responding at night" class="hero-bg-img is-base is-zooming" data-slide="0">
+                <img src="assets/ambulance-hero-far-right.jpg" alt="EMS Tactical Emergency Ambulance" class="hero-bg-img" data-slide="1">
                 <img src="assets/hero-ambulance-aerial.jpg" alt="Ambulance speeding through city" class="hero-bg-img" data-slide="2">
                 <img src="assets/hero-hospital-dawn.jpg" alt="Ambulance at hospital emergency entrance" class="hero-bg-img" data-slide="3">
                 <img src="assets/hero-dispatch-center.jpg" alt="Emergency dispatch command center" class="hero-bg-img" data-slide="4">
+                <div class="hero-bg-blur"></div>
                 <div class="hero-bg-overlay"></div>
             </div>
 
@@ -1485,22 +1541,59 @@
     <script>
     (function() {
         const slides = document.querySelectorAll('.hero-bg-img');
-        const SLIDE_DURATION = 800; // 0.8 seconds per slide
+        if (!slides.length) return;
+
+        const SLIDE_DURATION = 5500; // 5.5 seconds per slide for cinematic pace
+        const FADE_DURATION = 1600;  // 1.6 seconds buttery smooth crossfade
         let currentSlide = 0;
         let slideTimer = null;
         let isPaused = false;
+        let isTransitioning = false;
 
-        function goToSlide(index) {
-            slides.forEach((slide) => {
-                slide.classList.remove('active', 'prev');
-                slide.style.animation = 'none';
-                slide.offsetHeight;
-                slide.style.animation = '';
-            });
+        // Pre-decode all images so transitions have zero dropped frames
+        slides.forEach((img) => {
+            if (img.complete) {
+                if ('decode' in img) img.decode().catch(() => {});
+            } else {
+                img.addEventListener('load', () => {
+                    if ('decode' in img) img.decode().catch(() => {});
+                }, { once: true });
+            }
+        });
 
-            slides[currentSlide].classList.add('prev');
-            currentSlide = index;
-            slides[currentSlide].classList.add('active');
+        // Initialize first slide as base slide
+        slides[0].classList.add('is-base', 'is-zooming');
+
+        function goToSlide(targetIndex) {
+            if (targetIndex === currentSlide || isTransitioning) return;
+            isTransitioning = true;
+
+            const prevSlideEl = slides[currentSlide];
+            const nextSlideEl = slides[targetIndex];
+
+            // 1. Prepare next slide: start zoom animation while still invisible
+            nextSlideEl.classList.remove('is-zooming');
+            void nextSlideEl.offsetWidth; // force recalculation while invisible
+            nextSlideEl.classList.add('is-zooming');
+
+            // 2. Put next slide on top (z-index: 2) and trigger 1.6s opacity fade-in
+            nextSlideEl.classList.add('is-active');
+
+            // 3. Keep previous slide as is-base (z-index: 1, opacity: 1) during crossfade
+            // so outgoing image is ALWAYS fully visible beneath incoming one, with ZERO black flashes
+            currentSlide = targetIndex;
+
+            // 4. Once crossfade finishes:
+            setTimeout(() => {
+                // Next slide becomes the permanent base slide
+                nextSlideEl.classList.add('is-base');
+                nextSlideEl.classList.remove('is-active');
+
+                // Previous slide is safely hidden behind it, and its zoom reset while invisible
+                prevSlideEl.classList.remove('is-base', 'is-active', 'is-zooming');
+
+                isTransitioning = false;
+            }, FADE_DURATION);
         }
 
         function nextSlide() {
@@ -1510,16 +1603,25 @@
         function startAutoplay() {
             if (slideTimer) clearInterval(slideTimer);
             slideTimer = setInterval(() => {
-                if (!isPaused) nextSlide();
+                if (!isPaused && !isTransitioning) {
+                    nextSlide();
+                }
             }, SLIDE_DURATION);
         }
 
+        // Hover pause
         const heroSection = document.querySelector('.hero-wrapper');
-        heroSection.addEventListener('mouseenter', () => { isPaused = true; });
-        heroSection.addEventListener('mouseleave', () => { isPaused = false; });
+        if (heroSection) {
+            heroSection.addEventListener('mouseenter', () => { isPaused = true; });
+            heroSection.addEventListener('mouseleave', () => { isPaused = false; });
+        }
 
+        // Tab visibility handling
         document.addEventListener('visibilitychange', () => {
             isPaused = document.hidden;
+            if (!document.hidden) {
+                startAutoplay();
+            }
         });
 
         startAutoplay();
